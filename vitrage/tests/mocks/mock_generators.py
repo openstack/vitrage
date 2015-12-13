@@ -99,3 +99,4 @@ class MockEventGenerator(object):
             model.generate_dynamic_params()
             data_stream.append(model.params)
         return data_stream
+ 
