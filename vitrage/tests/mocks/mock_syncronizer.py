@@ -33,6 +33,10 @@ import random
 
 import mock_generators as mg
 
+
+default_num=100
+#Here you define your default numer 
+
 _NUM_EVENTS_KEY = '#events'
 _GENERATOR_KEY = 'generator'
 _INSTANCE_NUM_KEY = '#instances'
@@ -69,7 +73,7 @@ def get_mock_generators(entity_spec_list):
     return generator_spec_list
 
 
-def generate_random_events_list(generator_spec_list, default_num=100):
+def generate_random_events_list(generator_spec_list, default_num):
     """Generates random events for the generators given.
 
      Each element in the list of generators includes a generator and
