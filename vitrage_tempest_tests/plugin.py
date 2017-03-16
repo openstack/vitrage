@@ -15,6 +15,7 @@
 
 
 import os
+import sys
 
 # noinspection PyPackageRequirements
 from tempest.test_discover import plugins
