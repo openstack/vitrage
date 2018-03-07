@@ -93,3 +93,4 @@ Design Documents
    contributor/templates-loading
    contributor/vitrage-ha-and-history-vision
    contributor/datasource-snmp-parsing-support
+   contributor/entity_equivalence_use_cases
