@@ -396,7 +396,7 @@ def simple_static_generators(switch_num=2, host_num=10,
             snap_vals = {}
         snap_vals.update({
             DSProps.DATASOURCE_ACTION: DatasourceAction.SNAPSHOT,
-            DSProps.SAMPLE_DATE: utcnow()})
+            DSProps.SAMPLE_DATE: str(utcnow())})
         test_entity_spec_list.append(
             {tg.DYNAMIC_INFO_FKEY: tg.DRIVER_STATIC_SNAPSHOT_D,
              tg.STATIC_INFO_FKEY: tg.DRIVER_STATIC_SNAPSHOT_S,
@@ -411,7 +411,7 @@ def simple_static_generators(switch_num=2, host_num=10,
             update_vals = {}
         update_vals.update({
             DSProps.DATASOURCE_ACTION: DatasourceAction.UPDATE,
-            DSProps.SAMPLE_DATE: utcnow()})
+            DSProps.SAMPLE_DATE: str(utcnow())})
         test_entity_spec_list.append(
             {tg.DYNAMIC_INFO_FKEY: tg.DRIVER_STATIC_SNAPSHOT_D,
              tg.STATIC_INFO_FKEY: None,

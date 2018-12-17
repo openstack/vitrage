@@ -359,7 +359,9 @@ class TransformerBase(object):
 
     @staticmethod
     def _format_update_timestamp(update_timestamp, sample_timestamp):
-        return update_timestamp if update_timestamp else sample_timestamp
+        update_timestamp = update_timestamp if update_timestamp \
+            else sample_timestamp
+        return datetime_utils.format_timestamp(update_timestamp)
 
     @staticmethod
     def get_enrich_query(event):

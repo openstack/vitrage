@@ -97,7 +97,7 @@ class DriverBase(object):
 
     @staticmethod
     def _add_sampling_time(entity):
-        entity[DSProps.SAMPLE_DATE] = str(datetime_utils.utcnow())
+        entity[DSProps.SAMPLE_DATE] = datetime_utils.format_utcnow()
 
     @staticmethod
     def _add_datasource_action(entity, datasource_action):

@@ -28,6 +28,10 @@ def utcnow(with_timezone=True):
     return timeutils.utcnow(with_timezone)
 
 
+def format_utcnow(with_timezone=True, date_format=TIMESTAMP_FORMAT):
+    return utcnow(with_timezone).strftime(date_format)
+
+
 def change_time_str_format(timestamp_str, old_format, new_format):
     utc = datetime.strptime(timestamp_str, old_format)
     return utc.strftime(new_format)
@@ -43,3 +47,8 @@ def change_to_utc_time_and_format(timestamp_str, new_format):
 def format_unix_timestamp(timestamp, date_format=TIMESTAMP_FORMAT):
     return datetime.fromtimestamp(float(timestamp)) \
         .strftime(date_format)
+
+
+def format_timestamp(timestamp_str, new_format=TIMESTAMP_FORMAT):
+    return parser.parse(timestamp_str).strftime(new_format) if timestamp_str \
+        else None
