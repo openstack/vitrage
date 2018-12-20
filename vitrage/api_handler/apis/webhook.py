@@ -22,7 +22,6 @@ from six.moves.urllib.parse import urlparse
 from vitrage.common.constants import TenantProps
 from vitrage.common.constants import VertexProperties as Vprops
 from vitrage.notifier.plugins.webhook.utils import db_row_to_dict
-from vitrage import storage
 from vitrage.storage.sqlalchemy.models import Webhooks
 
 LOG = log.getLogger(__name__)
@@ -35,9 +34,9 @@ Result = namedtuple("Result", ["is_valid", "message"])
 class WebhookApis(object):
     DELETED_ROWS_SUCCESS = 1
 
-    def __init__(self, conf):
+    def __init__(self, conf, db):
         self.conf = conf
-        self.db_conn = storage.get_connection_from_config(conf)
+        self.db_conn = db
 
     def delete_webhook(self, ctx, id):
 

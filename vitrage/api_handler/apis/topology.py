@@ -16,10 +16,7 @@ from networkx.algorithms.shortest_paths.generic import shortest_path
 from oslo_log import log
 from osprofiler import profiler
 
-from vitrage.api_handler.apis.base import ALARMS_ALL_QUERY
-from vitrage.api_handler.apis.base import EDGE_QUERY
-from vitrage.api_handler.apis.base import EntityGraphApisBase
-from vitrage.api_handler.apis.base import TOPOLOGY_AND_ALARMS_QUERY
+from vitrage.api_handler.apis import base
 from vitrage.common.constants import EdgeProperties as EProps
 from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import TenantProps
@@ -34,13 +31,13 @@ LOG = log.getLogger(__name__)
 
 @profiler.trace_cls("topology apis",
                     info={}, hide_args=False, trace_private=False)
-class TopologyApis(EntityGraphApisBase):
+class TopologyApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf):
-        self.entity_graph = entity_graph
-        self.conf = conf
+    def __init__(self, entity_graph, conf, api_lock):
+        super(TopologyApis, self).__init__(entity_graph, conf, api_lock)
 
     @timed_method(log_results=True)
+    @base.lock_graph
     def get_topology(self, ctx, graph_type, depth, query, root, all_tenants):
         LOG.debug("TopologyApis get_topology - root: %s, all_tenants=%s",
                   str(root), all_tenants)
@@ -69,11 +66,11 @@ class TopologyApis(EntityGraphApisBase):
                 root_id,
                 query_dict=current_query,
                 depth=depth,
-                edge_query_dict=EDGE_QUERY)
+                edge_query_dict=base.EDGE_QUERY)
         # By default the graph_type is 'graph'
         else:
             if all_tenants:
-                q = query if query else TOPOLOGY_AND_ALARMS_QUERY
+                q = query if query else base.TOPOLOGY_AND_ALARMS_QUERY
                 graph = \
                     self.entity_graph.algo.create_graph_from_matching_vertices(
                         query_dict=q,
@@ -157,7 +154,7 @@ class TopologyApis(EntityGraphApisBase):
         :type is_admin_project: boolean
         """
 
-        for alarm in graph.get_vertices(query_dict=ALARMS_ALL_QUERY):
+        for alarm in graph.get_vertices(query_dict=base.ALARMS_ALL_QUERY):
             if not alarm.get(VProps.PROJECT_ID, None):
                 cat_filter = {VProps.VITRAGE_CATEGORY: EntityCategory.RESOURCE}
                 resource_neighbors = \

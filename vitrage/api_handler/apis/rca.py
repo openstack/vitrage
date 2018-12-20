@@ -15,7 +15,7 @@
 from oslo_log import log
 from osprofiler import profiler
 
-from vitrage.api_handler.apis.base import EntityGraphApisBase
+from vitrage.api_handler.apis import base
 from vitrage.common.constants import HistoryProps as HProps
 from vitrage.common.constants import TenantProps
 from vitrage.common.constants import VertexProperties as VProps
@@ -30,13 +30,9 @@ LOG = log.getLogger(__name__)
 
 @profiler.trace_cls("rca apis",
                     info={}, hide_args=False, trace_private=False)
-class RcaApis(EntityGraphApisBase):
+class RcaApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf, db):
-        self.entity_graph = entity_graph
-        self.conf = conf
-        self.db = db
-
+    @base.lock_graph
     def get_rca(self, ctx, root, all_tenants):
         LOG.debug("RcaApis get_rca - root: %s, all_tenants=%s",
                   str(root), all_tenants)

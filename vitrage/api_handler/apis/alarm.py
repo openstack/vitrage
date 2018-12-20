@@ -17,7 +17,7 @@ import json
 from oslo_log import log
 from osprofiler import profiler
 
-from vitrage.api_handler.apis.base import EntityGraphApisBase
+from vitrage.api_handler.apis import base
 from vitrage.common.constants import EntityCategory as ECategory
 from vitrage.common.constants import HistoryProps as HProps
 from vitrage.common.constants import TenantProps
@@ -33,13 +33,9 @@ LOG = log.getLogger(__name__)
 
 @profiler.trace_cls("alarm apis",
                     info={}, hide_args=False, trace_private=False)
-class AlarmApis(EntityGraphApisBase):
+class AlarmApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf, db):
-        self.entity_graph = entity_graph
-        self.conf = conf
-        self.db = db
-
+    @base.lock_graph
     def get_alarms(self, ctx, vitrage_id, all_tenants, *args, **kwargs):
 
         kwargs = self._parse_kwargs(kwargs)
@@ -59,6 +55,7 @@ class AlarmApis(EntityGraphApisBase):
         return compress_obj(data, level=1)
 
     # TODO(annarez): add db support
+    @base.lock_graph
     def show_alarm(self, ctx, vitrage_id):
         LOG.debug('Show alarm with vitrage_id: %s', vitrage_id)
 
@@ -76,6 +73,7 @@ class AlarmApis(EntityGraphApisBase):
 
         return json.dumps(alarm.properties)
 
+    @base.lock_graph
     def get_alarm_counts(self, ctx, all_tenants):
         LOG.debug("AlarmApis get_alarm_counts - all_tenants=%s", all_tenants)
 

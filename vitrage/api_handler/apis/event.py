@@ -19,7 +19,6 @@ from oslo_utils import uuidutils
 from osprofiler import profiler
 import socket
 
-from vitrage.api_handler.apis.base import EntityGraphApisBase
 from vitrage.common.constants import EventProperties
 from vitrage.datasources.doctor.properties import DoctorDetails
 from vitrage.datasources.doctor.properties import DoctorProperties
@@ -31,7 +30,7 @@ LOG = log.getLogger(__name__)
 
 @profiler.trace_cls("event apis",
                     info={}, hide_args=False, trace_private=False)
-class EventApis(EntityGraphApisBase):
+class EventApis(object):
 
     def __init__(self, conf):
         self.conf = conf

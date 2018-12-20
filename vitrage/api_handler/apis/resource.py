@@ -16,7 +16,7 @@ import json
 from oslo_log import log
 from osprofiler import profiler
 
-from vitrage.api_handler.apis.base import EntityGraphApisBase
+from vitrage.api_handler.apis import base
 from vitrage.api_handler.apis.base import RESOURCES_ALL_QUERY
 from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import TenantProps
@@ -29,13 +29,13 @@ LOG = log.getLogger(__name__)
 
 @profiler.trace_cls("resource apis",
                     info={}, hide_args=False, trace_private=False)
-class ResourceApis(EntityGraphApisBase):
+class ResourceApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf):
-        self.entity_graph = entity_graph
-        self.conf = conf
+    def __init__(self, entity_graph, conf, api_lock):
+        super(ResourceApis, self).__init__(entity_graph, conf, api_lock)
 
     @timed_method(log_results=True)
+    @base.lock_graph
     def get_resources(self, ctx, resource_type=None, all_tenants=False):
         LOG.debug('ResourceApis get_resources - resource_type: %s,'
                   'all_tenants: %s', str(resource_type), all_tenants)
@@ -60,6 +60,7 @@ class ResourceApis(EntityGraphApisBase):
         data = {'resources': [r.properties for r in resources]}
         return compress_obj(data, level=1)
 
+    @base.lock_graph
     def show_resource(self, ctx, vitrage_id):
 
         LOG.debug('Show resource with vitrage_id: %s', vitrage_id)

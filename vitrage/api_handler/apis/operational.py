@@ -13,12 +13,11 @@
 # under the License.
 
 from oslo_log import log
-from vitrage.api_handler.apis.base import EntityGraphApisBase
 
 LOG = log.getLogger(__name__)
 
 
-class OperationalApis(EntityGraphApisBase):
+class OperationalApis(object):
 
     def __init__(self, conf, graph):
         self.conf = conf

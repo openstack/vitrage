@@ -12,8 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import abc
+import threading
+
 import cotyledon
 import multiprocessing
+import multiprocessing.queues
 import os
 from oslo_concurrency import processutils as ps
 from oslo_log import log
@@ -109,7 +112,7 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         if self._api_queues:
             raise VitrageError('add_api_workers called more than once')
         workers = self._conf.api.workers
-        queues = [multiprocessing.JoinableQueue() for i in range(workers)]
+        queues = [multiprocessing.Queue() for i in range(workers)]
         self.add(ApiWorker, args=(self._conf, queues), workers=workers)
         self._api_queues = queues
         self._all_queues.extend(queues)
@@ -203,7 +206,8 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         for q in queues:
             q.put(payload)
         for q in queues:
-            q.join()
+            if isinstance(q, multiprocessing.queues.JoinableQueue):
+                q.join()
 
     @staticmethod
     def _force_stop():
@@ -247,7 +251,9 @@ class GraphCloneWorkerBase(cotyledon.Service):
                 self.do_task(next_task)
             except Exception:
                 LOG.exception("Graph may not be in sync.")
-            self._task_queue.task_done()
+            if isinstance(self._task_queue,
+                          multiprocessing.queues.JoinableQueue):
+                self._task_queue.task_done()
 
     def do_task(self, task):
         action = task[0]
@@ -358,16 +364,26 @@ class ApiWorker(GraphCloneWorkerBase):
         transport = messaging.get_rpc_transport(conf)
         target = oslo_messaging.Target(topic=conf.rpc_topic,
                                        server=uuidutils.generate_uuid())
+        self.api_lock = threading.RLock()
 
-        endpoints = [TopologyApis(self._entity_graph, conf),
-                     AlarmApis(self._entity_graph, conf, db),
-                     RcaApis(self._entity_graph, conf, db),
-                     TemplateApis(notifier, db),
-                     EventApis(conf),
-                     ResourceApis(self._entity_graph, conf),
-                     WebhookApis(conf),
-                     OperationalApis(conf, self._entity_graph)]
+        endpoints = [
+            TopologyApis(self._entity_graph, conf, self.api_lock),
+            AlarmApis(self._entity_graph, conf, self.api_lock, db),
+            RcaApis(self._entity_graph, conf, self.api_lock, db),
+            ResourceApis(self._entity_graph, conf, self.api_lock),
+            TemplateApis(notifier, db),
+            EventApis(conf),
+            WebhookApis(conf, db),
+            OperationalApis(conf, self._entity_graph),
+        ]
 
         server = vitrage_rpc.get_server(target, endpoints, transport)
 
         server.start()
+
+    def do_task(self, task):
+        try:
+            self.api_lock.acquire()
+            super(ApiWorker, self).do_task(task)
+        finally:
+            self.api_lock.release()

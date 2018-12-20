@@ -11,7 +11,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import functools
 from oslo_log import log
 
 from vitrage.common.constants import EdgeProperties as EProps
@@ -76,6 +76,12 @@ RESOURCES_ALL_QUERY = {
 
 class EntityGraphApisBase(object):
 
+    def __init__(self, entity_graph, conf, api_lock, db=None):
+        self.entity_graph = entity_graph
+        self.conf = conf
+        self.db = db
+        self.api_lock = api_lock
+
     @classmethod
     def _get_query_with_project(cls, vitrage_category, project_id, is_admin):
         """Generate query with tenant data
@@ -128,3 +134,15 @@ class EntityGraphApisBase(object):
             query_with_project_id = {'and': [project_query, query]}
 
         return query_with_project_id
+
+
+def lock_graph(f):
+    @functools.wraps(f)
+    def api_backend_func(*args, **kwargs):
+        try:
+            args[0].api_lock.acquire()
+            result = f(*args, **kwargs)
+            return result
+        finally:
+            args[0].api_lock.release()
+    return api_backend_func
