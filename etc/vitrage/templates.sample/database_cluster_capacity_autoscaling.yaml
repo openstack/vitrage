@@ -1,0 +1,82 @@
+metadata:
+  version: 2
+  name: database-cluster-capacity-autoscaling
+  type: standard
+  description: Automatically scales the capacity of Trove database clusters in response to insufficient disk space alerts
+definitions:
+  entities:
+    - entity:
+        category: RESOURCE
+        type: trove.cluster
+        template_id: trove_cluster
+    - entity:
+        category: RESOURCE
+        type: trove.instance
+        template_id: trove_instance
+    - entity:
+        category: ALARM
+        name: trove-instance-low-disk-space
+        template_id: trove_instance_low_disk
+    - entity:
+        category: ALARM
+        name: trove-cluster-low-disk-space
+        template_id: trove_cluster_low_disk
+  relationships:
+    - relationship:
+        source: trove_cluster
+        target: trove_instance
+        relationship_type: contains
+        template_id: trove_cluster_contains_instance
+    - relationship:
+        source: trove_instance_low_disk
+        target: trove_instance
+        relationship_type: on
+        template_id: low_disk_on_trove_instance
+    - relationship:
+        source: trove_cluster_low_disk
+        target: trove_cluster
+        relationship_type: on
+        template_id: low_disk_on_trove_cluster
+scenarios:
+  - scenario:
+      condition: low_disk_on_trove_instance
+      actions:
+        - action:
+            action_type: set_state
+            properties:
+              state: SUBOPTIMAL
+            action_target:
+               target: trove_instance
+  - scenario:
+      condition: low_disk_on_trove_instance and trove_cluster_contains_instance
+      actions:
+        - action:
+            action_type: set_state
+            properties:
+              state: SUBOPTIMAL
+            action_target:
+               target: trove_cluster
+        - action:
+            action_type: raise_alarm
+            properties:
+              alarm_name: trove-cluster-low-disk-space
+              severity: CRITICAL
+            action_target:
+              target: trove_cluster
+  - scenario:
+      condition: low_disk_on_trove_instance and low_disk_on_trove_cluster and trove_cluster_contains_instance
+      actions:
+          - action:
+              action_type: add_causal_relationship
+              action_target:
+                  source: trove_instance_low_disk
+                  target: trove_cluster_low_disk
+  - scenario:
+      condition: low_disk_on_trove_instance and trove_cluster_contains_instance and low_disk_on_trove_cluster
+      actions:
+        - action:
+            action_type: execute_mistral
+            properties:
+              workflow: trove_resize_cluster_volume
+              input:
+                cluster_id: get_attr(trove_cluster,id)
