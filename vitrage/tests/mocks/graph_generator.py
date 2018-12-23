@@ -14,7 +14,6 @@
 import itertools
 
 import copy
-from oslo_utils import uuidutils
 
 from vitrage.common.constants import EdgeProperties
 from vitrage.common.constants import VertexProperties as VProps
@@ -50,6 +49,7 @@ class GraphGenerator(object):
         self._tripleo_controllers = tripleo_controllers
         self._zabbix_alarms_per_controller = zabbix_alarms_per_controller
         self.files_cache = {}
+        self.uuid_counter = 0
 
     def create_graph(self):
         graph = NXGraph()
@@ -159,9 +159,9 @@ class GraphGenerator(object):
     def _file_to_vertex(self, filename, index=0):
         props = self._load_resource_file(filename, 'vertices')
         if props.get(VProps.ID):
-            props[VProps.ID] = uuidutils.generate_uuid()
+            props[VProps.ID] = self.generate_mock_uuid()
         props[VProps.NAME] = "%s-%s" % (props[VProps.VITRAGE_TYPE], str(index))
-        props[VProps.VITRAGE_ID] = uuidutils.generate_uuid()
+        props[VProps.VITRAGE_ID] = self.generate_mock_uuid()
         return Vertex(props[VProps.VITRAGE_ID], props)
 
     def _file_to_edge(self, filename, source_id, target_id):
@@ -178,3 +178,7 @@ class GraphGenerator(object):
             props = utils.load_specs(filename, full_path)
             self.files_cache[cache_key] = props
         return copy.copy(props)
+
+    def generate_mock_uuid(self):
+        self.uuid_counter = self.uuid_counter + 1
+        return "11111111-1111-1111-1111-{:012d}".format(self.uuid_counter)
