@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from networkx.algorithms.shortest_paths.generic import shortest_path
+from networkx import is_frozen
 
 from oslo_log import log
 from osprofiler import profiler
@@ -121,7 +122,7 @@ class TopologyApis(base.EntityGraphApisBase):
         vertices_ids = self._all_paths_from_node(self.entity_graph,
                                                  source_node=root,
                                                  targets=vertices_ids)
-        graph = self.entity_graph.algo.subgraph(vertices_ids).copy()
+        graph = self.entity_graph.algo.subgraph(vertices_ids)
         edge_query = {EProps.VITRAGE_IS_DELETED: False}
         self._remove_unnecessary_elements(
             graph, project_id, is_admin_project, edge_attr_filter=edge_query)
@@ -153,7 +154,7 @@ class TopologyApis(base.EntityGraphApisBase):
         :type current_project_id: string
         :type is_admin_project: boolean
         """
-
+        alarms_to_remove = []
         for alarm in graph.get_vertices(query_dict=base.ALARMS_ALL_QUERY):
             if not alarm.get(VProps.PROJECT_ID, None):
                 cat_filter = {VProps.VITRAGE_CATEGORY: EntityCategory.RESOURCE}
@@ -169,7 +170,13 @@ class TopologyApis(base.EntityGraphApisBase):
                         (not resource_proj_id or
                          resource_proj_id != current_project_id)
                     if cond1 or cond2:
-                        graph.remove_vertex(alarm)
+                        alarms_to_remove.append(alarm)
+
+        if alarms_to_remove and is_frozen(graph._g):
+            graph._g = graph._g.copy()
+
+        for alarm in alarms_to_remove:
+            graph.remove_vertex(alarm)
 
     @staticmethod
     def _all_paths_from_node(graph, source_node, targets):

@@ -11,7 +11,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+from networkx import is_frozen
 from oslo_log import log as logging
 
 from vitrage.common.constants import EdgeProperties as EProps
@@ -182,5 +182,9 @@ class NXAlgorithm(GraphAlgorithm):
         edges = graph._g.edges(data=True, keys=True)
         edges_to_remove = [(u, v, k) for (u, v, k, d) in edges
                            if not check_filter(d, edge_attr_filter)]
+
+        if edges_to_remove and is_frozen(graph._g):
+            graph._g = graph._g.copy()
+
         for source, target, key in edges_to_remove:
             graph._g.remove_edge(u=source, v=target, key=key)
