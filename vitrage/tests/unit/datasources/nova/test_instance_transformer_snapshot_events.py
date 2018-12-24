@@ -61,7 +61,8 @@ class NovaInstanceTransformerSnapshotTest(
             wrapper = transformer.transform(event)
 
             # Test assertions
-            self._validate_vertex_props(transformer, wrapper.vertex, event)
+            self._validate_snapshot_vertex_props(
+                transformer, wrapper.vertex, event)
 
             self.assertThat(wrapper.neighbors, matchers.HasLength(1),
                             'Instance has only one host neighbor')

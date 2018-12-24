@@ -108,7 +108,8 @@ class BaseNovaInstanceTransformerTest(base.BaseTest):
             wrapper = transformer.transform(event)
 
             # Test assertions
-            self._validate_vertex_props(transformer, wrapper.vertex, event)
+            self._validate_update_vertex_props(
+                transformer, wrapper.vertex, event)
 
             # Validate the neighbors: only one  valid host neighbor
             neighbors = wrapper.neighbors
@@ -123,10 +124,15 @@ class BaseNovaInstanceTransformerTest(base.BaseTest):
             else:
                 self.assertEqual(GraphAction.UPDATE_ENTITY, wrapper.action)
 
-    def _validate_vertex_props(self, transformer, vertex, event):
+    def _validate_snapshot_vertex_props(self, transformer, vertex, event):
+        self.assertThat(vertex.properties, matchers.HasLength(15))
+        self._validate_vertex_props(transformer, vertex, event)
 
+    def _validate_update_vertex_props(self, transformer, vertex, event):
         self.assertThat(vertex.properties, matchers.HasLength(14))
+        self._validate_vertex_props(transformer, vertex, event)
 
+    def _validate_vertex_props(self, transformer, vertex, event):
         field_extractor = transformer._get_field_extractor(event)
         expected_id = field_extractor.entity_id(event)
         observed_id = vertex[VProps.ID]

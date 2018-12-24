@@ -71,6 +71,10 @@ class InstanceTransformer(ResourceTransformerBase):
             'host_id': field_extractor.host(entity_event)
         }
 
+        instance_name = field_extractor.instance_name(entity_event)
+        if instance_name:
+            metadata['instance_name'] = instance_name
+
         vitrage_sample_timestamp = entity_event[DSProps.SAMPLE_DATE]
 
         # TODO(Alexey): need to check that only the UPDATE datasource_action
