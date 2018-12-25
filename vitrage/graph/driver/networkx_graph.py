@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from collections import defaultdict
 import copy
 import json
 import networkx as nx
@@ -261,6 +262,14 @@ class NXGraph(Graph):
             if match_func(node_data):
                 vertices_ids.add(node)
         return vertices_ids
+
+    def get_vertices_count(self, query_dict, group_by):
+        vertices_counts = defaultdict(int)
+        match_func = create_predicate(query_dict) if query_dict else None
+        for node, node_data in self._g.nodes(data=True):
+            if match_func is None or match_func(node_data):
+                vertices_counts[node_data.get(group_by, '')] += 1
+        return vertices_counts
 
     def get_vertices_by_key(self, key_values_hash):
 

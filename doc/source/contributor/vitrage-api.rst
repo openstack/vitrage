@@ -1259,8 +1259,8 @@ Resource list
 ^^^^^^^^^^^^^
 List the resources with specified type or all the resources.
 
-GET /v1/resources/
-~~~~~~~~~~~~~~~~~~
+POST /v1/resources/
+~~~~~~~~~~~~~~~~~~~
 
 Headers
 =======
@@ -1278,20 +1278,21 @@ None.
 Query Parameters
 ================
 
-* resource_type - (string, optional) the type of resource, defaults to return all resources.
-* all_tenants - (boolean, optional) shows the resources of all tenants (in case the user has the permissions).
+None.
 
 Request Body
 ============
 
-None.
+* resource_type - (string, optional) the type of resource, defaults to return all resources.
+* all_tenants - (boolean, optional) shows the resources of all tenants (in case the user has the permissions).
+* query - (string, optional) a json query to filter the resources by
 
 Request Examples
 ================
 
 ::
 
-    GET /v1/resources/?all_tenants=False&resource_type=nova.host
+    POST /v1/resources/
     Host: 135.248.18.122:8999
     User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
     Content-Type: application/json
@@ -1304,6 +1305,37 @@ Response Status code
 
 -  200 - OK
 -  404 - Bad request
+
+Query example
+=============
+
+::
+
+    POST /v1/resources/
+    Host: 135.248.19.18:8999
+    Content-Type: application/json
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+
+    {
+        "query" :"
+         {
+            \"or\": [
+              {
+                \"==\": {
+                  \"state\": \"OK\"
+                }
+              },
+              {
+                \"==\": {
+                  \"state\": \"SUBOPTIMAL\"
+                }
+              }
+            ]
+
+         }",
+         "resource_type" : "nova.host"
+         "all_tenants" : True
+     }
 
 Response Body
 =============
@@ -1398,6 +1430,108 @@ Response Examples
       "vitrage_type": "nova.instance",
       "id": "dc35fa2f-4515-1653-ef6b-03b471bb395b",
       "vitrage_id": "11680c27-86a2-41a7-89db-863e68b1c2c9"
+    }
+
+Resource count
+^^^^^^^^^^^^^^
+Count resources
+
+POST /v1/resources/count
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Headers
+=======
+
+-  X-Auth-Token (string, required) - Keystone auth token
+-  Accept (string) - application/json
+-  User-Agent (String)
+-  Content-Type (String): application/json
+
+Path Parameters
+===============
+
+None.
+
+Query Parameters
+================
+
+None.
+
+Request Body
+============
+
+* resource_type - (string, optional) the type of resource, defaults to return all resources.
+* all_tenants - (boolean, optional) shows the resources of all tenants (in case the user has the permissions).
+* query - (string, optional) a json query to filter the resources by
+* group_by - (string, optional) a resource data field, to group by its values
+
+Request Examples
+================
+
+::
+
+    POST /v1/resources/count/
+    Host: 127.0.0.1:8999
+    User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
+    Accept: application/json
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+
+
+Response Status code
+====================
+
+-  200 - OK
+-  404 - Bad request
+
+Response Body
+=============
+
+Returns counts of the requested resource, grouped by the selected field
+
+Query example
+=============
+
+::
+
+    POST /v1/resources/count/
+    Host: 135.248.19.18:8999
+    Content-Type: application/json
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+
+    {
+        "query" :"
+         {
+            \"or\": [
+              {
+                \"==\": {
+                  \"state\": \"OK\"
+                }
+              },
+              {
+                \"==\": {
+                  \"state\": \"SUBOPTIMAL\"
+                }
+              }
+            ]
+
+         }",
+         "group_by" : "vitrage_operational_status",
+         "resource_type" : "nova.instance"
+         "all_tenants" : True
+     }
+
+
+Response Examples
+=================
+
+For the above request, will count all instances with status OK or SUBOPTIMAL,
+group by the status field.
+
+::
+
+    {
+      "OK": 157,
+      "SUBOPTIMAL": 3,
     }
 
 Webhook List

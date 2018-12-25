@@ -25,7 +25,7 @@ LOG = log.getLogger(__name__)
 
 
 # noinspection PyBroadException
-class CountsController(RootRestController):
+class AlarmCountsController(RootRestController):
 
     @pecan.expose('json')
     def index(self, all_tenants=False):
@@ -53,3 +53,39 @@ class CountsController(RootRestController):
         except Exception:
             LOG.exception('failed to get alarm count.')
             abort(404, 'Failed to get alarm count.')
+
+
+class ResourceCountsController(RootRestController):
+
+    @pecan.expose('json')
+    def post(self, **kwargs):
+        resource_type = kwargs.get('resource_type', None)
+        all_tenants = kwargs.get('all_tenants', False)
+        all_tenants = bool_from_string(all_tenants)
+        query = kwargs.get('query')
+        group_by = kwargs.get('group_by')
+        if query:
+            query = json.loads(query)
+
+        if all_tenants:
+            enforce("count resources:all_tenants", pecan.request.headers,
+                    pecan.request.enforcer, {})
+        else:
+            enforce("count resources", pecan.request.headers,
+                    pecan.request.enforcer, {})
+
+        LOG.info('received get resource counts')
+
+        try:
+            resource_counts_json = pecan.request.client.call(
+                pecan.request.context, 'count_resources',
+                resource_type=resource_type,
+                all_tenants=all_tenants,
+                query=query,
+                group_by=group_by)
+
+            return json.loads(resource_counts_json)
+
+        except Exception:
+            LOG.exception('failed to get resource count.')
+            abort(404, 'Failed to get resource count.')

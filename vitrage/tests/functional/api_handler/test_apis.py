@@ -31,6 +31,7 @@ from vitrage.common.utils import decompress_obj
 from vitrage.datasources import NOVA_HOST_DATASOURCE
 from vitrage.datasources import NOVA_INSTANCE_DATASOURCE
 from vitrage.datasources import NOVA_ZONE_DATASOURCE
+from vitrage.datasources import OPENSTACK_CLUSTER
 from vitrage.datasources.transformer_base \
     import create_cluster_placeholder_vertex
 from vitrage.entity_graph.mappings.operational_alarm_severity import \
@@ -268,6 +269,23 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Test assertions
         self.assertThat(resources, matchers.HasLength(5))
 
+    def test_resource_list_with_admin_project_and_query(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': True}
+
+        # Action
+        resources = apis.get_resources(
+            ctx,
+            resource_type=NOVA_INSTANCE_DATASOURCE,
+            all_tenants=False,
+            query={'==': {'id': 'instance_3'}})
+        resources = decompress_obj(resources)['resources']
+
+        # Test assertions
+        self.assertThat(resources, matchers.HasLength(1))
+
     def test_resource_list_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
@@ -331,6 +349,128 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
 
         # Test assertions
         self.assertThat(resources, matchers.HasLength(7))
+
+    def test_resource_count_with_admin_project(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': True}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=None,
+            all_tenants=False)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(2, resources[NOVA_INSTANCE_DATASOURCE])
+        self.assertEqual(1, resources[NOVA_ZONE_DATASOURCE])
+        self.assertEqual(1, resources[OPENSTACK_CLUSTER])
+        self.assertEqual(1, resources[NOVA_HOST_DATASOURCE])
+
+    def test_resource_count_with_admin_project_and_query(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': True}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=NOVA_INSTANCE_DATASOURCE,
+            all_tenants=False,
+            query={'==': {'id': 'instance_3'}})
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(1, resources[NOVA_INSTANCE_DATASOURCE])
+
+    def test_resource_count_with_not_admin_project(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': False}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=None,
+            all_tenants=False)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(2, resources[NOVA_INSTANCE_DATASOURCE])
+
+    def test_resource_count_with_not_admin_project_and_no_existing_type(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': False}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=NOVA_HOST_DATASOURCE,
+            all_tenants=False)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertThat(resources.items(), matchers.HasLength(0))
+
+    def test_resource_count_with_not_admin_project_and_existing_type(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_2', 'is_admin': False}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=NOVA_INSTANCE_DATASOURCE,
+            all_tenants=False)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(2, resources[NOVA_INSTANCE_DATASOURCE])
+
+    def test_resource_count_with_all_tenants(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_1', 'is_admin': False}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=None,
+            all_tenants=True)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(4, resources[NOVA_INSTANCE_DATASOURCE])
+        self.assertEqual(1, resources[NOVA_ZONE_DATASOURCE])
+        self.assertEqual(1, resources[OPENSTACK_CLUSTER])
+        self.assertEqual(1, resources[NOVA_HOST_DATASOURCE])
+
+    def test_resource_count_with_all_tenants_and_group_by(self):
+        # Setup
+        graph = self._create_graph()
+        apis = ResourceApis(graph, None, self.api_lock)
+        ctx = {'tenant': 'project_1', 'is_admin': False}
+
+        # Action
+        resources = apis.count_resources(
+            ctx,
+            resource_type=None,
+            all_tenants=True,
+            group_by=VProps.PROJECT_ID)
+        resources = json.loads(resources)
+
+        # Test assertions
+        self.assertEqual(2, resources['project_1'])
+        self.assertEqual(2, resources['project_2'])
+        self.assertEqual(3, resources[''])
 
     def test_resource_show_with_admin_and_no_project_resource(self):
         # Setup

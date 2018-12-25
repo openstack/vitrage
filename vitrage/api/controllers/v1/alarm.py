@@ -35,7 +35,7 @@ LOG = log.getLogger(__name__)
 @profiler.trace_cls("alarm controller",
                     info={}, hide_args=False, trace_private=False)
 class AlarmsController(BaseAlarmsController):
-    count = count.CountsController()
+    count = count.AlarmCountsController()
     history = history.HistoryController()
 
     @pecan.expose('json')

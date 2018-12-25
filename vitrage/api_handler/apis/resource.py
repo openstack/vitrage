@@ -36,10 +36,41 @@ class ResourceApis(base.EntityGraphApisBase):
 
     @timed_method(log_results=True)
     @base.lock_graph
-    def get_resources(self, ctx, resource_type=None, all_tenants=False):
-        LOG.debug('ResourceApis get_resources - resource_type: %s,'
-                  'all_tenants: %s', str(resource_type), all_tenants)
+    def get_resources(self, ctx, resource_type=None, all_tenants=False,
+                      query=None):
+        LOG.debug(
+            'ResourceApis get_resources - resource_type: %s, all_tenants: %s,'
+            ' query: %s',
+            str(resource_type),
+            all_tenants,
+            str(query))
 
+        query = self._get_query(ctx, resource_type, all_tenants, query)
+        resources = self.entity_graph.get_vertices(query_dict=query)
+        data = {'resources': [r.properties for r in resources]}
+        return compress_obj(data, level=1)
+
+    @timed_method(log_results=True)
+    @base.lock_graph
+    def count_resources(self, ctx, resource_type=None, all_tenants=False,
+                        query=None, group_by=None):
+        LOG.debug(
+            'ResourceApis count_resources - type: %s, all_tenants: %s,'
+            ' query: %s, group_by: %s',
+            str(resource_type),
+            all_tenants,
+            str(query),
+            str(group_by))
+
+        query = self._get_query(ctx, resource_type, all_tenants, query)
+        if group_by is None:
+            group_by = VProps.VITRAGE_TYPE
+        counts = self.entity_graph.get_vertices_count(query_dict=query,
+                                                      group_by=group_by)
+
+        return json.dumps(counts)
+
+    def _get_query(self, ctx, resource_type, all_tenants, query_dict):
         project_id = ctx.get(TenantProps.TENANT, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)
 
@@ -56,9 +87,9 @@ class ResourceApis(base.EntityGraphApisBase):
             type_query = {'==': {VProps.VITRAGE_TYPE: resource_type}}
             query['and'].append(type_query)
 
-        resources = self.entity_graph.get_vertices(query_dict=query)
-        data = {'resources': [r.properties for r in resources]}
-        return compress_obj(data, level=1)
+        if query_dict:
+            query['and'].append(query_dict)
+        return query
 
     @base.lock_graph
     def show_resource(self, ctx, vitrage_id):

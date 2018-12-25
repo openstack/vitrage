@@ -50,6 +50,31 @@ rules = [
                 'method': 'GET'
             }
         ]
+    ),
+    policy.DocumentedRuleDefault(
+        name='count resources',
+        check_str=base.UNPROTECTED,
+        description='count the resources with the specified type, or all the '
+                    'resources',
+        operations=[
+            {
+                'path': '/resources/count',
+                'method': 'GET'
+            }
+        ]
+    ),
+    policy.DocumentedRuleDefault(
+        name='count resources:all_tenants',
+        check_str=base.ROLE_ADMIN,
+        description='Count the resources with the specified type, or all the '
+                    'resources. Include resources of all tenants (if the user'
+                    ' has the permissions)',
+        operations=[
+            {
+                'path': '/resources/count',
+                'method': 'GET'
+            }
+        ]
     )
 ]
 
