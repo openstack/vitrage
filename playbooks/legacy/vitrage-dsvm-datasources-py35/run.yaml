@@ -42,6 +42,10 @@
           export -f gate_hook
 
           function post_test_hook {
+              # use vitrage-tempest-plugin 1.1.0 in rocky
+              cd $BASE/new/vitrage-tempest-plugin/
+              git_checkout_tag vitrage-tempest-plugin 1.1.0
+
               source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'datasources'
           }
           export -f post_test_hook
