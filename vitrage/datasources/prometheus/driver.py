@@ -148,17 +148,18 @@ class PrometheusDriver(AlarmDriverBase):
                 alarm[DSProps.EVENT_TYPE] = event_type
                 alarm[PProps.STATUS] = details[PProps.STATUS]
                 instance_id = get_label(alarm, PLabels.INSTANCE)
-                if ':' in instance_id:
-                    instance_id = instance_id[:instance_id.index(':')]
+                if instance_id is not None:
+                    if ':' in instance_id:
+                        instance_id = instance_id[:instance_id.index(':')]
 
-                # The 'instance' label can be instance ip or hostname.
-                # we try to fetch the instance id from nova by its ip,
-                # and if not found we leave it as it is.
-                nova_instance = self.nova_client.servers.list(
-                    search_opts={'all_tenants': 1, 'ip': instance_id})
-                if nova_instance:
-                    instance_id = nova_instance[0].id
-                alarm[PLabels.INSTANCE_ID] = instance_id
+                    # The 'instance' label can be instance ip or hostname.
+                    # we try to fetch the instance id from nova by its ip,
+                    # and if not found we leave it as it is.
+                    nova_instance = self.nova_client.servers.list(
+                        search_opts={'all_tenants': 1, 'ip': instance_id})
+                    if nova_instance:
+                        instance_id = nova_instance[0].id
+                    alarm[PLabels.INSTANCE_ID] = instance_id
 
                 old_alarm = self._old_alarm(alarm)
                 alarm = self._filter_and_cache_alarm(
