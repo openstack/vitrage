@@ -49,6 +49,12 @@ The following describes all the possible status code and their messages:
 +------------------+---------------------------------------------------------+-------------------------------+
 | 63               | Unsupported version. Version must be one of: {versions} | content                       |
 +------------------+---------------------------------------------------------+-------------------------------+
+| 64               | metadata section must contain a type field in version 2.| content                       |
+|                  | Type must be one of: {standard, equivalence, definition}| content                       |
++------------------+---------------------------------------------------------+-------------------------------+
+| 65               | Invalid template type. Type must be one of: {standard,  | content                       |
+|                  | equivalence, definition}                                | content                       |
++------------------+---------------------------------------------------------+-------------------------------+
 | 80               | scenarios is a mandatory section                        | syntax                        |
 +------------------+---------------------------------------------------------+-------------------------------+
 | 81               | At least one scenario must be defined                   | syntax                        |
@@ -119,6 +125,11 @@ The following describes all the possible status code and their messages:
 +------------------+---------------------------------------------------------+-------------------------------+
 | 136              | Input parameters for Mistral workflow in execute_mistral| content (version 2)           |
 |                  | action must be placed under an 'input' block            |                               |
++------------------+---------------------------------------------------------+-------------------------------+
+| 137              | Functions are supported only from version 2             | content                       |
++------------------+---------------------------------------------------------+-------------------------------+
+| 138              | Warning: only open or close parenthesis exists. Did you | content (version 2)           |
+|                  | try to use a function?                                  |                               |
 +------------------+---------------------------------------------------------+-------------------------------+
 | 140              | At least one template must be included                  | syntax                        |
 +------------------+---------------------------------------------------------+-------------------------------+
