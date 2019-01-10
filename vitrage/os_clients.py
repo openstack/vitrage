@@ -192,3 +192,16 @@ def mistral_client(conf):
         return client
     except Exception:
         LOG.exception('Create Mistral client - Got Exception.')
+
+
+def zaqar_client(conf):
+    """Get an instance of Zaqar client"""
+    try:
+        z_client = driver_module('zaqar')
+        client = z_client.Client(
+            session=keystone_client.get_session(conf),
+        )
+        LOG.info('Zaqar client created')
+        return client
+    except Exception:
+        LOG.exception('Create Zaqar client - Got Exception.')

@@ -29,6 +29,7 @@ import vitrage.machine_learning.plugins.jaccard_correlation
 import vitrage.notifier
 import vitrage.notifier.plugins.snmp
 import vitrage.notifier.plugins.webhook
+import vitrage.notifier.plugins.zaqar
 import vitrage.os_clients
 import vitrage.persistency
 import vitrage.rpc
@@ -61,6 +62,7 @@ def list_opts():
         ('snmp', vitrage.notifier.plugins.snmp.OPTS),
         ('webhook', vitrage.notifier.plugins.webhook.OPTS),
         ('snmp_parsing', vitrage.snmp_parsing.OPTS),
+        ('zaqar', vitrage.notifier.plugins.zaqar.OPTS),
         ('DEFAULT', itertools.chain(
             vitrage.os_clients.OPTS,
             vitrage.rpc.OPTS,

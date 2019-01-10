@@ -56,12 +56,12 @@ class AodhNotifier(NotifierBase):
         if response and response.alarm_id:
             LOG.info('Aodh Alarm id %s: ', response.alarm_id)
         else:
-            LOG.error('Failed to %s Aodh Alarm \n%s', event_type, str(data))
+            LOG.error('Failed to %s Aodh Alarm \n%s', event_type, data)
 
     def _create_aodh_alarm(self, alarm, state):
         alarm_request = _alarm_request(alarm, state)
         try:
-            LOG.info('Aodh Alarm - Activate: ' + str(alarm_request))
+            LOG.info('Aodh Alarm - Activate: ' + alarm_request)
             return self.client.alarm.create(alarm_request)
         except Exception:
             LOG.exception('Failed to activate Aodh Alarm. Got Exception.')

@@ -38,6 +38,7 @@ Notifiers
    notifier-snmp-plugin
    mistral-config
    notifier-webhook-plugin
+   zaqar_notifier
 
 
 Machine_Learning

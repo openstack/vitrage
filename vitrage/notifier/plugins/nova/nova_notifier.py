@@ -51,7 +51,7 @@ class NovaNotifier(NotifierBase):
             if action:
                 action(data.get(VProps.ID), is_down)
             else:
-                LOG.warning('Unsupport datasource type %s for mark_down '
+                LOG.warning('Unsupported datasource type %s for mark_down '
                             'action', data.get(VProps.VITRAGE_TYPE))
 
     def _mark_host_down(self, host_id, is_down):
@@ -68,7 +68,7 @@ class NovaNotifier(NotifierBase):
         state = InstanceState.ERROR if is_down else InstanceState.ACTIVE
         try:
             LOG.info('Nova servers.reset_state - server: %s, state: %s',
-                     str(server_id), str(state))
+                     server_id, state)
             response = self.client.servers.reset_state(server_id, state)
             LOG.info('RESPONSE %s', str(response))
         except Exception:
