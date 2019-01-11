@@ -13,7 +13,7 @@ we would like to add support for "not" operator as well.
 Template Structure
 ==================
 The template is written in YAML language, with the following structure.
- ::
+::
 
   metadata:
     name: <unique template identifier>
@@ -64,10 +64,11 @@ Use Case 1:
 -----------
 There exists an instance on Host but there is no Alarm on the instance.
 
+ ::
 
-+--------+         +--------+    Not    +---------+
-|  Host  | ------> |   Vm   | < - - - - |  Alarm  |
-+--------+         +--------+           +---------+
+    +--------+         +--------+    Not    +---------+
+    |  Host  | ------> |   Vm   | < - - - - |  Alarm  |
+    +--------+         +--------+           +---------+
 
  ::
 
@@ -116,9 +117,11 @@ Use Case 2:
 
 There exists a host with no alarm.
 
-+--------+    Not    +---------+
-|  Host  | < - - - - |  Alarm  |
-+--------+           +---------+
+ ::
+
+    +--------+    Not    +---------+
+    |  Host  | < - - - - |  Alarm  |
+    +--------+           +---------+
 
  ::
 
@@ -256,10 +259,11 @@ two connected component subgraphs (the first is host contains vm, the second is 
 and the current mechanism doesn't support such a use case of not operator between many connected component subgraphs.
 In the subgraphs above, we had only one vertex which was not connected to the main connected component subgraph.
 
+ ::
 
-+---------+           +---------+      Not       +---------+            +---------+
-|  Host   | --------> |   Vm    |  - - - - - ->  |  Stack  | <--------- |  Alarm  |
-+---------+           +---------+                +---------+            +---------+
+    +---------+           +---------+      Not       +---------+            +---------+
+    |  Host   | --------> |   Vm    |  - - - - - ->  |  Stack  | <--------- |  Alarm  |
+    +---------+           +---------+                +---------+            +---------+
 
  ::
 
