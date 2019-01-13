@@ -11,24 +11,36 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import socket
 
 from collections import namedtuple
+from ipaddress import ip_address
 from oslo_log import log
+import six
+import six.moves.urllib.parse as urlparse
 
 from vitrage.common.constants import DatasourceAction
+from vitrage.common.constants import DatasourceOpts as DSOpts
 from vitrage.common.constants import DatasourceProperties as DSProps
 from vitrage.common.constants import EventProperties as EProps
 from vitrage.datasources.alarm_driver_base import AlarmDriverBase
 from vitrage.datasources.prometheus import PROMETHEUS_DATASOURCE
 from vitrage.datasources.prometheus.properties import get_alarm_update_time
 from vitrage.datasources.prometheus.properties import get_label
+from vitrage.datasources.prometheus.properties import PrometheusAlertLabels \
+    as PAlertLabels
+from vitrage.datasources.prometheus.properties \
+    import PrometheusAlertProperties as PAlertProps
 from vitrage.datasources.prometheus.properties import PrometheusAlertStatus \
     as PAlertStatus
-from vitrage.datasources.prometheus.properties import PrometheusLabels \
-    as PLabels
-from vitrage.datasources.prometheus.properties import PrometheusProperties \
-    as PProps
+from vitrage.datasources.prometheus.properties \
+    import PrometheusConfigFileProperties as PCFProps
+from vitrage.datasources.prometheus.properties \
+    import PrometheusDatasourceProperties as PDProps
+from vitrage.datasources.prometheus.properties \
+    import PrometheusProperties as PProps
 from vitrage import os_clients
+from vitrage.utils import file as file_utils
 
 LOG = log.getLogger(__name__)
 
@@ -36,13 +48,92 @@ PROMETHEUS_EVENT_TYPE = 'prometheus.alarm'
 
 
 class PrometheusDriver(AlarmDriverBase):
-    AlarmKey = namedtuple('AlarmKey', ['alert_name', 'instance'])
+    """Handle Prometheus events.
+
+    Prometheus driver uses a configuration file that maps
+    the Prometheus alert labels to a corresponding Vitrage resource
+    with specific properties (id or other unique properties).
+    The mapping will most likely be defined by the alert name and other fields.
+
+    Prometheus configuration file structure:
+    The configuration file contains a list of alerts.
+    Each alert contains key and resource.
+
+    The key contains labels which uniquely identify each alert.
+
+    The resource specifies how to identify in Vitrage the resource that
+    the alert is on. It contains one or more Vitrage property names and
+    corresponding Prometheus alert labels.
+
+    Example:
+    ^^^^^^^^
+        Prometheus event's details:
+        ---------------------------
+            {
+              "status": "firing",
+              "version": "4",
+              "groupLabels": {
+                "alertname": "HighCpuOnVmAlert"
+              },
+              "commonAnnotations": {
+                "description": "Test alert to test libvirt exporter.\n",
+                "title": "High cpu usage on vm"
+              },
+              "groupKey": "{}:{alertname=\"HighCpuOnVmAlert\"}",
+              "receiver": "vitrage",
+              "externalURL": "http://vitrage.is.the.best:9093",
+              "alerts": [
+                {
+                  "status": "firing",
+                  "labels": {
+                    "instance": "1.1.1.1:9999",
+                    "domain": "instance-00000004",
+                    "job": "libvirt",
+                    "alertname": "HighCpuOnVmAlert",
+                    "severity": "critical"
+                  },
+                  "endsAt": "2019-01-16T12:26:05.91446215Z",
+                  "generatorURL": "http://seriously.vitrage.is.the.best",
+                  "startsAt": "2019-01-16T12:11:50.91446215Z",
+                  "annotations": {
+                    "description": "Test alert to test libvirt exporter.\n",
+                    "title": "High cpu usage on vm"
+                  }
+                },
+              ],
+              "commonLabels": {
+                "instance": "1.1.1.1:9999",
+                "job": "libvirt",
+                "severity": "critical",
+                "alertname": "HighCpuOnVmAlert"
+              }
+            }
+
+
+        prometheus_conf.yaml:
+        ---------------------
+            alerts:
+            - key:
+                alertname: HighCpuOnVmAlert
+                job: libvirt
+              resource:
+                instance_name: domain
+                host_id: instance
+
+
+    `enrich_event` functions are explained based on the example above.
+    """
+
+    AlarmKey = namedtuple('AlarmKey', [PAlertLabels.ALERT_NAME,
+                                       PCFProps.RESOURCE])
+    conf_map = {}
 
     def __init__(self, conf):
         super(PrometheusDriver, self).__init__()
         self.conf = conf
         self._client = None
         self._nova_client = None
+        self.conf_map = self._configuration_mapping(conf)
 
     @property
     def nova_client(self):
@@ -53,20 +144,23 @@ class PrometheusDriver(AlarmDriverBase):
     def _vitrage_type(self):
         return PROMETHEUS_DATASOURCE
 
-    def _alarm_key(self, alarm):
-        return self.AlarmKey(alert_name=get_label(alarm, PLabels.ALERT_NAME),
-                             instance=str(get_label(alarm, PLabels.INSTANCE)))
+    def _alarm_key(self, alert):
+        return self.AlarmKey(
+            alertname=get_label(alert, PAlertLabels.ALERT_NAME),
+            resource=str(self._get_resource_alert_values(alert)))
 
-    def _is_erroneous(self, alarm):
-        return alarm and PAlertStatus.FIRING == alarm.get(PProps.STATUS)
+    def _is_erroneous(self, alert):
+        return alert and PAlertStatus.FIRING == alert.get(PAlertProps.STATUS)
 
-    def _is_valid(self, alarm):
-        if not alarm or PProps.STATUS not in alarm:
+    def _is_valid(self, alert):
+        if not alert or PAlertProps.STATUS not in alert:
             return False
         return True
 
     def _status_changed(self, new_alarm, old_alarm):
-        return new_alarm.get(PProps.STATUS) != old_alarm.get(PProps.STATUS)
+        return \
+            new_alarm.get(PAlertProps.STATUS) != \
+            old_alarm.get(PAlertProps.STATUS)
 
     def _get_all_alarms(self):
         return []
@@ -74,68 +168,52 @@ class PrometheusDriver(AlarmDriverBase):
     def _get_changed_alarms(self):
         return []
 
+    @staticmethod
+    def _configuration_mapping(conf):
+        prometheus_config_file = conf.prometheus[DSOpts.CONFIG_FILE]
+        try:
+            prometheus_config = \
+                file_utils.load_yaml_file(prometheus_config_file)
+            return prometheus_config[PCFProps.ALERTS]
+        except Exception:
+            LOG.exception('Failed in init the configuration file: %s',
+                          prometheus_config_file)
+            return {}
+
     def enrich_event(self, event, event_type):
-        """Get an event from Prometheus and create a list of alarm events
+        """Get an alert event from Prometheus and create a list of alert events
 
-        :param event: dictionary of this form:
+        :param event: Prometheus event.
+        :param event_type: The type of the event. Always 'prometheus.alert'.
+        :return: a list of alarms, one per Prometheus alert
+
+        For the example above. The function returns:
             {
-              "details":
-                {
-                  "status": "firing",
-                  "groupLabels": {
-                    "alertname": "HighInodeUsage"
-                  },
-                  "groupKey": "{}:{alertname=\"HighInodeUsage\"}",
-                  "commonAnnotations": {
-                    "mount_point": "/%",
-                    "description": "\"Consider ssh\"ing into instance \"\n",
-                    "title": "High number of inode usage",
-                    "value": "96.81%",
-                    "device": "/dev/vda1%",
-                    "runbook": "troubleshooting/filesystem_alerts_inodes.md"
-                  },
-                  "alerts": [
-                    {
-                      "status": "firing",
-                      "labels": {
-                        "severity": "critical",
-                        "fstype": "ext4",
-                        "instance": "localhost:9100",
-                        "job": "node",
-                        "alertname": "HighInodeUsage",
-                        "device": "/dev/vda1",
-                        "mountpoint": "/"
-                      },
-                      "endsAt": "0001-01-01T00:00:00Z",
-                      "generatorURL": "http://devstack-4:9090/graph?g0.htm1",
-                      "startsAt": "2018-05-03T12:25:38.231388525Z",
-                      "annotations": {
-                        "mount_point": "/%",
-                        "description": "\"Consider ssh\"ing into instance\"\n",
-                        "title": "High number of inode usage",
-                        "value": "96.81%",
-                        "device": "/dev/vda1%",
-                        "runbook": "filesystem_alerts_inodes.md"
-                      }
-                    }
-                  ],
-                  "version": "4",
-                  "receiver": "vitrage",
-                  "externalURL": "http://devstack-rocky-4:9093",
-                  "commonLabels": {
-                    "severity": "critical",
-                    "fstype": "ext4",
-                    "instance": "localhost:9100",
-                    "job": "node",
-                    "alertname": "HighInodeUsage",
-                    "device": "/dev/vda1",
-                    "mountpoint": "/"
-                  }
-                }
+              "status": "firing",
+              "labels": {
+                "instance": "1.1.1.1:9999",
+                "domain": "instance-00000004",
+                "job": "libvirt",
+                "alertname": "HighCpuOnVmAlert",
+                "severity": "critical"
+              },
+              "vitrage_entity_type": "prometheus",
+              "endsAt": "2019-01-16T12:39:50.91446215Z",
+              "generatorURL": "http://seriously.vitrage.is.the.best",
+              "vitrage_datasource_name": "prometheus",
+              "startsAt": "2019-01-16T12:11:50.91446215Z",
+              "vitrage_datasource_action": "update",
+              "vitrage_entity_unique_props": {
+                "instance_name": "instance-00000004",
+                "host_id": "my-host-name"
+              },
+              "vitrage_sample_date": "2019-01-16T13:10:33Z",
+              "vitrage_event_type": "prometheus.alarm",
+              "annotations": {
+                "description": "Test alert to test libvirt exporter.\n",
+                "title": "High cpu usage on vm"
+              }
             }
-
-        :param event_type: The type of the event. Always 'prometheus.alarm'.
-        :return: a list of events, one per Prometheus alert
 
         """
 
@@ -144,36 +222,149 @@ class PrometheusDriver(AlarmDriverBase):
         alarms = []
         details = event.get(EProps.DETAILS)
         if details:
-            for alarm in details.get(PProps.ALERTS, []):
-                alarm[DSProps.EVENT_TYPE] = event_type
-                alarm[PProps.STATUS] = details[PProps.STATUS]
-                instance_id = get_label(alarm, PLabels.INSTANCE)
-                if instance_id is not None:
-                    if ':' in instance_id:
-                        instance_id = instance_id[:instance_id.index(':')]
+            for alert in details.get(PProps.ALERTS, []):
+                alert[DSProps.EVENT_TYPE] = event_type
+                vitrage_entity_unique_props = \
+                    self._calculate_vitrage_entity_unique_props(alert)
 
-                    # The 'instance' label can be instance ip or hostname.
-                    # we try to fetch the instance id from nova by its ip,
-                    # and if not found we leave it as it is.
-                    nova_instance = self.nova_client.servers.list(
-                        search_opts={'all_tenants': 1, 'ip': instance_id})
-                    if nova_instance:
-                        instance_id = nova_instance[0].id
-                    alarm[PLabels.INSTANCE_ID] = instance_id
-
-                old_alarm = self._old_alarm(alarm)
-                alarm = self._filter_and_cache_alarm(
-                    alarm, old_alarm,
+                alert[PDProps.ENTITY_UNIQUE_PROPS] = \
+                    vitrage_entity_unique_props
+                old_alarm = self._old_alarm(alert)
+                alert = self._filter_and_cache_alarm(
+                    alert, old_alarm,
                     self._filter_get_erroneous,
-                    get_alarm_update_time(alarm))
+                    get_alarm_update_time(alert))
 
-                if alarm:
-                    alarms.append(alarm)
+                if alert:
+                    alarms.append(alert)
 
-        LOG.debug('Enriched event. Created alarm events: %s', str(alarms))
+        LOG.debug('Enriched event. Created alert events: %s', str(alarms))
 
         return self.make_pickleable(alarms, PROMETHEUS_DATASOURCE,
                                     DatasourceAction.UPDATE)
+
+    def _calculate_vitrage_entity_unique_props(self, alert):
+        """Build a vitrage entity unique props.
+
+        The unique props are based on the alert and the conf file.
+
+        :param alert: Prometheus alert
+        :type alert: dict
+        :return: Unique properties of vitrage entity
+        ":rtype: dict
+
+        For the example above. The function returns:
+            {u'instance_name': 'instance-00000004',
+            u'host_id': 'my-host-name'}
+        """
+        resource_labels = self._get_conf_resource(alert)
+        vitrage_entity_unique_props = {}
+        for vitrage_label in resource_labels:
+            prometheus_label = resource_labels[vitrage_label]
+            label_value = str(get_label(alert, prometheus_label))
+            vitrage_entity_unique_props[vitrage_label] = \
+                self._adjust_label_value(label_value)
+        return vitrage_entity_unique_props
+
+    def _adjust_label_value(self, label_value):
+        """Adjust the given value of the alert's label
+
+        First check if the value is ip.
+        Then, get its hostname if it has one.
+        If not, fetch the instance id from nova by its ip.
+        Otherwise, leave the label value as is.
+
+        :param label_value: Value of alert's label
+        :type label_value: str
+        :return: Adjusted label's value of the alert as described.
+        :rtype: str
+
+        For the example above. The function returns:
+          - label_value='instance-00000004' it returns:'instance-00000004'
+          - label_value='1.1.1.1:9999' it returns:'my-host-name'
+        """
+        if label_value is not None:
+            try:
+                # Check if the value is ip
+                ip = str(self._validate_ip(label_value))
+                try:
+                    # Get hostname of the ip
+                    entity_hostname = socket.gethostbyaddr(ip)
+                    label_value = entity_hostname[0]
+
+                except socket.error:
+                    # If not ip of a host
+                    nova_instance = self.nova_client.servers.list(
+                        search_opts={'all_tenants': 1, 'ip': ip})
+                    if nova_instance:
+                        label_value = nova_instance[0].id
+                    else:
+                        label_value = ip
+
+            except ValueError:
+                # If not ip value, leave it as is
+                pass
+
+        return label_value
+
+    def _get_resource_alert_values(self, alert):
+        """Get values of the alert labels from alert's resource in config file.
+
+        For the example above. The function returns:
+            {u'instance': u'1.1.1.1:9999', u'domain': u'instance-00000004'}
+        """
+
+        resource_alert_labels = self._get_conf_resource(alert).values()
+        alert_values = {label: get_label(alert, label)
+                        for label in resource_alert_labels}
+        return alert_values
+
+    def _get_conf_resource(self, alert):
+        """Get resource from conf file that matches the alert.
+
+        Matching a resource from conf file to alert is done by
+        alert's key in the conf file.
+        The alert's key in conf file contains alert's labels and
+        their value as in Prometheus alert.
+
+        :param alert: Prometheus alert
+        :type alert: dict
+        :return: Resource that matches the alert
+        :rtype: dict
+
+        Resource is a dict, where the keys are vitrage entity fields
+        and its values are the corresponding alert labels.
+
+        For the example above. The function returns:
+          {u'instance_name': u'domain', u'host_id': u'instance'}
+        """
+        if self.conf_map:
+            for conf_alert in self.conf_map:
+                alert_key = conf_alert[PCFProps.KEY].items()
+                alert_labels = alert[PAlertProps.LABELS].items()
+                match = set(alert_key).issubset(set(alert_labels))
+                if match:
+                    return conf_alert[PCFProps.RESOURCE]
+        return {}
+
+    @staticmethod
+    def _validate_ip(value):
+        """Check if the value is ip address.
+
+        If the value is in ip:port form, separate it and validate just the ip.
+
+        :param value: String value
+        :return:An IPv4Address or IPv6Address object
+        :raises ValueError: if the *value* passed isn't either a v4 or a v6
+        address
+        """
+        # check if the value is ip
+        try:
+            ip = ip_address(six.u(value))
+        except ValueError:
+            parsed = urlparse.urlparse('//{}'.format(value))
+            ip = ip_address(six.u(parsed.hostname))
+        return ip
 
     @staticmethod
     def get_event_types():

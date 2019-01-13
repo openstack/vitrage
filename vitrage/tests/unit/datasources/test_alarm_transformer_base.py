@@ -22,6 +22,7 @@ from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.alarm_properties import AlarmProperties as AlarmProps
 from vitrage.datasources.nova.host import NOVA_HOST_DATASOURCE
+from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
 from vitrage.tests.unit.datasources.test_transformer_base import \
     BaseTransformerTest
 
@@ -63,15 +64,42 @@ class BaseAlarmTransformerTest(BaseTransformerTest):
             VProps.VITRAGE_SAMPLE_TIMESTAMP:
                 wrapper.vertex[VProps.VITRAGE_SAMPLE_TIMESTAMP],
         }
-        expected_neighbor = host_transformer.\
+        expected_neighbor = host_transformer. \
             create_neighbor_placeholder_vertex(**properties)
 
         self.assertEqual(expected_neighbor, host_neighbor.vertex)
 
         # Validate neighbor edge
-        edge = host_neighbor.edge
+        self._validate_neighbor_edge(alarm_id, host_neighbor)
+
+    def _validate_instance_neighbor(self,
+                                    wrapper,
+                                    alarm_id,
+                                    instance_id):
+
+        self.assertThat(wrapper.neighbors, matchers.HasLength(1))
+        vm_neighbor = wrapper.neighbors[0]
+
+        instance_transformer = self.transformers[NOVA_INSTANCE_DATASOURCE]
+        properties = {
+            VProps.ID: instance_id,
+            VProps.VITRAGE_TYPE: NOVA_INSTANCE_DATASOURCE,
+            VProps.VITRAGE_CATEGORY: EntityCategory.RESOURCE,
+            VProps.VITRAGE_SAMPLE_TIMESTAMP:
+                wrapper.vertex[VProps.VITRAGE_SAMPLE_TIMESTAMP],
+        }
+        expected_neighbor = instance_transformer. \
+            create_neighbor_placeholder_vertex(**properties)
+
+        self.assertEqual(expected_neighbor, vm_neighbor.vertex)
+
+        # Validate neighbor edge
+        self._validate_neighbor_edge(alarm_id, vm_neighbor)
+
+    def _validate_neighbor_edge(self, alarm_id, neighbor):
+        edge = neighbor.edge
         self.assertEqual(edge.source_id, alarm_id)
-        self.assertEqual(edge.target_id, host_neighbor.vertex.vertex_id)
+        self.assertEqual(edge.target_id, neighbor.vertex.vertex_id)
         self.assertEqual(edge.label, EdgeLabel.ON)
 
     def _validate_graph_action(self, wrapper):

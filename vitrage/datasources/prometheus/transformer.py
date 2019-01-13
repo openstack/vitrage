@@ -22,12 +22,14 @@ from vitrage.datasources.alarm_transformer_base import AlarmTransformerBase
 from vitrage.datasources.prometheus import PROMETHEUS_DATASOURCE
 from vitrage.datasources.prometheus.properties import get_alarm_update_time
 from vitrage.datasources.prometheus.properties import get_label
+from vitrage.datasources.prometheus.properties import PrometheusAlertLabels \
+    as PAlertLabels
+from vitrage.datasources.prometheus.properties \
+    import PrometheusAlertProperties as PProps
 from vitrage.datasources.prometheus.properties import PrometheusAlertStatus \
     as PAlertStatus
-from vitrage.datasources.prometheus.properties import PrometheusLabels \
-    as PLabels
-from vitrage.datasources.prometheus.properties import PrometheusProperties \
-    as PProps
+from vitrage.datasources.prometheus.properties \
+    import PrometheusDatasourceProperties as PDProps
 from vitrage.datasources import transformer_base as tbase
 import vitrage.graph.utils as graph_utils
 
@@ -45,8 +47,8 @@ class PrometheusTransformer(AlarmTransformerBase):
 
     def _create_update_entity_vertex(self, entity_event):
         metadata = {
-            VProps.NAME: get_label(entity_event, PLabels.ALERT_NAME),
-            VProps.SEVERITY: get_label(entity_event, PLabels.SEVERITY),
+            VProps.NAME: get_label(entity_event, PAlertLabels.ALERT_NAME),
+            VProps.SEVERITY: get_label(entity_event, PAlertLabels.SEVERITY),
             PProps.STATUS: entity_event.get(PProps.STATUS),
         }
 
@@ -62,7 +64,6 @@ class PrometheusTransformer(AlarmTransformerBase):
 
     def _create_update_neighbors(self, entity_event):
         graph_neighbors = entity_event.get(self.QUERY_RESULT, [])
-
         return [self._create_neighbor(entity_event,
                                       graph_neighbor[VProps.ID],
                                       graph_neighbor[VProps.VITRAGE_TYPE],
@@ -73,8 +74,10 @@ class PrometheusTransformer(AlarmTransformerBase):
     def _create_entity_key(self, entity_event):
         return tbase.build_key((ECategory.ALARM,
                                 entity_event[DSProps.ENTITY_TYPE],
-                                get_label(entity_event, PLabels.ALERT_NAME),
-                                get_label(entity_event, PLabels.INSTANCE)))
+                                get_label(entity_event,
+                                          PAlertLabels.ALERT_NAME),
+                                str(entity_event.get(
+                                    PDProps.ENTITY_UNIQUE_PROPS))))
 
     def get_vitrage_type(self):
         return PROMETHEUS_DATASOURCE
@@ -86,7 +89,5 @@ class PrometheusTransformer(AlarmTransformerBase):
     @staticmethod
     def get_enrich_query(event):
         LOG.debug('event for enrich query: %s', str(event))
-        instance_id = event.get(PLabels.INSTANCE_ID)
-        if not instance_id:
-            return None
-        return {VProps.ID: instance_id}
+        entity_unique_props = event.get(PDProps.ENTITY_UNIQUE_PROPS)
+        return entity_unique_props

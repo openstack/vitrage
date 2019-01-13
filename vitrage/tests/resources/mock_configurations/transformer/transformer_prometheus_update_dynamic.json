@@ -3,25 +3,20 @@
   "vitrage_datasource_name": "prometheus",
   "vitrage_datasource_action" : "update",
   "vitrage_sample_date": "2018-05-06T06:31:50.094836",
+  "vitrage_entity_unique_props": "",
   "status": "firing",
   "labels": {
     "severity": "critical",
     "fstype": "ext4",
     "instance": "localhost:9100",
     "job": "node",
-    "alertname": "HighInodeUsage",
-    "device": "/dev/vda1",
-    "mountpoint": "/"
+    "alertname": "HighInodeUsage"
   },
   "endsAt": "0001-01-01T00:00:00Z",
   "generatorURL": "http://devstack-rocky-4:9090/graph?g0.expr=node_filesystem_files_free%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2F+node_filesystem_files%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2A+100+%3C%3D+100&g0.tab=1",
   "startsAt": "2018-05-03T12:25:38.231388525Z",
   "annotations": {
-    "mount_point": "/%",
     "description": "\"Consider ssh\"ing into the instance and removing files or clean\ntemp files\"\n",
-    "title": "High number of inode usage",
-    "value": "96.81%",
-    "device": "/dev/vda1%",
-    "runbook": "troubleshooting/filesystem_alerts_inodes.md"
+    "title": "High number of inode usage"
   }
 }

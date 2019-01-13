@@ -1,55 +1,137 @@
 {
   "details":
     {
-      "status": "firing",
-      "groupLabels": {
-        "alertname": "HighInodeUsage"
-      },
-      "groupKey": "{}:{alertname=\"HighInodeUsage\"}",
-      "commonAnnotations": {
-        "mount_point": "/%",
-        "description": "\"Consider ssh\"ing into the instance and removing files or clean\ntemp files\"\n",
-        "title": "High number of inode usage",
-        "value": "96.81%",
-        "device": "/dev/vda1%",
-        "runbook": "troubleshooting/filesystem_alerts_inodes.md"
-      },
       "alerts": [
         {
-          "status": "firing",
+          "annotations": {
+            "description": "The average amount of CPU time spent in idle mode, per second, over the last minute (in seconds)",
+            "title": "High average CPU time on idle mode"
+          },
+          "endsAt": "2019-01-08T12:11:37.589431274Z",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=100+%2A+%281+-+avg+by%28instance%29+%28irate%28node_cpu_seconds_total%7Bjob%3D%22node%22%2Cmode%3D%22idle%22%7D%5B5m%5D%29%29%29+%3E+20&g0.tab=1",
           "labels": {
-            "severity": "critical",
-            "fstype": "ext4",
-            "instance": "localhost:9100",
-            "job": "node",
+            "alertname": "AvgCPUTimeOnIdleMode",
+            "instance": "135.248.18.109:9100",
+            "severity": "warning"
+          },
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:22.589431274Z",
+          "status": "firing"
+        },
+        {
+          "annotations": {
+            "description": "\"Consider ssh'ing into the instance and removing files or clean\ntemp files\"\n",
+            "device": "/dev/vda1",
+            "mount_point": "/",
+            "runbook": "troubleshooting/filesystem_alerts_inodes.md",
+            "title": "High number of inode usage",
+            "value": "92.18%"
+          },
+          "endsAt": "2019-01-08T12:11:22.589431274Z",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=node_filesystem_files_free%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2F+node_filesystem_files%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2A+100+%3C%3D+100&g0.tab=1",
+          "labels": {
             "alertname": "HighInodeUsage",
             "device": "/dev/vda1",
-            "mountpoint": "/"
+            "fstype": "ext4",
+            "instance": "135.248.18.109:9100",
+            "job": "node",
+            "mountpoint": "/",
+            "severity": "critical"
           },
-          "endsAt": "0001-01-01T00:00:00Z",
-          "generatorURL": "http://devstack-rocky-4:9090/graph?g0.expr=node_filesystem_files_free%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2F+node_filesystem_files%7Bfstype%3D~%22%28ext.%7Cxfs%29%22%2Cjob%3D%22node%22%7D+%2A+100+%3C%3D+100&g0.tab=1",
-          "startsAt": "2018-05-03T12:25:38.231388525Z",
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:07.589431274Z",
+          "status": "firing"
+        },
+        {
           "annotations": {
-            "mount_point": "/%",
-            "description": "\"Consider ssh\"ing into the instance and removing files or clean\ntemp files\"\n",
-            "title": "High number of inode usage",
-            "value": "96.81%",
-            "device": "/dev/vda1%",
-            "runbook": "troubleshooting/filesystem_alerts_inodes.md"
-          }
+            "description": "Another test alert to test libvirt exporter.\n",
+            "title": "High traffic on bridge"
+          },
+          "endsAt": "2019-01-08T12:11:50.91446215Z",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=rate%28libvirt_domain_interface_stats_receive_bytes_total%5B5m%5D%29+%3E+0&g0.tab=1",
+          "labels": {
+            "alertname": "HighTrafficOnBridge",
+            "domain": "instance-00000005",
+            "instance": "135.248.18.109:9177",
+            "job": "libvirt",
+            "severity": "critical",
+            "source_bridge": "br-int",
+            "target_device": "tap45f7f91d-a0"
+          },
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:35.91446215Z",
+          "status": "firing"
+        },
+        {
+          "annotations": {
+            "description": "Test alert to test libvirt exporter.\n",
+            "title": "High cpu usage on vm"
+          },
+          "endsAt": "2019-01-08T12:12:05.91446215Z",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=rate%28libvirt_domain_info_cpu_time_seconds_total%5B1m%5D%29+%2A+10000+%3E+13&g0.tab=1",
+          "labels": {
+            "alertname": "HighCpuOnVmAlert",
+            "domain": "instance-00000005",
+            "instance": "135.248.18.109:9177",
+            "job": "libvirt",
+            "severity": "critical"
+          },
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:50.91446215Z",
+          "status": "firing"
+        },
+        {
+          "annotations": {
+            "description": "Test alert to test libvirt exporter.\n",
+            "title": "High cpu usage on vm"
+          },
+          "endsAt": "2019-01-08T12:12:05.91446215Z",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=rate%28libvirt_domain_info_cpu_time_seconds_total%5B1m%5D%29+%2A+10000+%3E+13&g0.tab=1",
+          "labels": {
+            "alertname": "HighCpuOnVmAlert",
+            "domain": "instance-00000004",
+            "instance": "135.248.18.109:9177",
+            "job": "libvirt",
+            "severity": "critical"
+          },
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:50.91446215Z",
+          "status": "firing"
+        },
+        {
+          "annotations": {
+            "description": "Another test alert to test libvirt exporter.\n",
+            "title": "High traffic on bridge"
+          },
+          "endsAt": "2019-01-08T12:11:50.91446215Z",
+          "fingerprint": "ca6d34547a98ef28",
+          "generatorURL": "http://devstack-rocky-release-4:9090/graph?g0.expr=rate%28libvirt_domain_interface_stats_receive_bytes_total%5B5m%5D%29+%3E+0&g0.tab=1",
+          "labels": {
+            "alertname": "HighTrafficOnBridge",
+            "domain": "instance-00000004",
+            "instance": "135.248.18.109:9177",
+            "job": "libvirt",
+            "severity": "critical",
+            "source_bridge": "br-int",
+            "target_device": "tap456ab233-f4"
+          },
+          "receivers": [
+            "vitrage"
+          ],
+          "startsAt": "2019-01-08T11:57:35.91446215Z",
+          "status": "firing"
         }
-      ],
-      "version": "4",
-      "receiver": "vitrage",
-      "externalURL": "http://devstack-rocky-4:9093",
-      "commonLabels": {
-        "severity": "critical",
-        "fstype": "ext4",
-        "instance": "localhost:9100",
-        "job": "node",
-        "alertname": "HighInodeUsage",
-        "device": "/dev/vda1",
-        "mountpoint": "/"
-      }
+
+      ]
     }
 }

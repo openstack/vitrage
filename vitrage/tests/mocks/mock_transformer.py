@@ -215,9 +215,9 @@ def simple_collectd_alarm_generators(update_vals=None):
 
 
 def simple_prometheus_alarm_generators(update_vals=None):
-    """A function for returning Prometheus alarm event generators.
+    """A function for returning Prometheus alert event generators.
 
-    Returns generators for a given number of Prometheus alarms.
+    Returns generators for a given number of Prometheus alerts.
 
     :param update_vals: preset values for ALL update events
     :return: generators for alarms as specified

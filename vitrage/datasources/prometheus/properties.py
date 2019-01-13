@@ -13,11 +13,11 @@
 # under the License.
 
 
-class PrometheusProperties(object):
+class PrometheusAlertProperties(object):
     STATUS = 'status'
-    ALERTS = 'alerts'
-    ANNOTATIONS = 'annotations'
     LABELS = 'labels'
+    STARTS_AT = 'startsAt'
+    ENDS_AT = 'endsAt'
 
 
 class PrometheusAlertStatus(object):
@@ -25,34 +25,36 @@ class PrometheusAlertStatus(object):
     RESOLVED = 'resolved'
 
 
-class PrometheusAlertProperties(object):
-    STARTS_AT = 'startsAt'
-    ENDS_AT = 'endsAt'
-
-
-class PrometheusAnnotations(object):
-    TITLE = 'title'             # A human friendly name of the alert
-
-
-class PrometheusLabels(object):
+class PrometheusAlertLabels(object):
     SEVERITY = 'severity'
     INSTANCE = 'instance'
+    DOMAIN = 'domain'
     INSTANCE_ID = 'instance_id'
-    ALERT_NAME = 'alertname'    # A (unique?) name of the alert
+    ALERT_NAME = 'alertname'
+
+
+class PrometheusProperties(object):
+    ALERTS = 'alerts'
+
+
+class PrometheusConfigFileProperties(object):
+    ALERTS = 'alerts'
+    KEY = 'key'
+    RESOURCE = 'resource'
+
+
+class PrometheusDatasourceProperties(object):
+    ENTITY_UNIQUE_PROPS = 'vitrage_entity_unique_props'
 
 
 def get_alarm_update_time(alarm):
-    if PrometheusAlertStatus.FIRING == alarm.get(PrometheusProperties.STATUS):
+    if PrometheusAlertStatus.FIRING == \
+            alarm.get(PrometheusAlertProperties.STATUS):
         return alarm.get(PrometheusAlertProperties.STARTS_AT)
     else:
         return alarm.get(PrometheusAlertProperties.ENDS_AT)
 
 
-def get_annotation(alarm, annotation):
-    annotations = alarm.get(PrometheusProperties.ANNOTATIONS)
-    return annotations.get(annotation) if annotations else None
-
-
 def get_label(alarm, label):
-    labels = alarm.get(PrometheusProperties.LABELS)
+    labels = alarm.get(PrometheusAlertProperties.LABELS)
     return labels.get(label) if labels else None

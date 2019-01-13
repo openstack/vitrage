@@ -36,4 +36,6 @@ OPTS = [
                     'Push: updates by getting notifications from the'
                     ' datasource itself.',
                required=True),
+    cfg.StrOpt(DSOpts.CONFIG_FILE, default='/etc/vitrage/prometheus_conf.yaml',
+               help='Prometheus configuration file'),
 ]
