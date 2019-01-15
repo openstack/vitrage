@@ -67,17 +67,15 @@ class Webhook(NotifierBase):
 
     def __init__(self, conf):
         super(Webhook, self).__init__(conf)
-        self.conf = conf
         self._db = storage.get_connection_from_config(self.conf)
         self.max_retries = self.conf.webhook.max_retries
         self.default_headers = {'content-type': 'application/json'}
 
     def process_event(self, data, event_type):
 
-        if event_type == NotifierEventTypes.ACTIVATE_ALARM_EVENT \
-                or event_type == NotifierEventTypes.DEACTIVATE_ALARM_EVENT:
+        if event_type in NotifierEventTypes.ALARMS:
 
-            LOG.info('Webhook notifier started processing %s', str(data))
+            LOG.info('Webhook notifier started processing %s', data)
 
             webhooks = self._load_webhooks()
 
@@ -89,32 +87,31 @@ class Webhook(NotifierBase):
                     data = self._filter_fields(data)
 
                     LOG.debug('webhook_filter: %s, filtered data: %s',
-                              str(webhook_filters), str(data))
+                              webhook_filters, data)
 
                     if self._check_against_filter(webhook_filters, data)\
                             and self._check_correct_tenant(webhook, data):
-                        LOG.info('Going to post data to webhook %s',
-                                 str(webhook))
+                        LOG.info('Going to post data to webhook %s', webhook)
                         self._post_data(webhook, event_type, data)
 
-            LOG.info('Webhook notifier finished processing %s', str(data))
+            LOG.info('Webhook notifier finished processing %s', data)
 
     def _post_data(self, webhook, event_type, data):
         try:
             webhook_data = {'notification': event_type, 'payload': data}
             webhook_headers = self._get_webhook_headers(webhook)
             session = requests.Session()
-            session.mount(str(webhook[URL]),
+            session.mount(webhook[URL],
                           requests.adapters.HTTPAdapter(
                               max_retries=self.max_retries))
             resp = session.post(str(webhook[URL]),
                                 data=jsonutils.dumps(webhook_data),
                                 headers=webhook_headers)
             LOG.info('posted %s to %s. Response status %s, reason %s',
-                     str(webhook_data), str(webhook[URL]),
+                     webhook_data, webhook[URL],
                      resp.status_code, resp.reason)
         except Exception:
-            LOG.exception("Could not post to webhook '%s'", str(webhook['id']))
+            LOG.exception("Could not post to webhook '%s'", webhook['id'])
 
     def _load_webhooks(self):
         db_webhooks = self._db.webhooks.query()

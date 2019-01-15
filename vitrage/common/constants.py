@@ -120,8 +120,8 @@ class GraphAction(object):
 class NotifierEventTypes(object):
     ACTIVATE_DEDUCED_ALARM_EVENT = 'vitrage.deduced_alarm.activate'
     DEACTIVATE_DEDUCED_ALARM_EVENT = 'vitrage.deduced_alarm.deactivate'
-    ACTIVATE_ALARM_EVENT = 'vitrage.alarm.activate'
-    DEACTIVATE_ALARM_EVENT = 'vitrage.alarm.deactivate'
+    ACTIVATE_ALARM_EVENT = 'vitrage.alarm.activate'  # also deduce
+    DEACTIVATE_ALARM_EVENT = 'vitrage.alarm.deactivate'  # also deduce
     CHANGE_IN_ALARM_EVENT = 'vitrage.alarm.change'
     CHANGE_PROJECT_ID_EVENT = 'vitrage.alarm.change_project_id'
     ACTIVATE_MARK_DOWN_EVENT = 'vitrage.mark_down.activate'
@@ -129,6 +129,7 @@ class NotifierEventTypes(object):
     EXECUTE_EXTERNAL_ACTION = 'vitrage.execute_external_action'
     ACTIVATE_CAUSAL_RELATION = 'vitrage.causal_relationship.activate'
     DEACTIVATE_CAUSAL_RELATION = 'vitrage.causal_relationship.deactivate'
+    ALARMS = {ACTIVATE_ALARM_EVENT, DEACTIVATE_ALARM_EVENT}
 
 
 class TemplateTopologyFields(object):
