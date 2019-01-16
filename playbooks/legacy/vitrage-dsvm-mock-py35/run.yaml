@@ -34,6 +34,11 @@
 
           export DEVSTACK_GATE_USE_PYTHON3=True
 
+          function pre_test_hook {
+              source $BASE/new/vitrage-tempest-plugin/devstack/pre_test_hook.sh
+          }
+          export -f pre_test_hook
+
           function gate_hook {
               source $BASE/new/vitrage/devstack/gate_hook_mock.sh
           }
