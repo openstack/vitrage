@@ -27,6 +27,7 @@ Datasources
    zabbix_vitrage
    k8s_datasource
    nova-config
+   prometheus-datasource
 
 Notifiers
 ---------
