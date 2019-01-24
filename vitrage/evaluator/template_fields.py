@@ -25,6 +25,7 @@ class TemplateFields(TemplateTopologyFields):
     ACTION_TARGET = 'action_target'
     ACTION_TYPE = 'action_type'
     CATEGORY = 'category'
+    CAUSING_ALARM = 'causing_alarm'
     CONDITION = 'condition'
     INCLUDES = 'includes'
     SEVERITY = 'severity'

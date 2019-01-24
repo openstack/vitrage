@@ -20,11 +20,12 @@ from oslo_log import log
 from vitrage.common.constants import TemplateStatus
 from vitrage.common.constants import TemplateTypes as TType
 from vitrage.common.utils import get_portion
+from vitrage.evaluator.base import get_template_schema
 from vitrage.evaluator.base import Template
+from vitrage.evaluator.base import TEMPLATE_LOADER
 from vitrage.evaluator.equivalence_repository import EquivalenceRepository
 from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_loading.scenario_loader import ScenarioLoader
-from vitrage.evaluator.template_loading.template_loader import TemplateLoader
 from vitrage.evaluator.template_validation.template_syntax_validator import \
     EXCEPTION
 from vitrage.graph.filter import check_filter as check_subset
@@ -104,8 +105,11 @@ class ScenarioRepository(object):
         self.templates[template.uuid] = Template(template.uuid,
                                                  template.file_content,
                                                  template.created_at)
-        template_data = TemplateLoader().load(template.file_content,
-                                              self._def_templates)
+        schema = get_template_schema(template.file_content)
+        template_data = schema.loaders[TEMPLATE_LOADER].load(
+            schema,
+            template.file_content,
+            self._def_templates)
         for scenario in template_data.scenarios:
             for equivalent_scenario in self._expand_equivalence(scenario):
                 self._add_scenario(equivalent_scenario)

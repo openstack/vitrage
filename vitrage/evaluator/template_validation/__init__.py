@@ -12,8 +12,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from oslo_log import log
+from vitrage.evaluator.base import CONTENT
+from vitrage.evaluator.base import SYNTAX
+from voluptuous import Error as VoluptuousError
 
 from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_validation import base
 from vitrage.evaluator.template_validation.content.base import \
     get_template_schema
 from vitrage.evaluator.template_validation.content.template_content_validator \
@@ -28,6 +32,23 @@ LOG = log.getLogger(__name__)
 
 
 def validate_template(template, def_templates):
+    result, template_schema = get_template_schema(template)
+    if not result.is_valid_config:
+        return result
+    if template_schema.version() < '3':
+        return _validate_template_v1_v2(template, def_templates)
+
+    try:
+        template_schema.validators[SYNTAX].validate(template)
+        template_schema.validators[CONTENT].validate(template)
+    except base.ValidationError as e:
+        return base.get_custom_fault_result(e.code, e.details)
+    except VoluptuousError as e:
+        return base.get_custom_fault_result(base.get_status_code(e), str(e))
+    return base.get_correct_result()
+
+
+def _validate_template_v1_v2(template, def_templates):
     result = syntax_validation(template)
     if not result.is_valid_config:
         LOG.error('Unable to load template, syntax error: %s' % result.comment)

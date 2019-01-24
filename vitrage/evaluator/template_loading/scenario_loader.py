@@ -48,8 +48,10 @@ class ScenarioLoader(object):
             scenario_id = "%s-scenario%s" % (self.name, str(counter))
             scenario_dict = scenario_def[TFields.SCENARIO]
             condition = parse_condition(scenario_dict[TFields.CONDITION])
-            self.valid_target = \
-                self._calculate_missing_action_target(condition)
+            self.valid_target = calculate_action_target(
+                condition,
+                self._template_entities,
+                self._template_relationships)
             actions = self._build_actions(scenario_dict[TFields.ACTIONS],
                                           scenario_id)
             subgraphs = SubGraphBuilder.from_condition(
@@ -70,9 +72,9 @@ class ScenarioLoader(object):
             vertex_id=entities[template_id].vertex_id,
             properties={k: v for k, v in entity_props})
         relationships = {
-            rel_id: cls._build_equivalent_relationship(rel,
-                                                       template_id,
-                                                       entity_props)
+            rel_id: _build_equivalent_relationship(rel,
+                                                   template_id,
+                                                   entity_props)
             for rel_id, rel in scenario.relationships.items()}
 
         def extract_var(symbol_name):
@@ -125,48 +127,51 @@ class ScenarioLoader(object):
         self.entities[symbol_name] = entity
         return entity, ENTITY
 
-    def _calculate_missing_action_target(self, condition):
-        """Return a vertex that can be used as an action target.
 
-        External actions like execute_mistral do not have an explicit
-        action target. This parameter is a must for the sub-graph matching
-        algorithm. If it is missing, we would like to select an arbitrary
-        target from the condition.
+def calculate_action_target(condition, entities, relationships):
+    """Return a vertex that can be used as an action target.
 
-        """
-        definition_index = self._template_entities.copy()
-        definition_index.update(self._template_relationships)
-        targets = \
-            get_condition_common_targets(condition,
-                                         definition_index,
-                                         self.TemplateDataSymbolResolver())
-        return {TFields.TARGET: targets.pop()} if targets else None
+    External actions like execute_mistral do not have an explicit
+    action target. This parameter is a must for the sub-graph matching
+    algorithm. If it is missing, we would like to select an arbitrary
+    target from the condition.
+    If the target result is empty the condition is not valid.
 
-    class TemplateDataSymbolResolver(SymbolResolver):
-        def is_relationship(self, symbol):
-            return isinstance(symbol, EdgeDescription)
+    """
+    definition_index = entities.copy()
+    definition_index.update(relationships)
+    targets = get_condition_common_targets(
+        condition,
+        definition_index,
+        TemplateDataSymbolResolver())
+    return {TFields.TARGET: targets.pop()} if targets else None
 
-        def get_relationship_source_id(self, relationship):
-            return relationship.source.vertex_id
 
-        def get_relationship_target_id(self, relationship):
-            return relationship.target.vertex_id
+class TemplateDataSymbolResolver(SymbolResolver):
+    def is_relationship(self, symbol):
+        return isinstance(symbol, EdgeDescription)
 
-        def get_entity_id(self, entity):
-            return entity.vertex_id
+    def get_relationship_source_id(self, relationship):
+        return relationship.source.vertex_id
 
-    @staticmethod
-    def _build_equivalent_relationship(relationship,
-                                       template_id,
-                                       entity_props):
-        source = relationship.source
-        target = relationship.target
-        if relationship.edge.source_id == template_id:
-            source = Vertex(vertex_id=source.vertex_id,
-                            properties={k: v for k, v in entity_props})
-        elif relationship.edge.target_id == template_id:
-            target = Vertex(vertex_id=target.vertex_id,
-                            properties={k: v for k, v in entity_props})
-        return EdgeDescription(source=source,
-                               target=target,
-                               edge=relationship.edge)
+    def get_relationship_target_id(self, relationship):
+        return relationship.target.vertex_id
+
+    def get_entity_id(self, entity):
+        return entity.vertex_id
+
+
+def _build_equivalent_relationship(relationship,
+                                   template_id,
+                                   entity_props):
+    source = relationship.source
+    target = relationship.target
+    if relationship.edge.source_id == template_id:
+        source = Vertex(vertex_id=source.vertex_id,
+                        properties={k: v for k, v in entity_props})
+    elif relationship.edge.target_id == template_id:
+        target = Vertex(vertex_id=target.vertex_id,
+                        properties={k: v for k, v in entity_props})
+    return EdgeDescription(source=source,
+                           target=target,
+                           edge=relationship.edge)

@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from vitrage.evaluator.template_fields import TemplateFields as Fields
 from vitrage.graph.utils import check_property_with_regex
 
 
@@ -34,8 +33,9 @@ def check_filter(data, attr_filter, *args):
         if not isinstance(content, list):
             content = [content]
         if data.get(key) not in content:
-            if key.lower().endswith(Fields.REGEX):
-                new_key = key[:-len(Fields.REGEX)]
+            # import of .regex constant removed, as it was circular
+            if key.lower().endswith('.regex'):
+                new_key = key[:-len('.regex')]
                 if not check_property_with_regex(new_key, content[0],
                                                  data):
                     return False

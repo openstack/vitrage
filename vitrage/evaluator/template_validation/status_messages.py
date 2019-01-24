@@ -54,8 +54,8 @@ status_msgs = {
     80: 'scenarios is a mandatory section.',
     81: 'At least one scenario must be defined.',
     82: 'scenario field is required.',
-    83: 'Entity definition must contain condition field.',
-    84: 'Entity definition must contain actions field.',
+    83: 'Scenario definition must contain condition field.',
+    84: 'Scenario definition must contain actions field.',
     85: 'Failed to convert condition.',
     86: 'Not operator can be used only on relationships.',
 
@@ -90,7 +90,7 @@ status_msgs = {
     136: 'Input parameters for the Mistral workflow in execute_mistral action '
          'must be placed under an \'input\' block ',
     137: 'Functions are supported only from version 2',
-    138: 'Warning: only open or close parenthesis exists. Did you try to use '
+    138: 'Only open or close parenthesis exists. Did you try to use '
          'a function?',
 
     # def_templates status messages 140-159
@@ -99,4 +99,14 @@ status_msgs = {
     142: 'Trying to include a template that does not exist',
     143: 'A template definition file cannot contain \'includes\' or '
          '\'scenarios\' blocks',
+
+    10100: 'Action must contain a \'target\' property',
+    10101: 'Action \'target\' must match an entity id',
+    10102: 'Action must contain a \'source\' property',
+    10103: 'Action \'source\' must match an entity id',
+    10104: 'raise_alarm action must contain an \'alarm_name\' property',
+    10105: 'execute_mistral action must contain \'workflow\' property',
+    10107: 'The property \'causing_alarm\' in raise_alarm action must match an'
+           ' entity id',
+    10200: 'Condition contains an unknown entity id',
 }

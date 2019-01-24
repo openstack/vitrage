@@ -14,11 +14,11 @@
 
 from vitrage.evaluator.condition import SymbolResolver
 from vitrage.evaluator.template_data import EdgeDescription
-from vitrage.evaluator.template_loading.template_loader import TemplateLoader
 from vitrage.evaluator.template_validation.content.v1.scenario_validator \
     import get_condition_common_targets
 from vitrage.tests import base
 from vitrage.tests.mocks import utils
+from vitrage.tests.unit.evaluator import get_template_data
 from vitrage.utils import file as file_utils
 
 
@@ -93,7 +93,7 @@ class ConditionTest(base.BaseTest):
                                                    template_name)
         template_definition = file_utils.load_yaml_file(template_path, True)
 
-        template_data = TemplateLoader().load(template_definition)
+        template_data = get_template_data(template_definition)
         definitions_index = template_data.entities.copy()
         definitions_index.update(template_data.relationships)
 

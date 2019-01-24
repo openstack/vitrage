@@ -14,13 +14,11 @@
 
 from oslo_log import log
 
-from vitrage.common.constants import VertexProperties as VProps
 from vitrage.evaluator.template_data import EdgeDescription
 from vitrage.evaluator.template_data import TemplateData
 from vitrage.evaluator.template_fields import TemplateFields as TFields
 from vitrage.evaluator.template_loading.props_converter import PropsConverter
 from vitrage.evaluator.template_loading.scenario_loader import ScenarioLoader
-from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
 from vitrage.graph import Edge
 from vitrage.graph import Vertex
 from vitrage.utils import evaluator as evaluator_utils
@@ -31,29 +29,11 @@ LOG = log.getLogger(__name__)
 
 class TemplateLoader(object):
 
-    PROPS_CONVERSION = {
-        'category': VProps.VITRAGE_CATEGORY,
-        'type': VProps.VITRAGE_TYPE,
-        'resource_id': VProps.VITRAGE_RESOURCE_ID,
-        'sample_timestamp': VProps.VITRAGE_SAMPLE_TIMESTAMP,
-        'is_deleted': VProps.VITRAGE_IS_DELETED,
-        'is_placeholder': VProps.VITRAGE_IS_PLACEHOLDER,
-        'aggregated_state': VProps.VITRAGE_AGGREGATED_STATE,
-        'operational_state': VProps.VITRAGE_OPERATIONAL_STATE,
-        'aggregated_severity': VProps.VITRAGE_AGGREGATED_SEVERITY,
-        'operational_severity': VProps.VITRAGE_OPERATIONAL_SEVERITY
-    }
-
     def __init__(self):
         self.entities = {}
         self.relationships = {}
 
-    def load(self, template_def, def_templates=None):
-
-        template_schema = self._get_template_schema(template_def)
-        if not template_schema:
-            LOG.error('Failed to load template - unsupported version')
-            return
+    def load(self, template_schema, template_def, def_templates=None):
 
         name = template_def[TFields.METADATA][TFields.NAME]
 
@@ -179,13 +159,3 @@ class TemplateLoader(object):
         ignore_ids = [TFields.TEMPLATE_ID, TFields.SOURCE, TFields.TARGET]
         return \
             {key: var_dict[key] for key in var_dict if key not in ignore_ids}
-
-    @staticmethod
-    def _get_template_schema(template):
-        metadata = template.get(TFields.METADATA)
-
-        if metadata:
-            version = metadata.get(TFields.VERSION)
-            return TemplateSchemaFactory().template_schema(version)
-        else:
-            return None

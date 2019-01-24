@@ -20,10 +20,10 @@ from vitrage.evaluator.template_fields import TemplateFields as TFields
 
 class BaseActionLoader(object):
 
-    def load(self, action_id, valid_target, action_def):
+    def load(self, action_id, default_target, action_def):
         action_dict = action_def[TFields.ACTION]
         action_type = action_dict[TFields.ACTION_TYPE]
-        targets = action_dict.get(TFields.ACTION_TARGET, valid_target)
+        targets = action_dict.get(TFields.ACTION_TARGET, default_target)
         return ActionSpecs(action_id, action_type, targets,
                            self._get_properties(action_dict))
 
