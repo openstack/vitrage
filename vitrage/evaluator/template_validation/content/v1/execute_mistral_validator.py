@@ -15,8 +15,8 @@
 from oslo_log import log
 
 from vitrage.evaluator.actions.recipes.execute_mistral import WORKFLOW
-from vitrage.evaluator.base import is_function
 from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_functions.function_resolver import is_function
 from vitrage.evaluator.template_validation.content.base import \
     ActionValidator
 from vitrage.evaluator.template_validation.content.base import \

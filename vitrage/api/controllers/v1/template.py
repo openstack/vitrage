@@ -89,9 +89,10 @@ class TemplateController(RootRestController):
                 pecan.request.enforcer,
                 {})
         template_type = kwargs['template_type']
+        params = kwargs.get('params')
 
         try:
-            return self._add(templates, template_type)
+            return self._add(templates, template_type, params)
         except Exception:
             LOG.exception('Failed to add template.')
             abort(404, 'Failed to add template.')
@@ -108,12 +109,13 @@ class TemplateController(RootRestController):
 
         templates = kwargs['templates']
         template_type = kwargs.get('template_type')
+        params = kwargs.get('params')
 
         try:
-            return self._validate(templates, template_type)
+            return self._validate(templates, template_type, params)
         except Exception:
             LOG.exception('Failed to validate template(s).')
-            abort(404, 'Failed to validate template.')
+            abort(404, 'Failed to validate template(s).')
 
     @classmethod
     def _get_templates(cls):
@@ -142,12 +144,13 @@ class TemplateController(RootRestController):
             abort(404, 'Failed to show template.')
 
     @staticmethod
-    def _validate(templates, template_type):
+    def _validate(templates, template_type, params):
 
         result_json = pecan.request.client.call(pecan.request.context,
                                                 'validate_template',
                                                 templates=templates,
-                                                template_type=template_type)
+                                                template_type=template_type,
+                                                params=params)
         try:
             return json.loads(result_json)
         except Exception:
@@ -155,13 +158,15 @@ class TemplateController(RootRestController):
             abort(404, 'Failed to validate template file.')
 
     @classmethod
-    def _add(cls, templates, template_type):
+    def _add(cls, templates, template_type, params):
         try:
             results = pecan.request.client.call(
                 pecan.request.context,
                 'add_template',
                 templates=templates,
-                template_type=template_type)
+                template_type=template_type,
+                params=params,
+            )
             return results
         except Exception:
             LOG.exception('Failed to add template file.')

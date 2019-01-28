@@ -95,19 +95,29 @@ def _validate_def_template_template_sections(def_template_conf):
 
 
 def _validate_template_sections(template_conf):
+    any_str = Any(str, six.text_type)
+    paramsSchema = Schema({
+        any_str: Any(any_str, Schema({
+            Optional(TemplateFields.DESCRIPTION): any_str,
+            Optional(TemplateFields.DEFAULT): any_str,
+        })),
+    })
+
     if TemplateFields.INCLUDES in template_conf:
         schema = Schema({
             Optional(TemplateFields.DEFINITIONS): dict,
             Required(TemplateFields.METADATA, msg=62): dict,
             Required(TemplateFields.SCENARIOS, msg=80): list,
-            Optional(TemplateFields.INCLUDES): list
+            Optional(TemplateFields.INCLUDES): list,
+            Optional(TemplateFields.PARAMETERS): paramsSchema,
         })
     else:
         schema = Schema({
             Required(TemplateFields.DEFINITIONS, msg=21): dict,
             Required(TemplateFields.METADATA, msg=62): dict,
             Required(TemplateFields.SCENARIOS, msg=80): list,
-            Optional(TemplateFields.INCLUDES): list
+            Optional(TemplateFields.INCLUDES): list,
+            Optional(TemplateFields.PARAMETERS): paramsSchema,
         })
     return _validate_dict_schema(schema, template_conf)
 

@@ -33,29 +33,29 @@ class TemplateApis(object):
         self.notifier = notifier
         self.db = db
 
-    def validate_template(self, ctx, templates, template_type):
+    def validate_template(self, ctx, templates, template_type, params=None):
         LOG.debug("TemplateApis validate_template type: %s content: %s",
                   str(template_type), str(templates))
 
         files_content = [t[1] for t in templates]
         paths = [t[0] for t in templates]
         results = template_repo.validate_templates(self.db, files_content,
-                                                   template_type)
+                                                   template_type, params)
         results = [_to_result(r, p) for r, p in zip(results, paths)]
         return json.dumps({'results': results})
 
-    def add_template(self, ctx, templates, template_type):
+    def add_template(self, ctx, templates, template_type, params=None):
         """Signal the evaluator
 
          A new template has been added to the database with a status of
          LOADING that needs to be handled.
         """
-        LOG.debug("TemplateApis add_template type: %s content: %s",
-                  str(template_type), str(templates))
+        LOG.debug("TemplateApis add_template type: %s content: %s params: %s",
+                  template_type, templates, params)
 
         files_content = [t[1] for t in templates]
         db_rows = template_repo.add_templates_to_db(self.db, files_content,
-                                                    template_type)
+                                                    template_type, params)
         if self._is_evaluator_reload_required(db_rows):
             LOG.info("Adding templates..")
             self.notifier.notify("add template", {'template_action': 'add'})

@@ -100,6 +100,14 @@ status_msgs = {
     143: 'A template definition file cannot contain \'includes\' or '
          '\'scenarios\' blocks',
 
+    # parameters status messages 160-179
+    160: 'Parameters are supported only from version 2',
+    161: 'get_param called for a parameter that is not defined in the '
+         '\'parameters\' block',
+    162: 'malformed get_param() clause',
+    163: 'Failed to resolve parameter',
+
+    # template version 3
     10100: 'Action must contain a \'target\' property',
     10101: 'Action \'target\' must match an entity id',
     10102: 'Action must contain a \'source\' property',

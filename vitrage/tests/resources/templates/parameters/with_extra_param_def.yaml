@@ -1,0 +1,43 @@
+metadata:
+ version: 2
+ type: standard
+ name: get_param(template_name)
+ description: template with extra parameter def (extra_param is unused)
+parameters:
+ template_name:
+  description: the name of the template
+  default: template_with_params
+ alarm_type:
+  description: the type of the alarm
+ alarm_name:
+ new_state:
+  default: ERROR
+ extra_param:
+  description: a parameter definition that is unused in the template
+definitions:
+ entities:
+  - entity:
+     category: ALARM
+     type: get_param(alarm_type)
+     name: get_param(alarm_name)
+     template_id: alarm
+  - entity:
+     category: RESOURCE
+     type: nova.host
+     template_id: resource
+ relationships:
+  - relationship:
+     source: alarm
+     target: resource
+     relationship_type: on
+     template_id : alarm_on_host
+scenarios:
+ - scenario:
+    condition: alarm_on_host
+    actions:
+     - action:
+        action_type: set_state
+        properties:
+         state: get_param(new_state)
+        action_target:
+         target: resource

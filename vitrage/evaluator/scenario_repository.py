@@ -24,13 +24,9 @@ from vitrage.evaluator.base import get_template_schema
 from vitrage.evaluator.base import Template
 from vitrage.evaluator.base import TEMPLATE_LOADER
 from vitrage.evaluator.equivalence_repository import EquivalenceRepository
-from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_loading.scenario_loader import ScenarioLoader
-from vitrage.evaluator.template_validation.template_syntax_validator import \
-    EXCEPTION
 from vitrage.graph.filter import check_filter as check_subset
 from vitrage import storage
-from vitrage.utils import file as file_utils
 
 LOG = log.getLogger(__name__)
 
@@ -166,17 +162,6 @@ class ScenarioRepository(object):
                                                       TemplateStatus.DELETING]]
         for t in templates:
             self._add_template(t)
-
-    @staticmethod
-    def _load_template_file(file_name):
-        try:
-            config = file_utils.load_yaml_file(file_name,
-                                               with_exception=True)
-            if config:
-                return config
-        except Exception as e:
-            return {TemplateFields.METADATA: {TemplateFields.NAME: file_name},
-                    EXCEPTION: str(e)}
 
     @staticmethod
     def _create_scenario_key(properties):

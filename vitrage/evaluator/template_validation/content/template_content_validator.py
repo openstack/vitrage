@@ -15,13 +15,14 @@
 from oslo_log import log
 
 from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_functions import GET_PARAM
 from vitrage.evaluator.template_validation.content.base import \
     get_template_schema
 
 LOG = log.getLogger(__name__)
 
 
-def content_validation(template, def_templates=None):
+def content_validation(template, def_templates=None, params=None):
 
     if def_templates is None:
         def_templates = {}
@@ -42,6 +43,10 @@ def content_validation(template, def_templates=None):
             result = metadata_validator.validate(metadata)
         else:
             result.is_valid_config = False  # Not supposed to happen
+
+    # Validate parameters
+    if result.is_valid_config:
+        result = parameters_validation(template_schema, template, params)
 
     # Validate definitions
     def_validator = \
@@ -96,3 +101,9 @@ def content_validation(template, def_templates=None):
                                              definitions_index, scenarios)
 
     return result
+
+
+def parameters_validation(template_schema, template, actual_params):
+    params_validator = \
+        template_schema.validators.get(GET_PARAM) if template_schema else None
+    return params_validator.validate(template, actual_params)

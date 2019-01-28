@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 from collections import namedtuple
-import re
 
 from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
@@ -21,15 +20,6 @@ Template = namedtuple('Template', ['uuid', 'data', 'date'])
 TEMPLATE_LOADER = 'template_loader'
 SYNTAX = 'syntax'
 CONTENT = 'content'
-
-
-def is_function(str):
-    """Check if the string represents a function
-
-    A function has the format: func_name(params)
-    Search for a regex with open and close parenthesis
-    """
-    return re.match('.*\(.*\)', str)
 
 
 def get_template_schema(template):

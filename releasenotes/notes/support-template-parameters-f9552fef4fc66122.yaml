@@ -1,0 +1,5 @@
+---
+features:
+  - Added support for parameters in Vitrage templates. A template may contain
+    one or more ``parameters`` that are assigned with actual values upon
+    template creation. This enables easy reuse of common templates.
