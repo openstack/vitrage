@@ -15,6 +15,8 @@
 
 class PropertiesElement(object):
     def __init__(self, properties=None):
+        if properties is None:
+            self.properties = {}
         self.properties = properties
 
     def __getitem__(self, key):
@@ -22,14 +24,11 @@ class PropertiesElement(object):
         return self.properties[key]
 
     def __setitem__(self, key, value):
-        """Set a property with 'element[key] = value'"""
-        if not self.properties:
-            self.properties = {}
         self.properties[key] = value
 
     def __delitem__(self, key):
         """Delete a property with 'del(element[key])"""
-        if self.properties and key in self.properties:
+        if key in self.properties:
             del self.properties[key]
 
     def __iter__(self):
