@@ -1,0 +1,63 @@
+metadata:
+ version: 3
+ name: valid actions
+ description: zabbix alarm for network interface and ssh affects host instances
+ type: standard
+entities:
+ host_network_alarm:
+  type: zabbix
+  rawtext: host network interface is down
+ host_ssh_alarm:
+  type: zabbix
+  rawtext: host ssh is down
+ instance:
+  type: nova.instance
+ host:
+  type: nova.host
+ foo:
+   name.regex: kuku
+scenarios:
+ - condition: host_ssh_alarm [ on ] host
+   actions:
+     - set_state:
+        state: ERROR
+        target: host
+     - raise_alarm:
+        target: host
+        alarm_name: ddd
+        severity: WARNING
+     - mark_down:
+        target: host
+     - execute_mistral:
+        workflow: wf_1234
+        input:
+         farewell: get_attr(host, name) bla bla
+ - condition: host_network_alarm [ on ] host AND host_ssh_alarm [ on ] host
+   actions:
+     - add_causal_relationship:
+        source: host_network_alarm
+        target: host_ssh_alarm
+ - condition: host_ssh_alarm [ on ] host AND host [ contains ] instance
+   actions:
+     - raise_alarm:
+        target: instance
+        alarm_name: instance is down
+        severity: WARNING
+        causing_alarm: host_ssh_alarm
+     - set_state:
+        state: SUBOPTIMAL
+        target: instance
+ - condition: host AND NOT host_ssh_alarm [ on ] host or host [ contains ] instance
+   actions:
+     - mark_down:
+        target: host
+ - condition: host
+   actions:
+     - mark_down:
+        target: host
+ - condition: host AND NOT (host_ssh_alarm [ on ] host or host [ contains ] instance)
+   actions:
+     - mark_down:
+        target: host
+
+

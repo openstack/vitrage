@@ -13,12 +13,21 @@
 # under the License.
 from collections import namedtuple
 from vitrage.evaluator.template_validation.status_messages import status_msgs
+RESULT_DESCRIPTION = 'Template syntax validation'
+EXCEPTION = 'exception'
 
 Result = namedtuple('Result', ['description', 'is_valid_config', 'status_code',
                                'comment'])
 
 
-def get_correct_result(description):
+class ValidationError(Exception):
+    def __init__(self, code, *args):
+        self.code = code
+        self.details = ''
+        self.details = ','.join(str(arg) for arg in args)
+
+
+def get_correct_result(description=RESULT_DESCRIPTION):
     return Result(description, True, 0, status_msgs[0])
 
 
@@ -30,3 +39,15 @@ def get_fault_result(description, code, msg=None):
     if msg:
         return Result(description, False, code, msg)
     return Result(description, False, code, status_msgs[code])
+
+
+def get_custom_fault_result(code, msg):
+    return Result('Template validation', False, code,
+                  status_msgs[code] + ' ' + msg)
+
+
+def get_status_code(voluptuous_error):
+    prefix = str(voluptuous_error).split(' ')[0].strip()
+    if prefix.isdigit():
+        return int(prefix)
+    return 4

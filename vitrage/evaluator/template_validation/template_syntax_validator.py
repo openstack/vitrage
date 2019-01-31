@@ -28,6 +28,7 @@ from vitrage.evaluator.actions.base import action_types
 from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_validation.base import get_correct_result
 from vitrage.evaluator.template_validation.base import get_fault_result
+from vitrage.evaluator.template_validation.base import get_status_code
 from vitrage.evaluator.template_validation.status_messages import status_msgs
 
 LOG = log.getLogger(__name__)
@@ -145,7 +146,7 @@ def _validate_name_schema(schema, name):
         schema(name)
     except Error as e:
 
-        status_code = _get_status_code(e)
+        status_code = get_status_code(e)
         if status_code:
             msg = status_msgs[status_code]
         else:
@@ -319,26 +320,12 @@ def _validate_dict_schema(schema, value):
     try:
         schema(value)
     except Error as e:
-
-        status_code = _get_status_code(e)
-        if status_code:
-            msg = status_msgs[status_code]
-        else:
-            # General syntax error
-            status_code = 4
-            msg = status_msgs[4] + str(e)
-
+        status_code = get_status_code(e)
+        msg = status_msgs[status_code] + str(e)
         LOG.error('%s status code: %s' % (msg, status_code))
         return get_fault_result(RESULT_DESCRIPTION, status_code, msg)
 
     return get_correct_result(RESULT_DESCRIPTION)
-
-
-def _get_status_code(e):
-    prefix = str(e).split(' ')[0].strip()
-    if prefix.isdigit():
-        return int(prefix)
-    return None
 
 
 def _validate_template_id_value(msg=None):

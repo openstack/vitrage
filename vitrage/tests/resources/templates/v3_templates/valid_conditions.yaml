@@ -1,0 +1,58 @@
+metadata:
+ version: 3
+ name: aaa
+ description: aaa
+ type: standard
+entities:
+ instance:
+  type: nova.instance
+ host:
+  type: nova.host
+ host_ssh_alarm:
+  name: ssh alarm
+  type: zabbix
+scenarios:
+ - condition: host
+   actions:
+     - mark_down:
+        target: host
+ - condition: host [   contains] instance AND host [contains] instance
+   actions:
+     - mark_down:
+        target: host
+ - condition: host  AND NOT host   [    contains    ]   instance
+   actions:
+     - mark_down:
+        target: host
+ - condition: host  and not host [ contains ]   instance   or     host
+   actions:
+     - mark_down:
+        target: host
+ - condition: host OR host or host and instance AND instance
+   actions:
+     - mark_down:
+        target: host
+ - condition: (host and NOT host [ contains ] instance) or host [ contains ] instance
+   actions:
+     - mark_down:
+        target: host
+ - condition: (host [contains] instance)
+   actions:
+     - mark_down:
+        target: host
+ - condition: (host [contains] instance AND host [contains] instance)
+   actions:
+     - mark_down:
+        target: host
+ - condition: ( host [contains] instance OR host [contains] instance )
+   actions:
+     - mark_down:
+        target: host
+ - condition: (  host OR host [contains] instance  ) AND (instance OR host [contains] instance)
+   actions:
+     - mark_down:
+        target: host
+ - condition: host AND NOT host [contains] instance
+   actions:
+     - mark_down:
+        target: host

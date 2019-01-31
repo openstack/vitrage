@@ -17,7 +17,7 @@ from collections import namedtuple
 from sympy.logic.boolalg import And
 from sympy.logic.boolalg import Not
 from sympy.logic.boolalg import Or
-from sympy.logic.boolalg import to_dnf as sympy_to_dfn
+from sympy.logic.boolalg import to_dnf as sympy_to_dnf
 from sympy import Symbol
 
 
@@ -149,13 +149,16 @@ def parse_condition(condition_str):
 
 
 def convert_to_dnf_format(condition_str):
-
     condition_str = condition_str.replace(' and ', '&')
+    condition_str = condition_str.replace(' AND ', '&')
     condition_str = condition_str.replace(' or ', '|')
+    condition_str = condition_str.replace(' OR ', '|')
     condition_str = condition_str.replace(' not ', '~')
+    condition_str = condition_str.replace(' NOT ', '~')
     condition_str = condition_str.replace('not ', '~')
+    condition_str = condition_str.replace('NOT ', '~')
 
-    return sympy_to_dfn(condition_str)
+    return sympy_to_dnf(condition_str)
 
 
 def extract_or_condition(or_condition):

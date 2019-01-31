@@ -17,6 +17,7 @@ import copy
 
 from vitrage.common.constants import EdgeProperties
 from vitrage.common.constants import VertexProperties as VProps
+from vitrage.datasources import NOVA_HOST_DATASOURCE
 from vitrage.graph import Direction
 from vitrage.graph.driver.networkx_graph import NXGraph
 from vitrage.graph import Edge
@@ -131,6 +132,10 @@ class GraphGenerator(object):
             for i in range(n):
                 v = self._file_to_vertex(neighbor_props_file, i)
                 v[VProps.NAME] = v[VProps.NAME] + "-" + source_v[VProps.NAME]
+
+                if v.get(VProps.VITRAGE_TYPE) == NOVA_HOST_DATASOURCE:
+                    v[VProps.ID] = v.get(VProps.NAME)
+
                 created_vertices.append(v)
                 g.add_vertex(v)
                 if direction == Direction.OUT:

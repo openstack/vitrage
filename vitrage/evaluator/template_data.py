@@ -47,8 +47,13 @@ class Scenario(object):
 # noinspection PyAttributeOutsideInit
 class TemplateData(object):
 
-    def __init__(self, name, template_type, version, entities,
-                 relationships, scenarios):
+    def __init__(self,
+                 name=None,
+                 template_type=None,
+                 version=None,
+                 entities=None,
+                 relationships=None,
+                 scenarios=None):
         self.name = name
         self.template_type = template_type
         self.version = version

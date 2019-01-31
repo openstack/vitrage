@@ -27,9 +27,9 @@
 # under the License.
 
 from vitrage.common.constants import TemplateTypes
-from vitrage.evaluator.template_loading.template_loader import TemplateLoader
 from vitrage.tests import base
 from vitrage.tests.mocks import utils
+from vitrage.tests.unit.evaluator import get_template_data
 from vitrage.utils import file as file_utils
 
 
@@ -42,7 +42,7 @@ class TemplateLoaderTest(base.BaseTest):
                         (utils.get_resources_dir(), self.STANDARD_TEMPLATE)
         template_definition = file_utils.load_yaml_file(template_path, True)
 
-        template_data = TemplateLoader().load(template_definition)
+        template_data = get_template_data(template_definition)
         self.assertIsNotNone(template_data)
 
         template_type = template_data.template_type
