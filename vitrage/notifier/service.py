@@ -11,26 +11,28 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import cotyledon
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import importutils
 
+from vitrage.coordination import service as coord
 from vitrage import messaging
 from vitrage.opts import register_opts
 
 LOG = log.getLogger(__name__)
 
 
-class VitrageNotifierService(cotyledon.Service):
+class VitrageNotifierService(coord.Service):
 
     def __init__(self, worker_id, conf):
-        super(VitrageNotifierService, self).__init__(worker_id)
+        super(VitrageNotifierService, self).__init__(worker_id, conf)
         self.conf = conf
         self.notifiers = self.get_notifier_plugins(conf)
         self._init_listeners(self.conf)
 
     def run(self):
+        super(VitrageNotifierService, self).run()
+
         LOG.info("Vitrage Notifier Service - Starting...")
 
         for listener in self.listeners:
@@ -39,6 +41,7 @@ class VitrageNotifierService(cotyledon.Service):
         LOG.info("Vitrage Notifier Service - Started!")
 
     def terminate(self):
+        super(VitrageNotifierService, self).terminate()
         LOG.info("Vitrage Notifier Service - Stopping...")
 
         for listener in self.listeners:

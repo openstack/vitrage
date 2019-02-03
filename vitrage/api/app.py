@@ -41,7 +41,8 @@ def setup_app(root, conf=None):
                  hooks.GCHook(),
                  hooks.RPCHook(conf),
                  hooks.ContextHook(),
-                 hooks.DBHook(conf)]
+                 hooks.DBHook(conf),
+                 hooks.CoordinatorHook(conf)]
 
     app = pecan.make_app(
         root,

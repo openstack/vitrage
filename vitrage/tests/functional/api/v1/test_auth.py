@@ -20,7 +20,8 @@ import uuid
 
 
 from keystonemiddleware import fixture as ksm_fixture
-from mock import mock
+# noinspection PyPackageRequirements
+import mock
 from vitrage.tests.functional.api.v1 import FunctionalTest
 
 EVENT_DETAILS = {

@@ -52,3 +52,5 @@ cotyledon>=1.6.8 # Apache-2.0
 futures>=3.0.0;python_version=='2.7' or python_version=='2.6'  # BSD
 pytz>=2013.6 # MIT
 tenacity>=4.9.0
+tooz>=1.58.0 # Apache-2.0
+psutil>=5.4.3 # BSD

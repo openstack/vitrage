@@ -36,6 +36,7 @@ from vitrage.api_handler.apis.webhook import WebhookApis
 from vitrage.common.constants import TemplateStatus as TStatus
 from vitrage.common.constants import TemplateTypes as TType
 from vitrage.common.exception import VitrageError
+from vitrage.coordination import service as coord
 from vitrage.entity_graph import EVALUATOR_TOPIC
 from vitrage.evaluator.actions.base import ActionMode
 from vitrage.evaluator.scenario_evaluator import ScenarioEvaluator
@@ -214,12 +215,12 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         os._exit(0)
 
 
-class GraphCloneWorkerBase(cotyledon.Service):
+class GraphCloneWorkerBase(coord.Service):
     def __init__(self,
                  worker_id,
                  conf,
                  task_queues):
-        super(GraphCloneWorkerBase, self).__init__(worker_id)
+        super(GraphCloneWorkerBase, self).__init__(worker_id, conf)
         self._conf = conf
         self._task_queue = task_queues[worker_id]
         self._entity_graph = NXGraph()
@@ -232,6 +233,7 @@ class GraphCloneWorkerBase(cotyledon.Service):
         raise NotImplementedError
 
     def run(self):
+        super(GraphCloneWorkerBase, self).run()
         self._entity_graph.notifier._subscriptions = []  # Quick n dirty
         self._init_instance()
         if self._entity_graph.num_vertices():

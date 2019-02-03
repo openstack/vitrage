@@ -124,6 +124,9 @@ class TestSnmpParsing(base.BaseTest):
         super(TestSnmpParsing, cls).setUpClass()
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group='snmp_parsing')
+        cls.conf.register_opt(
+            cfg.StrOpt('backend_url', default='zake://'), group='coordination'
+        )
 
     def test_convert_binds_to_dict(self):
         parsing_service = SnmpParsingService(1, self.conf)

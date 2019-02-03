@@ -17,7 +17,6 @@ from __future__ import print_function
 from datetime import timedelta
 
 from concurrent.futures import ThreadPoolExecutor
-import cotyledon
 import dateutil.parser
 from futurist import periodics
 
@@ -31,6 +30,7 @@ from vitrage.common.constants import HistoryProps as HProps
 from vitrage.common.constants import NotifierEventTypes as NETypes
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.common.utils import spawn
+from vitrage.coordination import service as coord
 from vitrage import messaging
 from vitrage.storage.sqlalchemy import models
 from vitrage.utils.datetime import utcnow
@@ -38,9 +38,9 @@ from vitrage.utils.datetime import utcnow
 LOG = log.getLogger(__name__)
 
 
-class PersistorService(cotyledon.Service):
+class PersistorService(coord.Service):
     def __init__(self, worker_id, conf, db_connection):
-        super(PersistorService, self).__init__(worker_id)
+        super(PersistorService, self).__init__(worker_id, conf)
         self.conf = conf
         self.db_connection = db_connection
         transport = messaging.get_transport(conf)
@@ -52,6 +52,7 @@ class PersistorService(cotyledon.Service):
         self.scheduler = Scheduler(conf, db_connection)
 
     def run(self):
+        super(PersistorService, self).run()
         LOG.info("Vitrage Persistor Service - Starting...")
 
         self.listener.start()
@@ -60,6 +61,7 @@ class PersistorService(cotyledon.Service):
         LOG.info("Vitrage Persistor Service - Started!")
 
     def terminate(self):
+        super(PersistorService, self).terminate()
         LOG.info("Vitrage Persistor Service - Stopping...")
 
         self.listener.stop()

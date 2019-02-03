@@ -12,8 +12,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from mock import mock
+# noinspection PyPackageRequirements
+import mock
 from oslo_config import cfg
+# noinspection PyPackageRequirements
 from testtools import matchers
 
 from vitrage.common.constants import DatasourceOpts as DSOpts
@@ -61,12 +63,12 @@ class PrometheusDriverTest(base.BaseTest):
         # Test Action
         observed_valid_ip = driver._adjust_label_value(valid_ip)
         observed_not_ip = driver._adjust_label_value(not_ip)
-        observed_unvalid_ip = driver._adjust_label_value(invalid_ip)
+        observed_invalid_ip = driver._adjust_label_value(invalid_ip)
 
         # Test assertions
         self.assertEqual(hostname, observed_valid_ip)
         self.assertEqual(not_ip, observed_not_ip)
-        self.assertEqual(invalid_ip, observed_unvalid_ip)
+        self.assertEqual(invalid_ip, observed_invalid_ip)
 
     @mock.patch('socket.gethostbyaddr')
     def test_calculate_host_vitrage_entity_unique_props(self, mock_socket):
