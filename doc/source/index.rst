@@ -69,13 +69,14 @@ Developer Guide
    :hidden:
    
    contributor/index
+   contributor/vitrage-template-format-v2
 
 .. toctree::
    :maxdepth: 1
 
    contributor/vitrage-first_steps
    contributor/vitrage-api
-   contributor/vitrage-template-format
+   contributor/vitrage-templates
    contributor/devstack-installation
    contributor/configuration
 

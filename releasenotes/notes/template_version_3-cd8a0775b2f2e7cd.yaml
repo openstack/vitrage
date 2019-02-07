@@ -1,0 +1,5 @@
+---
+features:
+  - Introduced template version 3, a shorter, more fluent template language.
+    Overall template yaml appearance improvements. `condition` definitions were
+    revised, `relationships` declarations removed.

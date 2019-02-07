@@ -44,4 +44,4 @@ In order to support this use case, the user should perform the following:
 For more information about the mark-down action, see the Vitrage templates
 documentation: templates_
 
-.. _templates: https://docs.openstack.org/vitrage/latest/contributor/vitrage-template-format.html
+.. _templates: https://docs.openstack.org/vitrage/latest/contributor/vitrage-templates.html

@@ -88,7 +88,7 @@ Template Loading
 Scenarios are written up in configuration files called *templates*. The format
 and specification of these can be seen here_.
 
-.. _here: vitrage-template-format.html
+.. _here: vitrage-templates.html
 
 Templates should all be located in the *<vitrage folder>/templates* folder.
 

@@ -122,4 +122,4 @@ Writing your own templates
 For more information regarding Vitrage templates, their format and how to add
 them, see here_.
 
-.. _here: https://docs.openstack.org/vitrage/latest/contributor/vitrage-template-format.html
+.. _here: https://docs.openstack.org/vitrage/latest/contributor/vitrage-templates.html

@@ -1,6 +1,10 @@
-================================
-Vitrage Templates Format & Usage
-================================
+====================================
+Vitrage Templates Format - Version 2
+====================================
+
+*Note:* Consider using the newer template format version_3_
+
+.. _version_3: https://docs.openstack.org/vitrage/latest/contributor/vitrage-templates.html
 
 Overview
 ========

@@ -12,7 +12,7 @@ templates will be added into scenario repository.
 This document explains the implementation details of template data to help
 developer understand how scenario_evaluator_ works.
 
-.. _format: vitrage-template-format.html
+.. _format: vitrage-templates.html
 .. _scenario_evaluator: scenario-evaluator.html
 
 Example
