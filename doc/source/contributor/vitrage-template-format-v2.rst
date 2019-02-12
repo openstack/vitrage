@@ -406,7 +406,7 @@ Common parameters and their acceptable values - for writing templates
 
 Using regular expressions in an entity definition
 -------------------------------------------------
-All parameters within an entity definition can be made to include regular
+All properties within an entity definition can be made to include regular
 expressions. To do this, simply add ".regex" to their key. For example, as
 Zabbix supports regular expressions and a Zabbix alarm contains a "rawtext"
 field which is a regular expression, a Zabbix alarm entity defined in the
@@ -419,6 +419,107 @@ regular expression:
      type: zabbix
      rawtext.regex: Interface ([_a-zA-Z0-9'-]+) down on {HOST.NAME}
      template_id: zabbix_alarm
+
+Using parameters
+----------------
+On version 2, some properties in the template definition can be defined as
+parameters and assigned with actual values upon template creation. This allows
+easy reuse of a similar template structure for different alarm types.
+
+For example, the following two templates can be written using a single template
+with parameters:
+
+* a high CPU load on a host causes high CPU load on the instances
+* insufficient memory on a host causes insufficient memory on the instances
+
+To use parameters, add a ``parameters`` section to the template. This section
+defines all parameters that are used in the template. Each parameter can have
+two optional properties:
+
+* ``description``: explanation on the purpose of the parameter
+* ``default``: default value for the parameter
+
+Using a parameter inside the template is done by calling the ``get_param()``
+function. For example:
+
+::
+
+    name: get_param(alarm_name)
+
+**Note:** In order to be able to create multiple templates from the
+parametrized template, the template name must also be defined as a parameter.
+
+
+Actual values for the parameters must be given upon template creation, for
+example:
+
+::
+
+  vitrage template add --path template_with_params.yaml --params template_name='High CPU load on host' alarm_type='High CPU load'
+
+
+In the example below, `vitrage template add` should be called with parameters:
+
+* template_name
+* host_alarm_name
+* instance_alarm_name
+* instance_alarm_severity (optional)
+
+::
+
+    metadata:
+        version: 2
+        name: get_name(template_name)
+        type: standard
+        description: host alarm affects its instances
+    parameters:
+        template_name:
+        host_alarm_name:
+            description: the name of the zabbix alarm that is reported on the host
+        instance_alarm_name:
+            description: the name of the vitrage deduced alarm to raise on the instance
+        instance_alarm_severity:
+            description: the severity of the vitrage deduced alarm to raise on the instance
+            default: WARNING
+    definitions:
+        entities:
+            - entity:
+                category: ALARM
+                type: zabbix
+                rawtext: get_param(host_alarm_name)
+                template_id: host_alarm
+            - entity:
+                category: RESOURCE
+                type: nova.host
+                template_id: host
+            - entity:
+                category: RESOURCE
+                type: nova.instance
+                template_id: instance
+        relationships:
+            - relationship:
+                source: host_alarm
+                target: host
+                relationship_type: on
+                template_id : alarm_on_host
+            - relationship:
+                source: host
+                target: instance
+                relationship_type: contains
+                template_id : host_contains_instance
+    scenarios:
+        - scenario:
+            condition: alarm_on_host and host_contains_instance
+            actions:
+                - action:
+                   action_type : raise_alarm
+                   properties:
+                      alarm_name: get_param(instance_alarm_name)
+                      severity: get_param(instance_alarm_severity)
+                   action_target:
+                      target: instance
+
+
 
 Using functions in an action definition
 ---------------------------------------
@@ -452,6 +553,11 @@ Example
            input:
              host_name: get_attr(host_1,name)
              retries: 5
+
+
+get_param
+^^^^^^^^^
+See `Using parameters`_
 
 
 Supported Actions
