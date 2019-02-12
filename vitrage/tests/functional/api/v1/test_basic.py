@@ -18,7 +18,8 @@
 import uuid
 
 from datetime import datetime
-from mock import mock
+# noinspection PyPackageRequirements
+import mock
 from six.moves import http_client as httplib
 from vitrage.tests.functional.api.v1 import FunctionalTest
 

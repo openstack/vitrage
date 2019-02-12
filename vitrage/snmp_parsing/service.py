@@ -15,7 +15,6 @@
 from datetime import datetime
 import json
 
-import cotyledon
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import uuidutils
@@ -28,6 +27,7 @@ from pysnmp.proto.rfc1902 import Integer
 import sys
 
 from vitrage.common.constants import EventProperties
+from vitrage.coordination import service as coord
 from vitrage.datasources.transformer_base import extract_field_value
 from vitrage.messaging import get_transport
 from vitrage.snmp_parsing.properties import SnmpEventProperties as SEProps
@@ -36,16 +36,17 @@ from vitrage.utils.file import load_yaml_file
 LOG = log.getLogger(__name__)
 
 
-class SnmpParsingService(cotyledon.Service):
+class SnmpParsingService(coord.Service):
     RUN_FOREVER = 1
 
     def __init__(self, worker_id, conf):
-        super(SnmpParsingService, self).__init__(worker_id)
+        super(SnmpParsingService, self).__init__(worker_id, conf)
         self.conf = conf
         self.listening_port = conf.snmp_parsing.snmp_listening_port
         self._init_oslo_notifier()
 
     def run(self):
+        super(SnmpParsingService, self).run()
         LOG.info("Vitrage SNMP Parsing Service - Starting...")
 
         transport_dispatcher = AsyncoreDispatcher()
@@ -72,6 +73,7 @@ class SnmpParsingService(cotyledon.Service):
             raise
 
     def terminate(self):
+        super(SnmpParsingService, self).terminate()
         LOG.info("Vitrage SNMP Parsing Service - Stopping...")
         LOG.info("Vitrage SNMP Parsing Service - Stopped!")
 

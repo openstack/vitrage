@@ -17,6 +17,7 @@ from oslo_policy import policy
 from pecan import hooks
 
 from vitrage.common import policies
+from vitrage.coordination import coordination
 from vitrage import messaging
 from vitrage import rpc as vitrage_rpc
 from vitrage import storage
@@ -95,3 +96,14 @@ class GCHook(hooks.PecanHook):
 
     def after(self, state):
         gc.collect()
+
+
+class CoordinatorHook(hooks.PecanHook):
+
+    def __init__(self, conf):
+        self.coordinator = coordination.Coordinator(conf)
+        self.coordinator.start()
+        self.coordinator.join_group()
+
+    def before(self, state):
+        state.request.coordinator = self.coordinator

@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# noinspection PyPackageRequirements
 from datetime import datetime
-from mock import mock
+# noinspection PyPackageRequirements
+import mock
 import requests_mock
 from vitrage.middleware.keycloak import KeycloakAuth
 from vitrage.tests.functional.api.v1 import FunctionalTest

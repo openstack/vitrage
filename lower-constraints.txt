@@ -142,3 +142,6 @@ wrapt==1.10.11
 futures==3.0.0
 docutils==0.11
 python-zaqarclient==1.2.0
+tooz==1.58.0
+zake==0.1.6
+psutil==5.4.3

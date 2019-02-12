@@ -19,6 +19,7 @@ from oslo_log import log
 from oslo_utils import importutils
 
 import vitrage.api
+import vitrage.coordination
 import vitrage.datasources
 import vitrage.entity_graph.consistency
 import vitrage.evaluator
@@ -63,6 +64,7 @@ def list_opts():
         ('webhook', vitrage.notifier.plugins.webhook.OPTS),
         ('snmp_parsing', vitrage.snmp_parsing.OPTS),
         ('zaqar', vitrage.notifier.plugins.zaqar.OPTS),
+        ('coordination', vitrage.coordination.OPTS),
         ('DEFAULT', itertools.chain(
             vitrage.os_clients.OPTS,
             vitrage.rpc.OPTS,

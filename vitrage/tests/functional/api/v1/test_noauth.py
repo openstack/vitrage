@@ -17,7 +17,7 @@
 
 from datetime import datetime
 # noinspection PyPackageRequirements
-from mock import mock
+import mock
 from vitrage.common.utils import compress_obj
 
 from vitrage.storage.sqlalchemy import models

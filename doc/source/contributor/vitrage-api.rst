@@ -1783,7 +1783,7 @@ Request Examples
 
 ::
 
-    DELETE /v1/resources/`<id>`
+    DELETE /v1/webhook/`<id>`
     Host: 127.0.0.1:8999
     User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
     Accept: application/json
@@ -1800,3 +1800,132 @@ Response Body
 
 Returns a success message if the webhook is deleted, otherwise an error
 message is returned.
+
+
+Service list
+^^^^^^^^^^^^
+
+Lists the vitrage services present in the system
+
+GET  /v1/services/
+~~~~~~~~~~~~~~~~~~
+
+Headers
+=======
+
+-  X-Auth-Token (string, required) - Keystone auth token
+-  Accept (string) - application/json
+
+Path Parameters
+===============
+
+None.
+
+Query Parameters
+================
+
+None.
+
+Request Body
+============
+
+None.
+
+Request Examples
+================
+
+::
+
+    GET //v1/services/ HTTP/1.1
+    Host: 135.248.19.18:8999
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+    Accept: application/json
+
+
+
+ResponseStatus code
+===================
+
+-  200 - OK
+-  404 - Not Found
+-  500 - Service API not supported
+-  500 - Failed to connect to coordination backend
+
+Response Body
+=============
+
+Returns a JSON object with a list of all services.
+
+Response Examples
+=================
+
+::
+
+    [
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23161,
+        "Name": "ApiWorker worker(0)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23153,
+        "Name": "EvaluatorWorker worker(0)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23155,
+        "Name": "EvaluatorWorker worker(1)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23157,
+        "Name": "EvaluatorWorker worker(2)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23158,
+        "Name": "EvaluatorWorker worker(3)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:33+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23366,
+        "Name": "MachineLearningService worker(0)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:35+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23475,
+        "Name": "PersistorService worker(0)"
+      },
+      {
+        "Created At": "2019-02-10T11:07:15+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23164,
+        "Name": "SnmpParsingService worker(0)"
+      },
+      {
+        "Created At": "2019-02-10T11:14:30+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 25698,
+        "Name": "VitrageApi"
+      },
+      {
+        "Created At": "2019-02-10T11:14:30+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 25699,
+        "Name": "VitrageApi"
+      },
+      {
+        "Created At": "2019-02-10T11:07:32+00:00",
+        "Hostname": "controller-1",
+        "Process Id": 23352,
+        "Name": "VitrageNotifierService worker(0)"
+      }
+    ]

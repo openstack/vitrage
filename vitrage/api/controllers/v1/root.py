@@ -15,6 +15,7 @@ from vitrage.api.controllers.v1 import alarm
 from vitrage.api.controllers.v1 import event
 from vitrage.api.controllers.v1 import rca
 from vitrage.api.controllers.v1 import resource
+from vitrage.api.controllers.v1 import service
 from vitrage.api.controllers.v1 import template
 from vitrage.api.controllers.v1 import topology
 from vitrage.api.controllers.v1 import webhook
@@ -31,3 +32,4 @@ class V1Controller(object):
     webhook = webhook.WebhookController()
     template = template.TemplateController()
     event = event.EventController()
+    service = service.ServiceController()
