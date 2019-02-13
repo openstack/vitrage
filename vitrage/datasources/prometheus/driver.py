@@ -11,11 +11,13 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import json
 import socket
 
 from collections import namedtuple
 from ipaddress import ip_address
 from oslo_log import log
+import requests
 import six
 import six.moves.urllib.parse as urlparse
 
@@ -37,6 +39,8 @@ from vitrage.datasources.prometheus.properties \
     import PrometheusConfigFileProperties as PCFProps
 from vitrage.datasources.prometheus.properties \
     import PrometheusDatasourceProperties as PDProps
+from vitrage.datasources.prometheus.properties \
+    import PrometheusGetAllProperties as PGAProps
 from vitrage.datasources.prometheus.properties \
     import PrometheusProperties as PProps
 from vitrage import os_clients
@@ -163,7 +167,43 @@ class PrometheusDriver(AlarmDriverBase):
             old_alarm.get(PAlertProps.STATUS)
 
     def _get_all_alarms(self):
+        alertmanager_url = self.conf.prometheus.alertmanager_url
+        receiver = self.conf.prometheus.receiver
+        if not alertmanager_url:
+            LOG.warning('Alertmanager url is not defined')
+            return []
+
+        if not receiver:
+            LOG.warning('Receiver is not defined')
+            return []
+
+        payload = {PGAProps.ACTIVE: 'true',
+                   PGAProps.RECEIVER: receiver}
+
+        session = requests.Session()
+
+        response = session.get(alertmanager_url,
+                               params=payload)
+
+        if response.status_code == requests.codes.ok:
+            if 'v1' in alertmanager_url:
+                alerts = json.loads(response.text)[PGAProps.DATA]
+            else:
+                alerts = json.loads(response.text)
+            self._modify_alert_status(alerts)
+            alarms = self._enrich_alerts(alerts, PROMETHEUS_EVENT_TYPE)
+            return alarms
+        else:
+            LOG.error('Failed to get Alertmanager data. Response code: %s',
+                      response.status_code)
         return []
+
+    @staticmethod
+    def _modify_alert_status(alerts):
+        for alert in alerts:
+            if alert.get(PAlertProps.STATUS).get(PGAProps.STATE) == \
+                    PGAProps.ACTIVE:
+                alert[PAlertProps.STATUS] = PAlertStatus.FIRING
 
     def _get_changed_alarms(self):
         return []
@@ -222,26 +262,37 @@ class PrometheusDriver(AlarmDriverBase):
         alarms = []
         details = event.get(EProps.DETAILS)
         if details:
-            for alert in details.get(PProps.ALERTS, []):
-                alert[DSProps.EVENT_TYPE] = event_type
-                vitrage_entity_unique_props = \
-                    self._calculate_vitrage_entity_unique_props(alert)
-
-                alert[PDProps.ENTITY_UNIQUE_PROPS] = \
-                    vitrage_entity_unique_props
-                old_alarm = self._old_alarm(alert)
-                alert = self._filter_and_cache_alarm(
-                    alert, old_alarm,
-                    self._filter_get_erroneous,
-                    get_alarm_update_time(alert))
-
-                if alert:
-                    alarms.append(alert)
+            alarms = self._enrich_alerts(details.get(PProps.ALERTS, []),
+                                         event_type)
 
         LOG.debug('Enriched event. Created alert events: %s', str(alarms))
 
         return self.make_pickleable(alarms, PROMETHEUS_DATASOURCE,
                                     DatasourceAction.UPDATE)
+
+    def _enrich_alerts(self, alerts, event_type):
+        return [self._enrich_alert(alert, event_type) for alert in alerts]
+
+    def _enrich_alert(self, alert, event_type):
+        """Enrich prometheus alert.
+
+        Adding fields to prometheus alert in order to map it to vitrage entity.
+
+        :param alert: Prometheus alert
+        :param event_type: The type of the event. Always 'prometheus.alert'.
+        :return: Enriched prometheus alert
+        """
+        alert[DSProps.EVENT_TYPE] = event_type
+        vitrage_entity_unique_props = \
+            self._calculate_vitrage_entity_unique_props(alert)
+        alert[PDProps.ENTITY_UNIQUE_PROPS] = \
+            vitrage_entity_unique_props
+        old_alarm = self._old_alarm(alert)
+        alert = self._filter_and_cache_alarm(
+            alert, old_alarm,
+            self._filter_get_erroneous,
+            get_alarm_update_time(alert))
+        return alert
 
     def _calculate_vitrage_entity_unique_props(self, alert):
         """Build a vitrage entity unique props.

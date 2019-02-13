@@ -46,6 +46,16 @@ In ``/etc/vitrage/vitrage.conf`` add ``prometheus`` to the list of active dataso
     types = nova.host,nova.instance,nova.zone,aodh,static,cinder.volume,neutron.network,neutron.port,prometheus
 
 
+Add the http url of Prometheus Alertmanager api for alerts and the receiver name
+from the previous step under ``[prometheus]`` section::
+
+    [prometheus]
+    alertmanager_url = http://localhost:9093/api/v2/alerts
+    receiver = vitrage
+
+
+Note: Both v1 and v2 Alertmanager apis are supported
+
 
 Step 3 - Map Prometheus alerts to Vitrage resources
 ---------------------------------------------------
@@ -53,7 +63,8 @@ Step 3 - Map Prometheus alerts to Vitrage resources
 A configuration file that maps the Prometheus alert labels to a corresponding
 Vitrage resource with specific properties (id or other unique properties).
 The mapping will most likely be defined by the alert name and other fields.
-Set the location of the alerts mapping in ``/etc/vitrage/vitrage.conf``  ::
+Set the location of the alerts mapping in ``/etc/vitrage/vitrage.conf``
+under ``[prometheus]`` section::
 
     [prometheus]
     config_file = /path/to/alert/mapping

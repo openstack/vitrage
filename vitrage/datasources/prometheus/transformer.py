@@ -42,16 +42,17 @@ class PrometheusTransformer(AlarmTransformerBase):
         super(PrometheusTransformer, self).__init__(transformers, conf)
 
     def _create_snapshot_entity_vertex(self, entity_event):
-        # TODO(iafek): should be implemented
-        return None
+        return self._create_vertex(entity_event)
 
     def _create_update_entity_vertex(self, entity_event):
+        return self._create_vertex(entity_event)
+
+    def _create_vertex(self, entity_event):
         metadata = {
             VProps.NAME: get_label(entity_event, PAlertLabels.ALERT_NAME),
             VProps.SEVERITY: get_label(entity_event, PAlertLabels.SEVERITY),
             PProps.STATUS: entity_event.get(PProps.STATUS),
         }
-
         return graph_utils.create_vertex(
             self._create_entity_key(entity_event),
             vitrage_category=ECategory.ALARM,
@@ -62,7 +63,13 @@ class PrometheusTransformer(AlarmTransformerBase):
             metadata=metadata
         )
 
+    def _create_snapshot_neighbors(self, entity_event):
+        return self._create_prometheus_neighbors(entity_event)
+
     def _create_update_neighbors(self, entity_event):
+        return self._create_prometheus_neighbors(entity_event)
+
+    def _create_prometheus_neighbors(self, entity_event):
         graph_neighbors = entity_event.get(self.QUERY_RESULT, [])
         return [self._create_neighbor(entity_event,
                                       graph_neighbor[VProps.ID],

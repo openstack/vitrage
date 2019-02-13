@@ -201,13 +201,6 @@ class PrometheusDriverTest(base.BaseTest):
         # Test assertions
         self._assert_event_equal(created_events, PROMETHEUS_EVENT_TYPE)
 
-    @staticmethod
-    def _generate_event(update_vals=None):
-        generators = mock_driver.simple_prometheus_alarm_generators(
-            update_vals=update_vals)
-
-        return mock_driver.generate_sequential_events_list(generators)[0]
-
     def _assert_event_equal(self,
                             created_events,
                             expected_event_type):
@@ -223,3 +216,10 @@ class PrometheusDriverTest(base.BaseTest):
         event = self._generate_event()
         details = event[EProps.DETAILS]
         return details[PProps.ALERTS]
+
+    @staticmethod
+    def _generate_event(update_vals=None):
+        generators = mock_driver.simple_prometheus_alarm_generators(
+            update_vals=update_vals)
+
+        return mock_driver.generate_sequential_events_list(generators)[0]

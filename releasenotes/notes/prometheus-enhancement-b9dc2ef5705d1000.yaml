@@ -3,3 +3,4 @@ features:
   - Added support for a yaml configuration file that maps the Prometheus
     alert labels to  a corresponding Vitrage resource with specific
     properties (id or other unique properties).
+  - Added support for get_all alerts from Prometheus Alertmanager.

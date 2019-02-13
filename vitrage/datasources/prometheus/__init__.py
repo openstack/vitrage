@@ -15,6 +15,8 @@
 from oslo_config import cfg
 from vitrage.common.constants import DatasourceOpts as DSOpts
 from vitrage.common.constants import UpdateMethod
+from vitrage.datasources.prometheus.properties \
+    import PrometheusGetAllProperties as PGAProps
 
 PROMETHEUS_DATASOURCE = 'prometheus'
 
@@ -38,4 +40,9 @@ OPTS = [
                required=True),
     cfg.StrOpt(DSOpts.CONFIG_FILE, default='/etc/vitrage/prometheus_conf.yaml',
                help='Prometheus configuration file'),
+    cfg.StrOpt(PGAProps.ALERTMANAGER_URL,
+               help='Prometheus Alertmanager http api url to get alerts'),
+    cfg.StrOpt(PGAProps.RECEIVER,
+               help='Receiver configured in Prometheus Alertmanager to send '
+                    'alerts to Vitrage'),
 ]

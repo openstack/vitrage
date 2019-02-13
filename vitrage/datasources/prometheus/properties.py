@@ -47,6 +47,14 @@ class PrometheusDatasourceProperties(object):
     ENTITY_UNIQUE_PROPS = 'vitrage_entity_unique_props'
 
 
+class PrometheusGetAllProperties(object):
+    ALERTMANAGER_URL = 'alertmanager_url'
+    RECEIVER = 'receiver'
+    STATE = 'state'
+    ACTIVE = 'active'
+    DATA = 'data'
+
+
 def get_alarm_update_time(alarm):
     if PrometheusAlertStatus.FIRING == \
             alarm.get(PrometheusAlertProperties.STATUS):
