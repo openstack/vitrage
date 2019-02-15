@@ -16,8 +16,10 @@ from oslo_log import log
 from vitrage.evaluator.actions.base import ActionType
 from vitrage.evaluator import base
 from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_functions import GET_ATTR
+from vitrage.evaluator.template_functions import GET_PARAM
 from vitrage.evaluator.template_functions.v2.functions import get_attr
-from vitrage.evaluator.template_functions.v2.functions import GET_ATTR
+from vitrage.evaluator.template_functions.v2.functions import get_param
 from vitrage.evaluator.template_loading.template_loader import TemplateLoader
 from vitrage.evaluator.template_loading.template_loader_v3 import\
     TemplateLoader as V3TemplateLoader
@@ -36,6 +38,8 @@ from vitrage.evaluator.template_validation.content.v1.definitions_validator \
 from vitrage.evaluator.template_validation.content.v1.\
     execute_mistral_validator import ExecuteMistralValidator as \
     V1ExecuteMistralValidator
+from vitrage.evaluator.template_validation.content.v1.get_param_validator \
+    import GetParamValidator as V1GetParamValidator
 from vitrage.evaluator.template_validation.content.v1.mark_down_validator \
     import MarkDownValidator
 from vitrage.evaluator.template_validation.content.v1.metadata_validator \
@@ -49,6 +53,8 @@ from vitrage.evaluator.template_validation.content.v1.set_state_validator \
 from vitrage.evaluator.template_validation.content.v2.\
     execute_mistral_validator import ExecuteMistralValidator as \
     V2ExecuteMistralValidator
+from vitrage.evaluator.template_validation.content.v2.get_param_validator \
+    import GetParamValidator as V2GetParamValidator
 from vitrage.evaluator.template_validation.content.v2.metadata_validator \
     import MetadataValidator as V2MetadataValidator
 from vitrage.evaluator.template_validation.template_syntax_validator_v3 import\
@@ -63,6 +69,7 @@ class TemplateSchema1(object):
             TemplateFields.DEFINITIONS: DefinitionsValidator,
             TemplateFields.METADATA: V1MetadataValidator,
             TemplateFields.SCENARIOS: ScenarioValidator,
+            GET_PARAM: V1GetParamValidator,
             ActionType.ADD_CAUSAL_RELATIONSHIP: AddCausalRelationshipValidator,
             ActionType.EXECUTE_MISTRAL: V1ExecuteMistralValidator,
             ActionType.MARK_DOWN: MarkDownValidator,
@@ -92,8 +99,10 @@ class TemplateSchema2(TemplateSchema1):
         self.validators[TemplateFields.METADATA] = V2MetadataValidator
         self.validators[ActionType.EXECUTE_MISTRAL] = \
             V2ExecuteMistralValidator
+        self.validators[GET_PARAM] = V2GetParamValidator
         self.loaders[ActionType.EXECUTE_MISTRAL] = ActionLoader()
         self.functions[GET_ATTR] = get_attr
+        self.functions[GET_PARAM] = get_param
 
     def version(self):
         return '2'

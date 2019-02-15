@@ -26,8 +26,8 @@ from vitrage.common.constants import TemplateTypes
 from vitrage.evaluator.actions.base import ActionType
 from vitrage.evaluator.actions.recipes.execute_mistral import INPUT
 from vitrage.evaluator.actions.recipes.execute_mistral import WORKFLOW
-from vitrage.evaluator.base import is_function
 from vitrage.evaluator.template_fields import TemplateFields as TF
+from vitrage.evaluator.template_functions.function_resolver import is_function
 from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
 
 LOG = log.getLogger(__name__)

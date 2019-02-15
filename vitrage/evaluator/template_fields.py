@@ -18,6 +18,7 @@ from vitrage.common.constants import TemplateTopologyFields
 class TemplateFields(TemplateTopologyFields):
 
     SCENARIOS = 'scenarios'
+    PARAMETERS = 'parameters'
 
     ALARM_NAME = 'alarm_name'
     ACTION = 'action'
@@ -35,3 +36,4 @@ class TemplateFields(TemplateTopologyFields):
 
     PROPERTIES = 'properties'
     REGEX = '.regex'
+    DEFAULT = 'default'

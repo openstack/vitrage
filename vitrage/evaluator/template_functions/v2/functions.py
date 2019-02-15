@@ -13,10 +13,15 @@
 # under the License.
 from oslo_log import log
 
-LOG = log.getLogger(__name__)
+from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_functions import GET_PARAM
+from vitrage.evaluator.template_validation.content.base import \
+    get_content_correct_result
+from vitrage.evaluator.template_validation.content.base import \
+    get_content_fault_result
+from vitrage.evaluator.template_validation.status_messages import status_msgs
 
-# Function names
-GET_ATTR = 'get_attr'
+LOG = log.getLogger(__name__)
 
 
 def get_attr(match, *args):
@@ -76,3 +81,93 @@ def get_attr(match, *args):
               template_id, attr_name, str(entity_props), attr)
 
     return attr
+
+
+def get_param(param_name, template, **kwargs):
+    """Return the value of a specific parameter that is used in a template
+
+    Usage: get_param(param_name, template, actual_params)
+
+    Example:
+
+    parameters:
+     new_state:
+      default: ERROR
+    scenarios:
+     - scenario:
+        condition: alarm_on_host
+        actions:
+         - action:
+            action_type: set_state
+            properties:
+             state: get_param(new_state)
+            action_target:
+             target: resource
+
+    actual_params may be empty or may define a new_state parameter:
+    {'new_state': 'SUBOPTIMAL'}
+
+    :param param_name: Name of a parameter
+    :param template: Complete template structure
+    :param kwargs: Additional arguments.
+    The expected argument is actual_params, a dict with key=value pairs of
+    parameter values.
+    :return: A tuple of (Result, param value)
+    The parameter value is taken from the actual_params, if given, or from the
+    default value that is defined in the template parameters section.
+    If none exists, a fault result is returned.
+    """
+    param_defs = template.get(TemplateFields.PARAMETERS)
+    actual_params = kwargs.get('actual_params')
+
+    if not param_defs:
+        LOG.error('%s status code: %s' % (status_msgs[161], 161))
+        return get_content_fault_result(161), None
+
+    if param_name.startswith(GET_PARAM):
+        if not param_name.startswith(GET_PARAM + '(') or \
+                not param_name.endswith(')') or \
+                len(param_name) < len(GET_PARAM) + 3:
+            LOG.error('%s status code: %s' % (status_msgs[162], 162))
+            return get_content_fault_result(162), None
+
+        param_name = extract_param_name(param_name)
+        if not param_name:
+            LOG.error('%s status code: %s' % (status_msgs[162], 162))
+            return get_content_fault_result(162), None
+
+    # Make sure the parameter is defined in the parameters section
+    found_param_def = None
+    for param_key, param_value in param_defs.items():
+        if param_name == param_key:
+            found_param_def = param_key, param_value
+
+    if not found_param_def:
+        LOG.error('%s status code: %s' % (status_msgs[161], 161))
+        return get_content_fault_result(161), None
+
+    # Check if an actual value was assigned to this parameter
+    param_value = get_actual_value(param_name, actual_params)
+    if not param_value:
+        found_param_value = found_param_def[1]
+        default = found_param_value.get(TemplateFields.DEFAULT) \
+            if found_param_value else None  # param_def may have a None value
+        if default:
+            param_value = default
+        else:
+            return get_content_fault_result(163), None
+
+    return get_content_correct_result(), param_value
+
+
+def extract_param_name(param):
+    param_name = param[len(GET_PARAM):]
+    if len(param_name) > 2 and \
+            param_name[0] == '(' and param_name[-1] == ')':
+        param_name = param_name[1:-1]
+    return param_name
+
+
+def get_actual_value(param_name, actual_params):
+    if actual_params:
+        return actual_params.get(param_name)

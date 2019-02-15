@@ -31,12 +31,12 @@ from vitrage.evaluator.template_validation.template_syntax_validator import \
 LOG = log.getLogger(__name__)
 
 
-def validate_template(template, def_templates):
+def validate_template(template, def_templates, params=None):
     result, template_schema = get_template_schema(template)
     if not result.is_valid_config:
         return result
     if template_schema.version() < '3':
-        return _validate_template_v1_v2(template, def_templates)
+        return _validate_template_v1_v2(template, def_templates, params)
 
     try:
         template_schema.validators[SYNTAX].validate(template)
@@ -48,12 +48,12 @@ def validate_template(template, def_templates):
     return base.get_correct_result()
 
 
-def _validate_template_v1_v2(template, def_templates):
+def _validate_template_v1_v2(template, def_templates, params=None):
     result = syntax_validation(template)
     if not result.is_valid_config:
         LOG.error('Unable to load template, syntax error: %s' % result.comment)
         return result
-    result = content_validation(template, def_templates)
+    result = content_validation(template, def_templates, params)
     if not result.is_valid_config:
         LOG.error('Unable to load template, content error:%s' % result.comment)
         return result
