@@ -140,3 +140,12 @@ The following describes all the possible status code and their messages:
 | 143              | A template definition file cannot contain 'includes' or | syntax                        |
 |                  | 'scenarios' blocks                                      |                               |
 +------------------+---------------------------------------------------------+-------------------------------+
+| 160              | Parameters are supported only from version 2            | content                       |
++------------------+---------------------------------------------------------+-------------------------------+
+| 161              | get_param called for a parameter that is not defined in | content                       |
+|                  | the 'parameters' block                                  |                               |
++------------------+---------------------------------------------------------+-------------------------------+
+| 162              | malformed get_param() clause                            | content                       |
++------------------+---------------------------------------------------------+-------------------------------+
+| 163              | Failed to resolve parameter                             | content                       |
++------------------+---------------------------------------------------------+-------------------------------+
