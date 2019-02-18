@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    Default Cinder API version is changed to v3. It's fully compatible with
+    API v2. If you need to use Cinder API v2 you need to cinder_version='2' in
+    the Vitrage configuration file.

@@ -24,7 +24,7 @@ OPTS = [
     cfg.StrOpt('aodh_version', default='2', help='Aodh version'),
     cfg.StrOpt('ceilometer_version', default='2', help='Ceilometer version'),
     cfg.StrOpt('nova_version', default='2.11', help='Nova version'),
-    cfg.StrOpt('cinder_version', default='2', help='Cinder version'),
+    cfg.StrOpt('cinder_version', default='3', help='Cinder version'),
     cfg.StrOpt('glance_version', default='2', help='Glance version'),
     cfg.StrOpt('heat_version', default='1', help='Heat version'),
     cfg.StrOpt('mistral_version', default='2', help='Mistral version'),
