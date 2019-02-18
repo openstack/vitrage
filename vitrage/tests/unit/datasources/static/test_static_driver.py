@@ -43,9 +43,9 @@ class TestStaticDriver(base.BaseTest):
             DatasourceAction.INIT_SNAPSHOT)
 
         # Test assertions
-        self.assertThat(static_entities, matchers.HasLength(9))
+        self.assertThat(static_entities, matchers.HasLength(8))
 
-        for entity in static_entities[:-1]:  # exclude end message
+        for entity in static_entities:
             self._validate_static_entity(entity)
 
     # noinspection PyAttributeOutsideInit

@@ -13,7 +13,6 @@
 # under the License.
 
 from datetime import timedelta
-import time
 
 from oslo_log import log
 
@@ -135,19 +134,6 @@ class ConsistencyEnforcer(object):
                 not vertex[VProps.VITRAGE_TYPE] == OPENSTACK_CLUSTER) or \
                (vertex.get(VProps.VITRAGE_DATASOURCE_NAME) in
                 self.datasources_to_mark_deleted)
-
-    def _wait_for_action(self, function):
-        count_retries = 0
-        while True:
-            if count_retries >= \
-                    self.conf.consistency.initialization_max_retries:
-                return False
-
-            if function():
-                return True
-
-            count_retries += 1
-            time.sleep(self.conf.consistency.initialization_interval)
 
     def _init_datasources_to_mark_deleted(self):
         self.datasources_to_mark_deleted = []

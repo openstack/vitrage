@@ -21,10 +21,7 @@ from testtools import matchers
 
 from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import VertexProperties as VProps
-from vitrage.datasources.nagios import NAGIOS_DATASOURCE
-from vitrage.datasources.nova.host import NOVA_HOST_DATASOURCE
 from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
-from vitrage.datasources.nova.zone import NOVA_ZONE_DATASOURCE
 from vitrage.entity_graph.consistency.consistency_enforcer \
     import ConsistencyEnforcer
 from vitrage.entity_graph.processor.processor import Processor
@@ -44,11 +41,6 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
         cfg.IntOpt('min_time_to_delete',
                    default=1,
                    min=1),
-        cfg.IntOpt('initialization_interval',
-                   default=1,
-                   min=1),
-        cfg.IntOpt('initialization_max_retries',
-                   default=10),
     ]
 
     EVALUATOR_OPTS = [
@@ -251,13 +243,6 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
         self._add_resources_by_type(consistency_interval=consistency_interval,
                                     datasource_name='cinder.volume',
                                     resource_type='cinder.volume')
-
-    def _set_end_messages(self):
-        self.initialization_status.end_messages[NOVA_ZONE_DATASOURCE] = True
-        self.initialization_status.end_messages[NOVA_HOST_DATASOURCE] = True
-        self.initialization_status.end_messages[NOVA_INSTANCE_DATASOURCE] = \
-            True
-        self.initialization_status.end_messages[NAGIOS_DATASOURCE] = True
 
     def _update_timestamp(self, lst, timestamp):
         for vertex in lst:
