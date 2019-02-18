@@ -210,7 +210,7 @@ class TemplateSyntaxValidatorTest(base.BaseTest):
         template = file_utils.load_yaml_file(template_path)
         self._test_execution_with_fault_result(template, 4)
 
-    def test_template_with_include_with_no_defnitions(self):
+    def test_template_with_include_with_no_definitions(self):
         template_path = self.def_template_dir_path +\
             '/templates/no_definitions_only_include.yaml'
         template = file_utils.load_yaml_file(template_path)

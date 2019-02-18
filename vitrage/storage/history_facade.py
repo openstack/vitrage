@@ -23,7 +23,7 @@ from oslo_db.sqlalchemy import utils as sqlalchemyutils
 from oslo_log import log
 from oslo_utils import timeutils
 
-from vitrage.common.constants import EdgeLabel as ELable
+from vitrage.common.constants import EdgeLabel as ELabel
 from vitrage.common.constants import HistoryProps as HProps
 from vitrage.common.exception import VitrageInputError
 from vitrage.entity_graph.mappings.operational_alarm_severity import \
@@ -399,7 +399,7 @@ class HistoryFacadeConnection(object):
         session = self._engine_facade.get_session()
         query = session.query(models.Edge)\
             .filter(and_(getattr(models.Edge, filter_by).in_(alarm_ids),
-                         models.Edge.label == ELable.CAUSES))
+                         models.Edge.label == ELabel.CAUSES))
 
         query = query.join(models.Edge.target)
         query = self._add_project_filtering_to_query(query, proj_id, admin)

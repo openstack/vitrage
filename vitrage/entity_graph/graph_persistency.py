@@ -108,7 +108,7 @@ class GraphPersistency(object):
             if key in args:
                 continue
             elif isinstance(content, dict) or isinstance(content, list):
-                return True  # TODO(ihefetz): can be imporved
+                return True  # TODO(ihefetz): can be improved
             elif before.properties.get(key) != content:
                 return True
         return False

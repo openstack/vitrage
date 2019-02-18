@@ -107,7 +107,7 @@ class KubernetesTransformerTest(base.BaseTest):
 
     def _validate_cluster_neighbors(self, neighbor, event):
 
-        # Create expected neigbor
+        # Create expected neighbor
         time = event[DSProps.SAMPLE_DATE]
         external_id = event['resources'][0][kubProp.EXTERNALID]
         properties = {

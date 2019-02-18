@@ -53,10 +53,10 @@ class TemplateLoaderTest(base.BaseTest):
         template_definition = file_utils.load_yaml_file(template_path, True)
         def_templates_path = self.DEF_TEMPLATE_TESTS_DIR + \
             '/definition_templates'
-        def_demplates_list = file_utils.load_yaml_files(
+        def_templates_list = file_utils.load_yaml_files(
             def_templates_path)
         def_templates_dict = utils.get_def_templates_dict_from_list(
-            def_demplates_list)
+            def_templates_list)
         template_data = get_template_data(template_definition,
                                           def_templates_dict)
         entities = template_data.entities

@@ -131,7 +131,7 @@ def timed_method(log_results=False, warn_above_sec=-1):
             t1 = time.time()
             result = function(*args, **kwargs)
             t2 = time.time()
-            if warn_above_sec > 0 and warn_above_sec < t2 - t1:
+            if 0 < warn_above_sec < t2 - t1:
                 LOG.warning(
                     'Function %s runtime crossed limit %s seconds.',
                     function.__name__, t2 - t1)

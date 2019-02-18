@@ -28,7 +28,7 @@ LOG = log.getLogger(__name__)
 class MetadataValidator(object):
 
     @classmethod
-    def validate(self, metadata):
+    def validate(cls, metadata):
         if not metadata:
             return get_content_fault_result(62)
 

@@ -22,7 +22,7 @@ Configuration
 To forward zabbix events to Vitrage a new media script needs to be created and
 associated with a user. Follow the steps below as a Zabbix Admin user:
 
-1. Create a new media type [Admininstration > Media Types > Create Media Type]
+1. Create a new media type [Administration > Media Types > Create Media Type]
 
 
       Name: Vitrage Notifications

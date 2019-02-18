@@ -33,9 +33,3 @@ class KubernetesProperties(object):
     SPEC = 'spec'
     CREATION_TIMESTAMP = 'creation_timestamp'
     RESOURCES = 'resources'
-
-
-class KubeClusterProperies(object):
-    KUBERNETES_CLUSTER = 'kubernetes.cluster'
-    CLUSTER_ID = 'Kubernetes Cluster'
-    AVAILABLE = 'available'

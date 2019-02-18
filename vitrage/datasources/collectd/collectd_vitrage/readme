@@ -5,7 +5,7 @@ Configuring collectd to send notifications to Vitrage
 
 2. Enable the python plugin with the following:
    * Unmark the python plugin "LoadPlugin python"
-   * Edit the Python plugin as followes:
+   * Edit the Python plugin as follows:
       <Plugin python>
               ModulePath "/opt/stack/vitrage/vitrage/datasources/collectd/"
               LogTraces true
@@ -18,8 +18,8 @@ Configuring collectd to send notifications to Vitrage
               </Module>
       </Plugin>
 
-   * The MoudlePath should point to where the vitrage collectd datasource is
-    installed e.g. [vitrtage install dir]/datasources/collectd
+   * The ModulePath should point to where the vitrage collectd datasource is
+    installed e.g. [vitrage install dir]/datasources/collectd
    *  The transport url should point to the transport url defined in vitrage
    .conf
 
