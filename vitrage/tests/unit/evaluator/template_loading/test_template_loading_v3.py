@@ -247,7 +247,8 @@ class TemplateLoaderV3Test(BaseTest, TestConfiguration):
                     {
                         'severity': 'WARNING',
                         'alarm_name': 'instance is down',
-                        'causing_alarm': 'host_ssh_alarm',
+                        'causing_alarm':
+                            'get_attr(host_ssh_alarm, vitrage_id)',
                     }),
                 ActionSpecs(
                     'valid actions-scenario2-action1',
