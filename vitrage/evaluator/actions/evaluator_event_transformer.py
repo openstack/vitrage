@@ -123,6 +123,7 @@ class EvaluatorEventTransformer(transformer_base.TransformerBase):
             return [Neighbor(None, relation_edge)]
 
         if event_type == ADD_VERTEX:
+            result = []
 
             relation_edge = graph_utils.create_edge(
                 source_id=TransformerBase.uuid_from_deprecated_vitrage_id(
@@ -140,8 +141,25 @@ class EvaluatorEventTransformer(transformer_base.TransformerBase):
                 VProps.VITRAGE_TYPE: event.get(VProps.VITRAGE_RESOURCE_TYPE),
                 VProps.VITRAGE_CATEGORY: EntityCategory.RESOURCE,
             }
-            neighbor = Vertex(event[TFields.TARGET], neighbor_props)
-            return [Neighbor(neighbor, relation_edge)]
+            result.append(Neighbor(
+                Vertex(event[TFields.TARGET], neighbor_props), relation_edge))
+            if event.get(TFields.CAUSING_ALARM):
+                relation_edge = graph_utils.create_edge(
+                    source_id=event[TFields.CAUSING_ALARM],
+                    target_id=TransformerBase.uuid_from_deprecated_vitrage_id(
+                        self._create_entity_key(event)),
+                    relationship_type=EdgeLabel.CAUSES,
+                    update_timestamp=timestamp)
+                result.append(
+                    Neighbor(Vertex(
+                        event[TFields.CAUSING_ALARM],
+                        {
+                            VProps.UPDATE_TIMESTAMP: timestamp,
+                            VProps.VITRAGE_IS_PLACEHOLDER: True,
+                        }),
+                        relation_edge)
+                )
+            return result
 
         return []
 

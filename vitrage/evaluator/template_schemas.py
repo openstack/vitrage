@@ -28,6 +28,8 @@ from vitrage.evaluator.template_loading.v1.execute_mistral_loader import \
     ExecuteMistralLoader
 from vitrage.evaluator.template_loading.v3.action_loader import ActionLoader \
     as V3ActionLoader
+from vitrage.evaluator.template_loading.v3.raise_alarm_loader import \
+    RaiseAlarmLoader as V3RaiseAlarmLoader
 from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
 from vitrage.evaluator.template_validation.content.\
     template_content_validator_v3 import ContentValidator as V3ContentValidator
@@ -121,7 +123,7 @@ class TemplateSchema3(object):
             ActionType.ADD_CAUSAL_RELATIONSHIP: V3ActionLoader(),
             ActionType.EXECUTE_MISTRAL: V3ActionLoader(),
             ActionType.MARK_DOWN: V3ActionLoader(),
-            ActionType.RAISE_ALARM: V3ActionLoader(),
+            ActionType.RAISE_ALARM: V3RaiseAlarmLoader(),
             ActionType.SET_STATE: V3ActionLoader(),
         }
 
