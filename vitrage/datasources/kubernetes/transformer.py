@@ -85,6 +85,8 @@ class KubernetesTransformer(ResourceTransformerBase):
 
     def _get_cluster_name(self):
         kubeconf = file_utils.load_yaml_file(self.conf.kubernetes.config_file)
+        if not kubeconf:
+            return None
         contexts = kubeconf['contexts']
         for context in contexts:
             if context['name'] == kubeconf['current-context']:

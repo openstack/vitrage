@@ -46,6 +46,7 @@ class AodhProperties(object):
     USER_ID = 'user_id'
     STATE_REASON = 'state_reason'
     METRICS = 'metrics'
+    TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
 
 class AodhState(object):

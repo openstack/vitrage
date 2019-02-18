@@ -143,7 +143,7 @@ class AodhTransformer(AlarmTransformerBase):
     def _timestamp(entity_event):
         return datetime_utils.change_time_str_format(
             entity_event[AodhProps.TIMESTAMP],
-            '%Y-%m-%dT%H:%M:%S.%f',
+            AodhProps.TIME_FORMAT,
             tbase.TIMESTAMP_FORMAT)
 
     @staticmethod
