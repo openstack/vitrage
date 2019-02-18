@@ -33,4 +33,4 @@ class TestVersions(api.FunctionalTest):
 
     def test_versions(self):
         data = self.get_json('/')
-        self.assertEqual(VERSIONS_RESPONSE, data)
+        self.assert_dict_equal(VERSIONS_RESPONSE, data)

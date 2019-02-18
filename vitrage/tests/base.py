@@ -28,14 +28,14 @@ IsEmpty = lambda: HasLength(0)
 class BaseTest(base.BaseTestCase):
     """Test case base class for all unit tests."""
 
-    def assert_list_equal(self, l1, l2):
+    def assert_list_equal(self, l1, l2, message=None):
         if tuple(sys.version_info)[0:2] < (2, 7):
             # for python 2.6 compatibility
-            self.assertEqual(l1, l2)
+            self.assertEqual(l1, l2, message)
         else:
-            super(BaseTest, self).assertListEqual(l1, l2)
+            super(BaseTest, self).assertListEqual(l1, l2, message)
 
-    def assert_dict_equal(self, d1, d2, message):
+    def assert_dict_equal(self, d1, d2, message=None):
         if tuple(sys.version_info)[0:2] < (2, 7):
             # for python 2.6 compatibility
             self.assertEqual(d1, d2)

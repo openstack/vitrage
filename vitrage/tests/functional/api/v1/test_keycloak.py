@@ -97,7 +97,7 @@ class KeycloakTest(FunctionalTest):
         resp = self.post_json('/topology/', expect_errors=True)
 
         self.assertEqual('401 Unauthorized', resp.status)
-        self.assertEqual(NO_TOKEN_ERROR_MSG, resp.json)
+        self.assert_dict_equal(NO_TOKEN_ERROR_MSG, resp.json)
 
     @mock.patch('jwt.decode', return_value=TOKEN)
     @requests_mock.Mocker()

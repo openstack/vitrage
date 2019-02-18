@@ -222,14 +222,13 @@ class JaccardCorrelationTest(base.BaseTest):
             self.data_manager.append_active(alarm_id, timestamp)
 
         # assert all alarm ids are right
-        for i in range(len(self.alarm_ids)):
-            self.assertEqual(self.alarm_ids[i], real_alarm_ids[i], '')
+        self.assert_list_equal(self.alarm_ids, real_alarm_ids)
 
-        self.assertEqual(expected_active_start_dict,
-                         self.data_manager.active_start_times)
+        self.assert_dict_equal(expected_active_start_dict,
+                               self.data_manager.active_start_times)
 
-        self.assertEqual({}, self.data_manager.alarms_activity)
-        self.assertEqual({}, self.data_manager.alarms_intersects)
+        self.assert_is_empty(self.data_manager.alarms_activity)
+        self.assert_is_empty(self.data_manager.alarms_intersects)
 
     def _test_flush_accumulations(self):
 
@@ -238,8 +237,8 @@ class JaccardCorrelationTest(base.BaseTest):
         time.sleep(2)
         self.data_manager.flush_accumulations()
 
-        self.assertEqual(prev_active_start_dict,
-                         self.data_manager.active_start_times)
+        self.assert_dict_equal(prev_active_start_dict,
+                               self.data_manager.active_start_times)
 
         expected_activity_dict_len = len(ACTIVE_ALARMS)
         self.assertThat(self.data_manager.alarms_activity,
@@ -266,7 +265,7 @@ class JaccardCorrelationTest(base.BaseTest):
                         alarm.get(VProps.VITRAGE_RESOURCE_TYPE),
                         alarm_name)
 
-            self.assertEqual(expected_alarm_id, alarm_id, '')
+            self.assertEqual(expected_alarm_id, alarm_id)
 
             self.inactivate_timestamps[alarm_id] = timestamp
             deleted_alarm_ids.append(alarm_id)
@@ -274,12 +273,12 @@ class JaccardCorrelationTest(base.BaseTest):
             self.data_manager.append_inactive(alarm_id, timestamp)
 
         # assert all deleted alarms has same alarm ids as activated alarms
-        self.assertEqual(self.alarm_ids, deleted_alarm_ids)
+        self.assert_list_equal(self.alarm_ids, deleted_alarm_ids)
 
         # all alarm are inactive at this moment
         expected_active_start_dict = {}
-        self.assertEqual(expected_active_start_dict,
-                         self.data_manager.active_start_times)
+        self.assert_dict_equal(expected_active_start_dict,
+                               self.data_manager.active_start_times)
 
         expected_activity_dict = {}
 
@@ -288,8 +287,8 @@ class JaccardCorrelationTest(base.BaseTest):
                 self.inactivate_timestamps[alarm_id]\
                 - self.activate_timestamps[alarm_id]
 
-        self.assertEqual(expected_activity_dict,
-                         self.data_manager.alarms_activity)
+        self.assert_dict_equal(expected_activity_dict,
+                               self.data_manager.alarms_activity)
 
         expected_intersections_dict = {}
 
@@ -304,8 +303,8 @@ class JaccardCorrelationTest(base.BaseTest):
                         self.inactivate_timestamps[alarm_id]\
                         - self.activate_timestamps[alarm_id]
 
-        self.assertEqual(expected_intersections_dict,
-                         self.data_manager.alarms_intersects)
+        self.assert_dict_equal(expected_intersections_dict,
+                               self.data_manager.alarms_intersects)
 
     def _test_correlation_collection(self):
         self._test_correlation_list()
@@ -337,7 +336,7 @@ class JaccardCorrelationTest(base.BaseTest):
                                         correlation)
                     cnt += 1
 
-        self.assertEqual(alarms_pairs, self.collection.correlation_list)
+        self.assert_list_equal(alarms_pairs, self.collection.correlation_list)
 
     def _test_correlations_aggregation(self):
 
@@ -354,9 +353,9 @@ class JaccardCorrelationTest(base.BaseTest):
             if correlation_level[0] == CPriorities.LOW:
                 cnt_low_correlations = len(correlation_level[1])
 
-        self.assertEqual(cnt_high_correlations, 2, '')
-        self.assertEqual(cnt_med_correlations, 2, '')
-        self.assertEqual(cnt_low_correlations, 2, '')
+        self.assertEqual(cnt_high_correlations, 2)
+        self.assertEqual(cnt_med_correlations, 2)
+        self.assertEqual(cnt_low_correlations, 2)
 
     def _test_correlation_manager(self):
         report = []

@@ -63,7 +63,7 @@ class NoAuthTest(FunctionalTest):
 
             self.assertEqual(1, request.client.call.call_count)
             self.assertEqual('200 OK', resp.status)
-            self.assertEqual({}, resp.json)
+            self.assert_is_empty(resp.json)
 
     def test_noauth_mode_list_alarms(self):
         with mock.patch('pecan.request') as request:
@@ -72,7 +72,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/alarm/', params=params)
 
             self.assertEqual(1, request.client.call.call_count)
-            self.assertEqual([], data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_show_alarm(self):
 
@@ -81,7 +81,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/alarm/1234')
 
             self.assertEqual(1, request.client.call.call_count)
-            self.assertEqual({}, data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_show_alarm_count(self):
         with mock.patch('pecan.request') as request:
@@ -91,7 +91,7 @@ class NoAuthTest(FunctionalTest):
 
             self.assertEqual(1, request.client.call.call_count)
             self.assertEqual('200 OK', resp.status)
-            self.assertEqual({}, resp.json)
+            self.assert_is_empty(resp.json)
 
     def test_noauth_mode_list_resources(self):
 
@@ -101,7 +101,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/resources/', params=params)
 
             self.assertEqual(1, request.client.call.call_count)
-            self.assertEqual([], data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_show_resource(self):
 
@@ -110,7 +110,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/resources/1234')
 
             self.assertEqual(1, request.client.call.call_count)
-            self.assertEqual({}, data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_list_templates(self):
 
@@ -119,7 +119,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/template/')
 
             self.assertEqual(1, request.storage.templates.query.call_count)
-            self.assertEqual([], data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_show_template(self):
 
@@ -129,7 +129,7 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/template/1234')
 
             self.assertEqual(1, request.storage.templates.query.call_count)
-            self.assertEqual({}, data)
+            self.assert_is_empty(data)
 
     def test_noauth_mode_validate_template(self):
 
@@ -140,7 +140,7 @@ class NoAuthTest(FunctionalTest):
 
             self.assertEqual(1, request.client.call.call_count)
             self.assertEqual('200 OK', resp.status)
-            self.assertEqual({}, resp.json)
+            self.assert_is_empty(resp.json)
 
     def test_noauth_mode_get_rca(self):
 
@@ -150,4 +150,4 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/rca/1234/', params=params)
 
             self.assertEqual(1, request.client.call.call_count)
-            self.assertEqual({}, data)
+            self.assert_is_empty(data)

@@ -131,7 +131,7 @@ class TestSnmpParsing(base.BaseTest):
     def test_convert_binds_to_dict(self):
         parsing_service = SnmpParsingService(1, self.conf)
         dict_converted = parsing_service._convert_binds_to_dict(BINDS_REPORTED)
-        self.assertEqual(dict_converted, DICT_EXPECTED)
+        self.assert_dict_equal(dict_converted, DICT_EXPECTED)
 
     def test_get_event_type(self):
         parsing_service = SnmpParsingService(1, self.conf)
