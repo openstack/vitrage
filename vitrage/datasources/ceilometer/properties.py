@@ -38,6 +38,7 @@ class CeilometerProperties(object):
     GNOCCHI_RESOURCES_THRESHOLD_RULE = 'gnocchi_resources_threshold_rule'
     USER_ID = 'user_id'
     STATE_REASON = 'state_reason'
+    TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
 
 
 class CeilometerState(object):
