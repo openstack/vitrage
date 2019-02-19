@@ -118,7 +118,7 @@ class AlarmDriverBase(DriverBase):
 
         return alarms_to_update
 
-    def _filter_get_valid(self, alarm, old_alarm):
+    def _filter_get_valid(self, alarm, _):
         return alarm if self._is_valid(alarm) else None
 
     def _filter_get_erroneous(self, alarm, old_alarm):

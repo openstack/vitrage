@@ -30,7 +30,7 @@ rules = [
         name='get rca:all_tenants',
         check_str=base.ROLE_ADMIN,
         description='Show the root cause analysis on an alarm. Include alarms'
-                    ' of all tenants (if the user has the permisions)',
+                    ' of all tenants (if the user has the permissions)',
         operations=[
             {
                 'path': '/rca',

@@ -283,7 +283,7 @@ class ChangesConnection(object):
     def create(self, change):
         raise NotImplementedError('create change not implemented')
 
-    def add_end_changes(self, chnges_to_add, end_time):
+    def add_end_changes(self, changes_to_add, end_time):
         raise NotImplementedError('add end changes not implemented')
 
     def delete(self):
