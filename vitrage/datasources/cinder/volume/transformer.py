@@ -44,14 +44,18 @@ class CinderVolumeTransformer(ResourceTransformerBase):
 
     def _create_snapshot_entity_vertex(self, entity_event):
 
-        volume_name = extract_field_value(entity_event, 'display_name')
-        volume_id = extract_field_value(entity_event, 'id')
-        volume_state = extract_field_value(entity_event, 'status')
-        project_id = entity_event.get('os-vol-tenant-attr:tenant_id', None)
-        timestamp = extract_field_value(entity_event, 'created_at')
-        size = extract_field_value(entity_event, 'size')
-        volume_type = extract_field_value(entity_event, 'volume_type')
-        attachments = extract_field_value(entity_event, 'attachments')
+        volume_name = extract_field_value(entity_event,
+                                          CinderProps.DISPLAY_NAME)
+        volume_id = extract_field_value(entity_event, CinderProps.ID)
+        volume_state = extract_field_value(entity_event, CinderProps.STATUS)
+        project_id = entity_event.get(
+            'os-vol-tenant-attr:%s' % CinderProps.TENANT_ID, None)
+        timestamp = extract_field_value(entity_event, CinderProps.CREATED_AT)
+        size = extract_field_value(entity_event, CinderProps.SIZE)
+        volume_type = extract_field_value(entity_event,
+                                          CinderProps.VOLUME_TYPE)
+        attachments = extract_field_value(entity_event,
+                                          CinderProps.ATTACHMENTS)
 
         return self._create_vertex(entity_event,
                                    volume_name,
@@ -62,18 +66,21 @@ class CinderVolumeTransformer(ResourceTransformerBase):
                                    size,
                                    volume_type,
                                    attachments,
-                                   'server_id')
+                                   CinderProps.SERVER_ID)
 
     def _create_update_entity_vertex(self, entity_event):
 
-        volume_name = extract_field_value(entity_event, 'display_name')
-        volume_id = extract_field_value(entity_event, 'volume_id')
-        volume_state = extract_field_value(entity_event, 'status')
-        project_id = entity_event.get('tenant_id', None)
-        timestamp = entity_event.get('updated_at', None)
-        size = extract_field_value(entity_event, 'size')
-        volume_type = extract_field_value(entity_event, 'volume_type')
-        attachments = extract_field_value(entity_event, 'volume_attachment')
+        volume_name = extract_field_value(entity_event,
+                                          CinderProps.DISPLAY_NAME)
+        volume_id = extract_field_value(entity_event, CinderProps.VOLUME_ID)
+        volume_state = extract_field_value(entity_event, CinderProps.STATUS)
+        project_id = entity_event.get(CinderProps.TENANT_ID, None)
+        timestamp = entity_event.get(CinderProps.UPDATE_AT, None)
+        size = extract_field_value(entity_event, CinderProps.SIZE)
+        volume_type = extract_field_value(entity_event,
+                                          CinderProps.VOLUME_TYPE)
+        attachments = extract_field_value(entity_event,
+                                          CinderProps.VOLUME_ATTACHMENT)
 
         return self._create_vertex(entity_event,
                                    volume_name,
@@ -84,7 +91,7 @@ class CinderVolumeTransformer(ResourceTransformerBase):
                                    size,
                                    volume_type,
                                    attachments,
-                                   'instance_uuid')
+                                   CinderProps.INSTANCE_UUID)
 
     def _create_vertex(self,
                        entity_event,
@@ -127,18 +134,19 @@ class CinderVolumeTransformer(ResourceTransformerBase):
 
     def _create_snapshot_neighbors(self, entity_event):
         return self._create_volume_neighbors(entity_event,
-                                             'attachments',
-                                             'server_id')
+                                             CinderProps.ATTACHMENTS,
+                                             CinderProps.SERVER_ID)
 
     def _create_update_neighbors(self, entity_event):
         return self._create_volume_neighbors(entity_event,
-                                             'volume_attachment',
-                                             'instance_uuid')
+                                             CinderProps.VOLUME_ATTACHMENT,
+                                             CinderProps.INSTANCE_UUID)
 
     def _create_entity_key(self, entity_event):
 
         is_update_event = tbase.is_update_event(entity_event)
-        id_field_path = 'volume_id' if is_update_event else 'id'
+        id_field_path = CinderProps.VOLUME_ID \
+            if is_update_event else CinderProps.ID
         volume_id = extract_field_value(entity_event, id_field_path)
 
         key_fields = self._key_values(CINDER_VOLUME_DATASOURCE, volume_id)

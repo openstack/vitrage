@@ -19,6 +19,8 @@ from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.cinder.volume import CINDER_VOLUME_DATASOURCE
 from vitrage.datasources.heat.stack import HEAT_STACK_DATASOURCE
+from vitrage.datasources.heat.stack.properties import StackProperties\
+    as StackProps
 from vitrage.datasources.neutron.network import NEUTRON_NETWORK_DATASOURCE
 from vitrage.datasources.neutron.port import NEUTRON_PORT_DATASOURCE
 from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
@@ -49,11 +51,12 @@ class HeatStackTransformer(ResourceTransformerBase):
 
     def _create_snapshot_entity_vertex(self, entity_event):
 
-        stack_name = extract_field_value(entity_event, 'stack_name')
-        stack_id = extract_field_value(entity_event, 'id')
-        stack_state = extract_field_value(entity_event, 'stack_status')
-        timestamp = extract_field_value(entity_event, 'creation_time')
-        project_id = extract_field_value(entity_event, 'project')
+        stack_name = extract_field_value(entity_event, StackProps.STACK_NAME)
+        stack_id = extract_field_value(entity_event, StackProps.ID)
+        stack_state = extract_field_value(entity_event,
+                                          StackProps.STACK_STATUS)
+        timestamp = extract_field_value(entity_event, StackProps.CREATION_TIME)
+        project_id = extract_field_value(entity_event, StackProps.PROJECT)
 
         return self._create_vertex(entity_event,
                                    stack_name,
@@ -64,11 +67,12 @@ class HeatStackTransformer(ResourceTransformerBase):
 
     def _create_update_entity_vertex(self, entity_event):
 
-        volume_name = extract_field_value(entity_event, 'stack_name')
-        volume_id = extract_field_value(entity_event, 'stack_identity')
-        volume_state = extract_field_value(entity_event, 'state')
-        timestamp = entity_event.get('create_at', None)
-        project_id = entity_event.get('tenant_id', None)
+        volume_name = extract_field_value(entity_event, StackProps.STACK_NAME)
+        volume_id = extract_field_value(entity_event,
+                                        StackProps.STACK_IDENTITY)
+        volume_state = extract_field_value(entity_event, StackProps.STATE)
+        timestamp = entity_event.get(StackProps.CREATED_AT, None)
+        project_id = entity_event.get(StackProps.TENANT_ID, None)
 
         return self._create_vertex(entity_event,
                                    volume_name,
@@ -112,7 +116,8 @@ class HeatStackTransformer(ResourceTransformerBase):
     def _create_entity_key(self, entity_event):
 
         is_update_event = tbase.is_update_event(entity_event)
-        id_field_path = 'stack_identity' if is_update_event else 'id'
+        id_field_path = StackProps.STACK_IDENTITY\
+            if is_update_event else StackProps.ID
         volume_id = extract_field_value(entity_event, id_field_path)
 
         key_fields = self._key_values(HEAT_STACK_DATASOURCE, volume_id)
@@ -121,10 +126,10 @@ class HeatStackTransformer(ResourceTransformerBase):
     def _create_stack_neighbors(self, entity_event):
         neighbors = []
 
-        for neighbor in entity_event['resources']:
-            neighbor_id = neighbor['physical_resource_id']
+        for neighbor in entity_event[StackProps.RESOURCES]:
+            neighbor_id = neighbor[StackProps.PHYSICAL_RESOURCE_ID]
             neighbor_datasource_type = \
-                self.RESOURCE_TYPE[neighbor['resource_type']]
+                self.RESOURCE_TYPE[neighbor[StackProps.RESOURCES_TYPE]]
             neighbors.append(self._create_neighbor(entity_event,
                                                    neighbor_id,
                                                    neighbor_datasource_type,

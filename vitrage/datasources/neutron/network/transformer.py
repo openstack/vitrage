@@ -17,6 +17,8 @@ from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.neutron.network import NEUTRON_NETWORK_DATASOURCE
+from vitrage.datasources.neutron.properties import NetworkProperties\
+    as NetworkProps
 from vitrage.datasources.resource_transformer_base import \
     ResourceTransformerBase
 from vitrage.datasources import transformer_base as tbase
@@ -27,10 +29,10 @@ import vitrage.graph.utils as graph_utils
 class NetworkTransformer(ResourceTransformerBase):
 
     UPDATE_ID_PROPERTY = {
-        'network.create.end': ('network', 'id'),
-        'network.update.end': ('network', 'id'),
+        'network.create.end': (NetworkProps.NETWORK, NetworkProps.ID),
+        'network.update.end': (NetworkProps.NETWORK, NetworkProps.ID),
         'network.delete.end': ('network_id',),
-        None: ('id',)
+        None: (NetworkProps.ID,)
     }
 
     # graph actions which need to refer them differently
@@ -43,11 +45,11 @@ class NetworkTransformer(ResourceTransformerBase):
 
     def _create_snapshot_entity_vertex(self, entity_event):
 
-        name = entity_event['name']
-        entity_id = entity_event['id']
-        state = entity_event['status']
-        update_timestamp = entity_event['updated_at']
-        project_id = entity_event.get('tenant_id', None)
+        name = entity_event[NetworkProps.NAME]
+        entity_id = entity_event[NetworkProps.ID]
+        state = entity_event[NetworkProps.STATUS]
+        update_timestamp = entity_event[NetworkProps.UPDATED_AT]
+        project_id = entity_event.get(NetworkProps.TENANT_ID, None)
 
         return self._create_vertex(entity_event,
                                    name,
@@ -59,13 +61,17 @@ class NetworkTransformer(ResourceTransformerBase):
     def _create_update_entity_vertex(self, entity_event):
 
         event_type = entity_event[DSProps.EVENT_TYPE]
-        name = extract_field_value(entity_event, 'network', 'name')
-        state = extract_field_value(entity_event, 'network', 'status')
+        name = extract_field_value(entity_event, NetworkProps.NETWORK,
+                                   NetworkProps.NAME)
+        state = extract_field_value(entity_event, NetworkProps.NETWORK,
+                                    NetworkProps.STATUS)
         update_timestamp = \
-            extract_field_value(entity_event, 'network', 'updated_at')
+            extract_field_value(entity_event, NetworkProps.NETWORK,
+                                NetworkProps.UPDATED_AT)
         entity_id = extract_field_value(entity_event,
                                         *self.UPDATE_ID_PROPERTY[event_type])
-        project_id = extract_field_value(entity_event, 'network', 'tenant_id')
+        project_id = extract_field_value(entity_event, NetworkProps.NETWORK,
+                                         NetworkProps.TENANT_ID)
 
         return self._create_vertex(entity_event,
                                    name,

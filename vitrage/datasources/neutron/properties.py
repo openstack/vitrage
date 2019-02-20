@@ -1,4 +1,4 @@
-# Copyright 2016 - Nokia
+# Copyright 2019 - China Mobile (SuZhou) Software Technology Co.,Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,17 +13,27 @@
 # under the License.
 
 
-class CinderProperties(object):
-    SIZE = 'size'
-    VOLUME_TYPE = 'volume_type'
-    ATTACHMENTS = 'attachments'
-    DISPLAY_NAME = 'display_name'
-    ID = 'id'
+class NetworkProperties(object):
+    NAME = 'name'
     STATUS = 'status'
-    CREATED_AT = 'created_at'
-    VOLUME_ATTACHMENT = 'volume_attachment'
-    INSTANCE_UUID = 'instance_uuid'
-    SERVER_ID = 'server_id'
-    VOLUME_ID = 'volume_id'
-    UPDATE_AT = 'updated_at'
+    ID = 'id'
     TENANT_ID = 'tenant_id'
+    CREATED_AT = 'created_at'
+    UPDATED_AT = 'updated_at'
+    NETWORK = 'network'
+
+
+class PortProperties(object):
+    NAME = 'name'
+    STATUS = 'status'
+    ID = 'id'
+    TENANT_ID = 'tenant_id'
+    CREATED_AT = 'created_at'
+    UPDATED_AT = 'updated_at'
+    NETWORK = 'network'
+    DEVICE_ID = 'device_id'
+    NETWORK_ID = 'network_id'
+    HOST_ID = 'host_id'
+    PORT = 'port'
+    IP_ADDRESS = 'ip_address'
+    IP_ADDRESSES = 'ip_addresses'

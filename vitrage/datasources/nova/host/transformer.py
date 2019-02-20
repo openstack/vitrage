@@ -19,6 +19,7 @@ from vitrage.common.constants import EdgeLabel
 from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.nova.host import NOVA_HOST_DATASOURCE
+from vitrage.datasources.nova.properties import HostProperties as HostProps
 from vitrage.datasources.nova.zone import NOVA_ZONE_DATASOURCE
 from vitrage.datasources.resource_transformer_base import \
     ResourceTransformerBase
@@ -36,7 +37,8 @@ class HostTransformer(ResourceTransformerBase):
         super(HostTransformer, self).__init__(transformers, conf)
 
     def _create_snapshot_entity_vertex(self, entity_event):
-        return self._create_vertex(entity_event, entity_event.get('host'))
+        return self._create_vertex(entity_event,
+                                   entity_event.get(HostProps.HOST))
 
     def _create_update_entity_vertex(self, entity_event):
         LOG.warning('Host Update is not supported yet')
@@ -67,7 +69,7 @@ class HostTransformer(ResourceTransformerBase):
         return self._create_host_neighbors(entity_event)
 
     def _create_host_neighbors(self, entity_event):
-        zone_name = extract_field_value(entity_event, 'zone')
+        zone_name = extract_field_value(entity_event, HostProps.ZONE)
         zone_neighbor = self._create_neighbor(entity_event,
                                               zone_name,
                                               NOVA_ZONE_DATASOURCE,
@@ -77,7 +79,7 @@ class HostTransformer(ResourceTransformerBase):
 
     def _create_entity_key(self, entity_event):
         key_fields = self._key_values(NOVA_HOST_DATASOURCE,
-                                      entity_event.get('host'))
+                                      entity_event.get(HostProps.HOST))
         return transformer_base.build_key(key_fields)
 
     def get_vitrage_type(self):

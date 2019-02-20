@@ -19,6 +19,7 @@ from vitrage.common.constants import EdgeLabel
 from vitrage.common.constants import EntityCategory
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.nova.host import NOVA_HOST_DATASOURCE
+from vitrage.datasources.nova.properties import ZoneProperties as ZoneProps
 from vitrage.datasources.nova.zone import NOVA_ZONE_DATASOURCE
 from vitrage.datasources import OPENSTACK_CLUSTER
 from vitrage.datasources.resource_transformer_base import \
@@ -42,9 +43,9 @@ class ZoneTransformer(ResourceTransformerBase):
 
     def _create_snapshot_entity_vertex(self, entity_event):
 
-        zone_name = extract_field_value(entity_event, 'zoneName')
+        zone_name = extract_field_value(entity_event, ZoneProps.ZONE_NAME)
         is_available = extract_field_value(entity_event,
-                                           'zoneState',
+                                           ZoneProps.ZONE_STATE,
                                            'available')
         state = self.STATE_AVAILABLE if is_available \
             else self.STATE_UNAVAILABLE
@@ -102,11 +103,11 @@ class ZoneTransformer(ResourceTransformerBase):
         for hostname, host_data in hosts.items():
 
             host_available = extract_field_value(host_data,
-                                                 'nova-compute',
+                                                 ZoneProps.NOVE_COMPUTE,
                                                  'available')
             host_active = extract_field_value(host_data,
-                                              'nova-compute',
-                                              'active')
+                                              ZoneProps.NOVE_COMPUTE,
+                                              ZoneProps.ACTIVE)
 
             host_state = self.STATE_AVAILABLE \
                 if host_available and host_active \
@@ -129,7 +130,7 @@ class ZoneTransformer(ResourceTransformerBase):
 
     def _create_entity_key(self, entity_event):
 
-        zone_name = extract_field_value(entity_event, 'zoneName')
+        zone_name = extract_field_value(entity_event, ZoneProps.ZONE_NAME)
 
         key_fields = self._key_values(NOVA_ZONE_DATASOURCE, zone_name)
         return tbase.build_key(key_fields)

@@ -1,4 +1,4 @@
-# Copyright 2016 - Nokia
+# Copyright 2019 - China Mobile (SuZhou) Software Technology Co.,Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -13,17 +13,16 @@
 # under the License.
 
 
-class CinderProperties(object):
-    SIZE = 'size'
-    VOLUME_TYPE = 'volume_type'
-    ATTACHMENTS = 'attachments'
-    DISPLAY_NAME = 'display_name'
+class StackProperties(object):
+    STACK_NAME = 'stack_name'
+    STACK_STATUS = 'stack_status'
     ID = 'id'
-    STATUS = 'status'
+    STATE = 'state'
     CREATED_AT = 'created_at'
-    VOLUME_ATTACHMENT = 'volume_attachment'
-    INSTANCE_UUID = 'instance_uuid'
-    SERVER_ID = 'server_id'
-    VOLUME_ID = 'volume_id'
-    UPDATE_AT = 'updated_at'
+    STACK_IDENTITY = 'stack_identity'
+    CREATION_TIME = 'creation_time'
+    PROJECT = 'project'
+    RESOURCES = 'resources'
+    RESOURCES_TYPE = 'resource_type'
+    PHYSICAL_RESOURCE_ID = 'physical_resource_id'
     TENANT_ID = 'tenant_id'

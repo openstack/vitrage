@@ -22,6 +22,8 @@ from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.neutron.network import NEUTRON_NETWORK_DATASOURCE
 from vitrage.datasources.neutron.port import NEUTRON_PORT_DATASOURCE
+from vitrage.datasources.neutron.properties import PortProperties\
+    as PortProps
 from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
 from vitrage.datasources import transformer_base as tbase
 from vitrage.datasources.transformer_base import extract_field_value
@@ -54,11 +56,12 @@ class PortTransformer(ResourceTransformerBase):
 
     def _create_snapshot_entity_vertex(self, entity_event):
 
-        name = entity_event['name'] if entity_event['name'] else None
-        entity_id = entity_event['id']
-        state = entity_event['status']
-        update_timestamp = entity_event['updated_at']
-        project_id = entity_event.get('tenant_id', None)
+        name = entity_event[PortProps.NAME]\
+            if entity_event[PortProps.NAME] else None
+        entity_id = entity_event[PortProps.ID]
+        state = entity_event[PortProps.STATUS]
+        update_timestamp = entity_event[PortProps.UPDATED_AT]
+        project_id = entity_event.get(PortProps.TENANT_ID, None)
 
         return self._create_vertex(entity_event,
                                    name,
@@ -70,13 +73,17 @@ class PortTransformer(ResourceTransformerBase):
     def _create_update_entity_vertex(self, entity_event):
 
         event_type = entity_event[DSProps.EVENT_TYPE]
-        name = extract_field_value(entity_event, 'port', 'name')
-        state = extract_field_value(entity_event, 'port', 'status')
+        name = extract_field_value(entity_event, PortProps.PORT,
+                                   PortProps.NAME)
+        state = extract_field_value(entity_event, PortProps.PORT,
+                                    PortProps.STATUS)
         update_timestamp = \
-            extract_field_value(entity_event, 'port', 'updated_at')
+            extract_field_value(entity_event, PortProps.PORT,
+                                PortProps.UPDATED_AT)
         entity_id = extract_field_value(entity_event,
                                         *self.UPDATE_ID_PROPERTY[event_type])
-        project_id = extract_field_value(entity_event, 'port', 'tenant_id')
+        project_id = extract_field_value(entity_event, PortProps.PORT,
+                                         PortProps.TENANT_ID)
 
         return self._create_vertex(entity_event,
                                    name,
@@ -97,12 +104,13 @@ class PortTransformer(ResourceTransformerBase):
         if not event_type:
             fixed_ips = extract_field_value(
                 entity_event, *self.FIXED_IPS_PROPERTY[event_type])
-            ip_addresses = [ip['ip_address'] for ip in fixed_ips]
+            ip_addresses = [ip[PortProps.IP_ADDRESS] for ip in fixed_ips]
         metadata = {
             VProps.NAME: name,
             VProps.PROJECT_ID: project_id,
-            'ip_addresses': tuple(ip_addresses),
-            'host_id': entity_event.get('binding:host_id'),
+            PortProps.IP_ADDRESSES: tuple(ip_addresses),
+            PortProps.HOST_ID: entity_event.get(
+                'binding:%s' % PortProps.HOST_ID),
         }
 
         vitrage_sample_timestamp = entity_event[DSProps.SAMPLE_DATE]
@@ -119,13 +127,15 @@ class PortTransformer(ResourceTransformerBase):
 
     def _create_snapshot_neighbors(self, entity_event):
         return self._create_port_neighbors(entity_event,
-                                           ('device_id',),
-                                           ('network_id',))
+                                           (PortProps.DEVICE_ID,),
+                                           (PortProps.NETWORK_ID,))
 
     def _create_update_neighbors(self, entity_event):
         return self._create_port_neighbors(entity_event,
-                                           ('port', 'device_id'),
-                                           ('port', 'network_id'))
+                                           (PortProps.PORT,
+                                            PortProps.DEVICE_ID),
+                                           (PortProps.PORT,
+                                            PortProps.NETWORK_ID))
 
     def _create_port_neighbors(self,
                                entity_event,
