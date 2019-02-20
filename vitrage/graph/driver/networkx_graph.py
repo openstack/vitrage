@@ -239,12 +239,12 @@ class NXGraph(Graph):
             return check_filter(vertex_data[1], vertex_attr_filter)
 
         if not query_dict:
-            items = filter(check_vertex, list(self._g.nodes(data=True)))
+            items = filter(check_vertex, self._g.nodes(data=True))
             return [vertex_copy(node, node_data) for node, node_data in items]
         elif not vertex_attr_filter:
             vertices = []
             match_func = create_predicate(query_dict)
-            for node, node_data in list(self._g.nodes(data=True)):
+            for node, node_data in self._g.nodes(data=True):
                 v = vertex_copy(node, node_data)
                 if match_func(v):
                     vertices.append(v)
