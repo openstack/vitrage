@@ -23,10 +23,7 @@ from vitrage.tests.unit.entity_graph.base import TestEntityGraphUnitBase
 
 
 class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
-    TEMPLATE_WITH_PARAMS = 'with_params.yaml'
-    TEMPLATE_WITH_EXTRA_PARAM_DEF = 'with_extra_param_def.yaml'
-    TEMPLATE_WITH_MISSING_PARAM_DEF = 'with_missing_param_def.yaml'
-    TEMPLATE_WITHOUT_PARAMS = 'without_params.yaml'
+
     VALIDATION_FAILED = 'validation failed'
     VALIDATION_OK = 'validation OK'
 
@@ -46,13 +43,14 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         super(TestTemplates, self).tearDown()
         self._delete_templates()
 
-    def test_validate_template_with_no_params(self):
-        # Setup
+    def _load_template_content(self, template_filename):
         template_path = '%s/templates/parameters/%s' % (
             utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+            template_filename)
+        return [(template_path, self._load_yaml_file(template_path))]
 
+    def _validate_template_with_no_params(self, template_filename):
+        files_content = self._load_template_content(template_filename)
         # Action
         results = self.apis.validate_template(
             ctx=None, templates=files_content, template_type=None, params=None)
@@ -62,14 +60,11 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
             self.VALIDATION_FAILED, 163,
             'Failed to resolve parameter', results)
 
-    def test_validate_template_with_missing_param(self):
+    def _validate_template_with_missing_param(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
 
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_1',
                   'alarm_name': 'My alarm', 'new_state': 'SUBOPTIMAL'}
 
@@ -82,14 +77,10 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
             self.VALIDATION_FAILED, 163,
             'Failed to resolve parameter', results)
 
-    def test_validate_template_with_actual_params(self):
+    def _validate_template_with_actual_params(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
-
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_2',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
@@ -102,14 +93,10 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self._assert_validate_template_result(
             self.VALIDATION_OK, 0, 'Template validation is OK', results)
 
-    def test_validate_template_with_missing_param_def(self):
+    def _validate_template_with_missing_param_def(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
-
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_MISSING_PARAM_DEF)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
 
@@ -122,14 +109,10 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
             self.VALIDATION_FAILED, 161, 'get_param called for a parameter '
             'that is not defined in the \'parameters\' block', results)
 
-    def test_validate_template_without_params(self):
+    def _validate_template_without_params(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
-
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITHOUT_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
 
         # Action
         results = apis.validate_template(ctx=None, templates=files_content,
@@ -139,14 +122,10 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self._assert_validate_template_result(
             self.VALIDATION_OK, 0, 'Template validation is OK', results)
 
-    def test_validate_template_with_extra_actual_param(self):
+    def _validate_template_with_extra_actual_param(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
-
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_2',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL',
@@ -160,14 +139,10 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self._assert_validate_template_result(
             self.VALIDATION_OK, 0, 'Template validation is OK', results)
 
-    def test_validate_template_with_extra_param_def(self):
+    def _validate_template_with_extra_param_def(self, template_filename):
         # Setup
         apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
-
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_EXTRA_PARAM_DEF)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_2',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
@@ -180,12 +155,9 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self._assert_validate_template_result(
             self.VALIDATION_OK, 0, 'Template validation is OK', results)
 
-    def test_add_template_with_no_params(self):
+    def _add_template_with_no_params(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
 
         # Action.
         added_templates = \
@@ -196,15 +168,12 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         # Test assertions
         self.assertThat(added_templates, matchers.HasLength(1))
         self.assertEqual('ERROR', added_templates[0]['status'])
-        self.assertEqual('Failed to resolve parameter',
-                         added_templates[0]['status details'])
+        self.assert_starts_with('Failed to resolve parameter',
+                                added_templates[0]['status details'])
 
-    def test_add_template_with_missing_param(self):
+    def _add_template_with_missing_param(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_3',
                   'alarm_name': 'My alarm', 'new_state': 'SUBOPTIMAL'}
 
@@ -217,15 +186,12 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         # Test assertions
         self.assertThat(added_templates, matchers.HasLength(1))
         self.assertEqual('ERROR', added_templates[0]['status'])
-        self.assertEqual('Failed to resolve parameter',
-                         added_templates[0]['status details'])
+        self.assert_starts_with('Failed to resolve parameter',
+                                added_templates[0]['status details'])
 
-    def test_add_template_with_actual_params(self):
+    def _add_template_with_actual_params(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_params_4',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
@@ -240,12 +206,9 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self.assertThat(added_templates, matchers.HasLength(1))
         self.assertEqual('LOADING', added_templates[0]['status'])
 
-    def test_add_template_with_missing_param_def(self):
+    def _add_template_with_missing_param_def(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_MISSING_PARAM_DEF)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
 
@@ -257,16 +220,13 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
 
         # Test assertions
         self.assertEqual('ERROR', added_templates[0]['status'])
-        self.assertEqual('get_param called for a parameter that is not '
-                         'defined in the \'parameters\' block',
-                         added_templates[0]['status details'])
+        self.assert_starts_with('get_param called for a parameter that is not '
+                                'defined in the \'parameters\' block',
+                                added_templates[0]['status details'])
 
-    def test_add_template_without_params(self):
+    def _add_template_without_params(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITHOUT_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
 
         # Action
         added_templates = \
@@ -278,12 +238,9 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self.assertThat(added_templates, matchers.HasLength(1))
         self.assertEqual('LOADING', added_templates[0]['status'])
 
-    def test_add_template_with_extra_actual_param(self):
+    def _add_template_with_extra_actual_param(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_PARAMS)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_extra_actual_param',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL',
@@ -299,12 +256,9 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self.assertThat(added_templates, matchers.HasLength(1))
         self.assertEqual('LOADING', added_templates[0]['status'])
 
-    def test_add_template_with_extra_param_def(self):
+    def _add_template_with_extra_param_def(self, template_filename):
         # Setup
-        template_path = '%s/templates/parameters/%s' % (
-            utils.get_resources_dir(),
-            self.TEMPLATE_WITH_EXTRA_PARAM_DEF)
-        files_content = [(template_path, self._load_yaml_file(template_path))]
+        files_content = self._load_template_content(template_filename)
         params = {'template_name': 'template_with_extra_param_def',
                   'alarm_type': 'zabbix', 'alarm_name': 'My alarm',
                   'new_state': 'SUBOPTIMAL'}
@@ -329,7 +283,7 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         self.assertThat(results, matchers.HasLength(1))
         self.assertEqual(expected_status, results[0]['status'])
         self.assertEqual(expected_status_code, results[0]['status code'])
-        self.assertEqual(expected_message, results[0]['message'])
+        self.assert_starts_with(expected_message, results[0]['message'])
 
     def _delete_templates(self):
         if self.added_template:

@@ -21,6 +21,9 @@ from vitrage.evaluator.base import get_template_schema
 from vitrage.evaluator import condition as dnf
 
 from vitrage.evaluator.template_fields import TemplateFields
+from vitrage.evaluator.template_functions import function_resolver
+from vitrage.evaluator.template_functions import GET_PARAM
+from vitrage.evaluator.template_functions.v2.functions import get_param
 from vitrage.evaluator.template_loading.template_loader_v3 import \
     TemplateLoader as V3TemplateLoader
 from vitrage.evaluator.template_validation.base import ValidationError
@@ -33,9 +36,10 @@ RELATION = 'relationship'
 class ContentValidator(object):
 
     @staticmethod
-    def validate(template):
+    def validate(template, actual_params):
         _validate_entities_regex(template)
         _validate_conditions(template)
+        _validate_parameters(template, actual_params)
 
         # As part of validation, when it is finished,
         # we try to load the template, as some validations can only be
@@ -67,6 +71,14 @@ def _validate_conditions(template):
         condition = scenario[TemplateFields.CONDITION]
         _validate_condition_entity_ids(template, condition)
         _validate_not_condition(condition)
+
+
+def _validate_parameters(template, actual_params):
+    function_resolver.validate_function(
+        func_info=function_resolver.FuncInfo(
+            name=GET_PARAM, func=get_param, error_code=160),
+        template=template,
+        actual_params=actual_params)
 
 
 def _validate_condition_entity_ids(template, condition):

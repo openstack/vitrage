@@ -104,6 +104,5 @@ def content_validation(template, def_templates=None, params=None):
 
 
 def parameters_validation(template_schema, template, actual_params):
-    params_validator = \
-        template_schema.validators.get(GET_PARAM) if template_schema else None
+    params_validator = template_schema.validators[GET_PARAM]
     return params_validator.validate(template, actual_params)

@@ -15,11 +15,7 @@ from oslo_log import log
 
 from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_functions import GET_PARAM
-from vitrage.evaluator.template_validation.content.base import \
-    get_content_correct_result
-from vitrage.evaluator.template_validation.content.base import \
-    get_content_fault_result
-from vitrage.evaluator.template_validation.status_messages import status_msgs
+from vitrage.evaluator.template_validation.base import ValidationError
 
 LOG = log.getLogger(__name__)
 
@@ -112,42 +108,39 @@ def get_param(param_name, template, **kwargs):
     :param kwargs: Additional arguments.
     The expected argument is actual_params, a dict with key=value pairs of
     parameter values.
-    :return: A tuple of (Result, param value)
-    The parameter value is taken from the actual_params, if given, or from the
-    default value that is defined in the template parameters section.
-    If none exists, a fault result is returned.
+    :return: The parameter value is taken from the actual_params, if given, or
+    from the default value that is defined in the template parameters section.
+    If none exists, or param_name does not contains a valid function call
+    a ValidationError is raised.
+    :raises: ValidationError
     """
     param_defs = template.get(TemplateFields.PARAMETERS)
     actual_params = kwargs.get('actual_params')
 
     if not param_defs:
-        LOG.error('%s status code: %s' % (status_msgs[161], 161))
-        return get_content_fault_result(161), None
+        raise ValidationError(161)
 
     if param_name.startswith(GET_PARAM):
         if not param_name.startswith(GET_PARAM + '(') or \
                 not param_name.endswith(')') or \
                 len(param_name) < len(GET_PARAM) + 3:
-            LOG.error('%s status code: %s' % (status_msgs[162], 162))
-            return get_content_fault_result(162), None
+            raise ValidationError(162, param_name)
 
-        param_name = extract_param_name(param_name)
-        if not param_name:
-            LOG.error('%s status code: %s' % (status_msgs[162], 162))
-            return get_content_fault_result(162), None
+    extracted_param_name = extract_param_name(param_name)
+    if not extracted_param_name:
+        raise ValidationError(162, param_name)
 
     # Make sure the parameter is defined in the parameters section
     found_param_def = None
     for param_key, param_value in param_defs.items():
-        if param_name == param_key:
+        if extracted_param_name == param_key:
             found_param_def = param_key, param_value
 
     if not found_param_def:
-        LOG.error('%s status code: %s' % (status_msgs[161], 161))
-        return get_content_fault_result(161), None
+        raise ValidationError(161, extracted_param_name)
 
     # Check if an actual value was assigned to this parameter
-    param_value = get_actual_value(param_name, actual_params)
+    param_value = get_actual_value(extracted_param_name, actual_params)
     if not param_value:
         found_param_value = found_param_def[1]
         default = found_param_value.get(TemplateFields.DEFAULT) \
@@ -155,9 +148,9 @@ def get_param(param_name, template, **kwargs):
         if default:
             param_value = default
         else:
-            return get_content_fault_result(163), None
+            raise ValidationError(163, extracted_param_name)
 
-    return get_content_correct_result(), param_value
+    return param_value
 
 
 def extract_param_name(param):
