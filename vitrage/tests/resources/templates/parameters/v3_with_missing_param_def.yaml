@@ -1,0 +1,24 @@
+metadata:
+ version: 3
+ type: standard
+ name: template_with_missing_param_def
+ description: INVALID template with missing parameter def for alarm_name
+parameters:
+ alarm_type:
+  description: the type of the alarm
+ new_state:
+  default: ERROR
+entities:
+ alarm:
+  category: ALARM
+  type: get_param(alarm_type)
+  name: get_param(alarm_name)
+ host:
+  category: RESOURCE
+  type: nova.host
+scenarios:
+ - condition: alarm [on] host
+   actions:
+     - set_state:
+        state: get_param(new_state)
+        target: host

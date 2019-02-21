@@ -43,7 +43,7 @@ def get_fault_result(description, code, msg=None):
 
 def get_custom_fault_result(code, msg):
     return Result('Template validation', False, code,
-                  status_msgs[code] + ' ' + msg)
+                  status_msgs[code] + ' - ' + msg)
 
 
 def get_status_code(voluptuous_error):

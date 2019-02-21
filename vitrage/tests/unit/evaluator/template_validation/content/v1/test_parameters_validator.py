@@ -26,11 +26,13 @@ class ParametersValidatorTest(ValidatorTest):
     """
 
     def test_validate_no_parameters(self):
-        result = GetParamValidator.validate(template={}, actual_params=None)
+        result = GetParamValidator.validate(
+            template={'alarm_name': "Don't add a comment"}, actual_params=None)
         self._assert_correct_result(result)
 
     def test_validate_empty_parameters(self):
-        result = GetParamValidator.validate(template={}, actual_params={})
+        result = GetParamValidator.validate(
+            template={'alarm_name': '+2 for everybody'}, actual_params={})
         self._assert_correct_result(result)
 
     def test_validate_with_parameter(self):

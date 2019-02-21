@@ -1,0 +1,28 @@
+metadata:
+ version: 3
+ type: standard
+ name: get_param(template_name)
+ description: template with parameters
+parameters:
+ template_name:
+  description: the name of the template
+  default: template_with_params
+ alarm_type:
+  description: the type of the alarm
+ alarm_name:
+ new_state:
+  default: ERROR
+entities:
+ alarm:
+  category: ALARM
+  type: get_param(alarm_type)
+  name: get_param(alarm_name)
+ host:
+  category: RESOURCE
+  type: nova.host
+scenarios:
+ - condition: alarm [on] host
+   actions:
+     - set_state:
+        state: get_param(new_state)
+        target: host

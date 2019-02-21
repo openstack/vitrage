@@ -127,7 +127,10 @@ class TemplateSchema3(object):
             ActionType.SET_STATE: V3ActionLoader(),
         }
 
-        self.functions = {GET_ATTR: get_attr}
+        self.functions = {
+            GET_ATTR: get_attr,
+            GET_PARAM: get_param
+        }
 
     def version(self):
         return '3'

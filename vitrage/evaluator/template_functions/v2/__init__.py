@@ -13,11 +13,10 @@
 # under the License.
 from oslo_log import log
 
-from vitrage.evaluator.template_functions.function_resolver import \
-    FuncInfo
-from vitrage.evaluator.template_functions.function_resolver import \
-    FunctionResolver
+from vitrage.evaluator.template_functions import function_resolver
 from vitrage.evaluator.template_functions import GET_PARAM
+from vitrage.evaluator.template_validation.base import get_custom_fault_result
+from vitrage.evaluator.template_validation.base import ValidationError
 from vitrage.evaluator.template_validation.content.base import \
     get_content_correct_result
 from vitrage.evaluator.template_validation.content.base import \
@@ -37,7 +36,13 @@ def resolve_parameters(template_def, params=None):
 
     get_param = template_schema.functions.get(GET_PARAM)
 
-    return FunctionResolver().resolve_function(
-        func_info=FuncInfo(name=GET_PARAM, func=get_param, error_code=160),
-        template=template_def,
-        actual_params=params)
+    try:
+        function_resolver.resolve_function(
+            func_info=function_resolver.FuncInfo(
+                name=GET_PARAM, func=get_param, error_code=0),
+            template=template_def,
+            actual_params=params)
+    except ValidationError as e:
+        return get_custom_fault_result(e.code, e.details)
+
+    return get_content_correct_result()

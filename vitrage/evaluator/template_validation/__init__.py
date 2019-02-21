@@ -40,7 +40,7 @@ def validate_template(template, def_templates, params=None):
 
     try:
         template_schema.validators[SYNTAX].validate(template)
-        template_schema.validators[CONTENT].validate(template)
+        template_schema.validators[CONTENT].validate(template, params)
     except base.ValidationError as e:
         return base.get_custom_fault_result(e.code, e.details)
     except VoluptuousError as e:

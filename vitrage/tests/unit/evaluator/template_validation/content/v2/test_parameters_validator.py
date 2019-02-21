@@ -14,6 +14,7 @@
 
 from vitrage.evaluator.template_fields import TemplateFields
 from vitrage.evaluator.template_functions.v2.functions import get_param
+from vitrage.evaluator.template_validation.base import ValidationError
 from vitrage.evaluator.template_validation.content.v2.get_param_validator \
     import GetParamValidator
 from vitrage.tests.unit.evaluator.template_validation.content.base import \
@@ -70,13 +71,15 @@ class ParametersValidatorTest(ValidatorTest):
 
     def test_validate_get_param_with_no_parameters(self):
         template = {'alarm_name': 'get_param(param1)'}
-        result, _ = get_param('get_param(param1)', template)
-        self._assert_fault_result(result, 161)
+        self.assert_get_param_result('get_param(param1)',
+                                     template,
+                                     expected_error_code=161)
 
     def test_validate_get_param_with_empty_parameters(self):
         template = {}
-        result, _ = get_param('get_param(param1)', template)
-        self._assert_fault_result(result, 161)
+        self.assert_get_param_result('get_param(param1)',
+                                     template,
+                                     expected_error_code=161)
 
     def test_validate_get_param_with_undefined_parameter(self):
         template = {
@@ -90,8 +93,9 @@ class ParametersValidatorTest(ValidatorTest):
                 },
             }
         }
-        result, _ = get_param('get_param(undefined)', template)
-        self._assert_fault_result(result, 161)
+        self.assert_get_param_result('get_param(undefined)',
+                                     template,
+                                     expected_error_code=161)
 
     def test_validate_get_param_with_valid_parameter(self):
         template = {
@@ -105,8 +109,9 @@ class ParametersValidatorTest(ValidatorTest):
                 },
             }
         }
-        result, result_value = get_param('get_param(param1)', template)
-        self._assert_correct_result(result)
+        self.assert_get_param_result('get_param(param1)',
+                                     template,
+                                     expected_error_code=0)
 
     def test_validate_get_param_with_malformed_parameter(self):
         template = {
@@ -121,23 +126,23 @@ class ParametersValidatorTest(ValidatorTest):
             }
         }
 
-        result, _ = get_param('get_param(param1', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_param(param1', template, expected_error_code=162)
 
-        result, _ = get_param('get_paramparam1)', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_paramparam1)', template, expected_error_code=162)
 
-        result, _ = get_param('get_paramparam1', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_paramparam1', template, expected_error_code=162)
 
-        result, _ = get_param('get_param', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_param', template, expected_error_code=162)
 
-        result, _ = get_param('get_param()', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_param()', template, expected_error_code=162)
 
-        result, _ = get_param('get_param)param1(', template)
-        self._assert_fault_result(result, 162)
+        self.assert_get_param_result(
+            'get_param)param1(', template, expected_error_code=162)
 
     def test_validate_get_param_with_actual_parameter(self):
         template = {
@@ -155,10 +160,10 @@ class ParametersValidatorTest(ValidatorTest):
             'param1': 'value1',
             'param2': 'value2'
         }
-        result, result_value = get_param('get_param(param2)', template,
-                                         actual_params=actual_params)
-        self._assert_correct_result(result)
-        self.assertEqual('value2', result_value)
+        self.assert_get_param_result('get_param(param2)',
+                                     template,
+                                     actual_params,
+                                     expected_result='value2')
 
     def test_validate_get_param_with_missing_actual_parameter(self):
         template = {
@@ -175,9 +180,9 @@ class ParametersValidatorTest(ValidatorTest):
         actual_params = {
             'param1': 'value1',
         }
-        result, _ = get_param('get_param(param2)', template,
-                              actual_params=actual_params)
-        self._assert_fault_result(result, 163)
+        self.assert_get_param_result('get_param(param2)',
+                                     template, actual_params,
+                                     expected_error_code=163)
 
     def test_validate_get_param_with_default_actual_parameter(self):
         template = {
@@ -194,7 +199,27 @@ class ParametersValidatorTest(ValidatorTest):
         actual_params = {
             'param2': 'value2',
         }
-        result, result_value = get_param('get_param(param1)', template,
-                                         actual_params=actual_params)
-        self._assert_correct_result(result)
-        self.assertEqual('this is my default', result_value)
+        self.assert_get_param_result('get_param(param1)',
+                                     template,
+                                     actual_params,
+                                     expected_result='this is my default')
+
+    def assert_get_param_result(self,
+                                func_str,
+                                template,
+                                actual_params=None,
+                                expected_result=None,
+                                expected_error_code=None):
+        error = None
+        try:
+            result = get_param(func_str, template, actual_params=actual_params)
+        except ValidationError as e:
+            error = e
+
+        if expected_error_code:
+            self.assertIsNotNone(error)
+            self.assertEqual(error.code, expected_error_code)
+        else:
+            self.assertIsNone(error)
+            if expected_result:
+                self.assertEqual(expected_result, result)

@@ -19,6 +19,8 @@ from oslo_utils import timeutils
 # noinspection PyPackageRequirements
 from oslotest import base
 import sys
+
+from testtools import matchers
 from testtools.matchers import HasLength
 
 
@@ -90,6 +92,10 @@ class BaseTest(base.BaseTestCase):
             self.assert_dict_equal(dict(g1_edges.get(e_source_id)),
                                    dict(g2_edges.get(e_source_id)),
                                    "Edges of each graph are not equal")
+
+    def assert_starts_with(self, expected_prefix, observed_str, msg=None):
+        self.assertThat(observed_str,
+                        matchers.StartsWith(expected_prefix), msg)
 
     @staticmethod
     def path_get(project_file=None):

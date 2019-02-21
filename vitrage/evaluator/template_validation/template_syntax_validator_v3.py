@@ -44,6 +44,7 @@ class SyntaxValidator(object):
             Required(TF.ENTITIES, msg=10000): _entities_schema(),
             Required(TF.METADATA, msg=62): _metadata_schema(),
             Required(TF.SCENARIOS, msg=80): _scenarios_schema(template),
+            Optional(TF.PARAMETERS): _parameters_schema(),
         })(template)
 
 
@@ -77,6 +78,15 @@ def _scenarios_schema(template):
             )]),
             Required(TF.CONDITION, msg=83): any_str,
         })])
+
+
+def _parameters_schema():
+    return Schema({
+        any_str: Any(any_str, Schema({
+            Optional(TF.DESCRIPTION): any_str,
+            Optional(TF.DEFAULT): any_str,
+        })),
+    })
 
 
 def _raise_alarm_schema(template):
