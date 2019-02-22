@@ -1,0 +1,9 @@
+---
+features:
+  - Datasource ``end messages`` previously used to notify the processor
+    that get_all finished successfully. Are no longer used and are removed.
+deprecations:
+  - Config option ``initialization_interval`` is deprecated and no longer
+    used, due to the removal of datasource ``end messages``.
+  - Config option ``initialization_max_retries`` is deprecated and no longer
+    used, due to the removal of datasource ``end messages``.

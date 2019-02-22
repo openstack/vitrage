@@ -114,7 +114,6 @@ class GraphAction(object):
     DELETE_RELATIONSHIP = 'delete_relationship'
     UPDATE_RELATIONSHIP = 'update_relationship'
     REMOVE_DELETED_ENTITY = 'remove_deleted_entity'
-    END_MESSAGE = 'end_message'
 
 
 class NotifierEventTypes(object):

@@ -55,8 +55,8 @@ class Processor(processor.ProcessorBase):
         self._enrich_event(event)
         entity = self.transformer_manager.transform(event)
 
-        if entity.action not in self.actions.keys():
-            LOG.debug('deprecated or unknown entity %s ignored', str(entity))
+        if entity.action not in self.actions:
+            LOG.warning('Deprecated or unknown entity %s ignored', str(entity))
             return
 
         self._calculate_vitrage_aggregated_values(entity.vertex, entity.action)

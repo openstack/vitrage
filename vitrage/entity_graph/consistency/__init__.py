@@ -23,12 +23,18 @@ OPTS = [
     cfg.IntOpt('initialization_interval',
                default=1,
                min=1,
+               deprecated_for_removal=True,
+               deprecated_since='Stein',
+               deprecated_reason='This config option is no longer used.',
                help='interval between consistency initialization checks for '
                     'finding if all end messages from datasources were '
                     'received (in seconds)'),
     cfg.IntOpt('initialization_max_retries',
                default=30,
                min=1,
+               deprecated_for_removal=True,
+               deprecated_since='Stein',
+               deprecated_reason='This config option is no longer used.',
                help='maximum retries for consistency initialization '
                     'for finding if all end messages from datasources were '
                     'received (in seconds)'),

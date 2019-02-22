@@ -127,19 +127,14 @@ class TransformerBase(object):
         :rtype:EntityWrapper
         """
 
-        if not self._is_end_message(entity_event):
-            entity_vertex = self._create_entity_vertex(entity_event)
-            neighbors = self._create_neighbors(entity_event)
-            action = self._extract_graph_action(entity_event)
+        entity_vertex = self._create_entity_vertex(entity_event)
+        neighbors = self._create_neighbors(entity_event)
+        action = self._extract_graph_action(entity_event)
 
-            if action == GraphAction.DELETE_ENTITY:
-                self._delete_id_from_cache(entity_vertex.vertex_id)
+        if action == GraphAction.DELETE_ENTITY:
+            self._delete_id_from_cache(entity_vertex.vertex_id)
 
-            return EntityWrapper(entity_vertex, neighbors, action)
-        else:
-            return EntityWrapper(self._create_end_vertex(entity_event),
-                                 None,
-                                 GraphAction.END_MESSAGE)
+        return EntityWrapper(entity_vertex, neighbors, action)
 
     def _create_entity_vertex(self, entity_event):
         if is_update_event(entity_event) and \
@@ -342,20 +337,6 @@ class TransformerBase(object):
 
         raise VitrageTransformerError(
             'Invalid action type: (%s)' % datasource_action)
-
-    @staticmethod
-    def _create_end_vertex(entity_event):
-        entity_type = entity_event[DSProps.ENTITY_TYPE]
-        return graph_utils.create_vertex('END_MESSAGE:' + entity_type,
-                                         vitrage_type=entity_type)
-
-    @staticmethod
-    def _is_end_message(entity_event):
-
-        ds_action = entity_event[DSProps.DATASOURCE_ACTION]
-        is_snapshot_event = ds_action == DatasourceAction.INIT_SNAPSHOT
-        event_type = entity_event.get(DSProps.EVENT_TYPE, None)
-        return is_snapshot_event and event_type == GraphAction.END_MESSAGE
 
     @staticmethod
     def _format_update_timestamp(update_timestamp, sample_timestamp):

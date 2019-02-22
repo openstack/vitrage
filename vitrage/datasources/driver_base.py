@@ -17,9 +17,7 @@ import six
 
 from oslo_log import log
 
-from vitrage.common.constants import DatasourceAction
 from vitrage.common.constants import DatasourceProperties as DSProps
-from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.utils import datetime as datetime_utils
 
@@ -41,27 +39,13 @@ class DriverBase(object):
     def callback_on_fault(self, exception):
         pass
 
-    @staticmethod
-    def _get_end_message(entity_type):
-        end_message = {
-            DSProps.ENTITY_TYPE: entity_type,
-            DSProps.DATASOURCE_ACTION: DatasourceAction.INIT_SNAPSHOT,
-            DSProps.EVENT_TYPE: GraphAction.END_MESSAGE
-        }
-        return end_message
-
     def get_changes(self, datasource_action):
         pass
 
     @classmethod
     def make_pickleable(cls, entities, entity_type, datasource_action, *args):
-        pickleable_entities = cls.make_pickleable_without_end_msg(
+        return cls.make_pickleable_without_end_msg(
             entities, entity_type, datasource_action, *args)
-
-        if datasource_action == DatasourceAction.INIT_SNAPSHOT:
-            pickleable_entities.append(cls._get_end_message(entity_type))
-
-        return pickleable_entities
 
     @classmethod
     def make_pickleable_without_end_msg(cls, entities, entity_type,
