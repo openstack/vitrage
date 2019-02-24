@@ -306,8 +306,7 @@ class Processor(processor.ProcessorBase):
                           GraphAction.CREATE_ENTITY]:
                 graph_vertex = self.entity_graph.get_vertex(
                     vertex.vertex_id)
-            elif action in [GraphAction.END_MESSAGE,
-                            GraphAction.REMOVE_DELETED_ENTITY,
+            elif action in [GraphAction.REMOVE_DELETED_ENTITY,
                             GraphAction.UPDATE_RELATIONSHIP,
                             GraphAction.DELETE_RELATIONSHIP]:
                 return None
