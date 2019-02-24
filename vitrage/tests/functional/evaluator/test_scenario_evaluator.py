@@ -450,8 +450,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         port_vertex = entity_graph.get_vertices(
             vertex_attr_filter={VProps.VITRAGE_TYPE:
                                 NEUTRON_PORT_DATASOURCE})[0]
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         query = {VProps.VITRAGE_CATEGORY: EntityCategory.ALARM}
@@ -482,8 +481,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         nagios_event = mock_driver.generate_random_events_list(generator)[0]
 
         processor.process_event(nagios_event)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_added_vertices +
@@ -527,8 +525,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
             nagios_vertex.vertex_id)][0]
         nagios_edge[EProps.VITRAGE_IS_DELETED] = True
         processor.entity_graph.update_edge(nagios_edge)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_added_vertices +
@@ -583,8 +580,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
             nagios_vertex.vertex_id)][0]
         nagios_edge[EProps.VITRAGE_IS_DELETED] = False
         processor.entity_graph.update_edge(nagios_edge)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_added_vertices +
@@ -638,8 +634,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         # disable PORT_PROBLEM alarm
         nagios_event[NagiosProperties.STATUS] = NagiosTestStatus.OK
         processor.process_event(nagios_event)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_added_vertices +
@@ -756,8 +751,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
                            EdgeLabel.ATTACHED)
         entity_graph.add_edge(edge)
 
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         query = {VProps.VITRAGE_CATEGORY: EntityCategory.ALARM}
@@ -789,8 +783,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         nagios_event = mock_driver.generate_random_events_list(generator)[0]
 
         processor.process_event(nagios_event)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         self.assertEqual(num_orig_vertices + num_added_vertices +
                          num_deduced_vertices + num_network_alarm_vertices,
@@ -825,8 +818,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         # delete NETWORK_PROBLEM alarm
         nagios_event[NagiosProperties.STATUS] = NagiosTestStatus.OK
         processor.process_event(nagios_event)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         self.assertEqual(num_orig_vertices + num_added_vertices +
                          num_deduced_vertices + num_network_alarm_vertices +
@@ -907,8 +899,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         volume_event1['attachments'][0]['server_id'] = instances[0][VProps.ID]
 
         processor.process_event(volume_event1)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         num_volumes = 1
@@ -955,8 +946,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         volume_event2['attachments'][0]['server_id'] = instances[1][VProps.ID]
 
         processor.process_event(volume_event2)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         num_volumes = 2
@@ -1021,8 +1011,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         volume_event2['volume_attachment'][0]['instance_uuid'] = \
             volume_event2['attachments'][0]['server_id']
         processor.process_event(volume_event2)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_volumes + num_deduced_alarms +
@@ -1106,8 +1095,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         volume_event1['volume_attachment'][0]['instance_uuid'] = \
             volume_event1['attachments'][0]['server_id']
         processor.process_event(volume_event1)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
 
         # test asserts
         self.assertEqual(num_orig_vertices + num_volumes + num_deduced_alarms +
@@ -1352,8 +1340,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
     def get_host_after_event(self, event_queue, nagios_event,
                              processor, target_host):
         processor.process_event(nagios_event)
-        while not event_queue.empty():
-            processor.process_event(event_queue.get())
+        self._consume_queue(event_queue, processor)
         host_v = self._get_entity_from_graph(NOVA_HOST_DATASOURCE,
                                              target_host,
                                              target_host,

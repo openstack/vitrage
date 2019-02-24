@@ -19,12 +19,10 @@ from vitrage.evaluator.template_schemas import init_template_schemas
 # Register options for the service
 OPTS = [
     cfg.IntOpt('workers',
-               default=None,
+               default=1,
                min=1,
                max=32,
-               help='Number of workers for template evaluator, default is '
-                    'equal to the number of CPUs available if that can be '
-                    'determined, else a default worker count of 1 is returned.'
+               help='Number of workers for template evaluator.'
                ),
 ]
 

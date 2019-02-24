@@ -93,11 +93,15 @@ class VitrageGraphInit(object):
         self.events_coordination.start()
 
     def process_event(self, event):
-        if event.get('template_action'):
+        if isinstance(event, list):
+            for e in event:
+                self.processor.process_event(e)
+        elif event.get('template_action'):
             self.workers.submit_template_event(event)
             self.workers.submit_evaluators_reload_templates()
         else:
             self.processor.process_event(event)
+        self.persist.flush_events()
 
     def _recreate_transformers_id_cache(self):
         for v in self.graph.get_vertices():

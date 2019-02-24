@@ -260,8 +260,12 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
                 count = 0
                 while not self.event_queue.empty():
                     count += 1
-                    event = self.event_queue.get()
-                    self.processor.process_event(event)
+                    data = self.event_queue.get()
+                    if isinstance(data, list):
+                        for event in data:
+                            self.processor.process_event(event)
+                    else:
+                        self.processor.process_event(data)
                 return
 
             num_retries += 1

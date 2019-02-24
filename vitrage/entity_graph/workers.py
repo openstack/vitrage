@@ -18,7 +18,6 @@ import cotyledon
 import multiprocessing
 import multiprocessing.queues
 import os
-from oslo_concurrency import processutils as ps
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import uuidutils
@@ -94,7 +93,7 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         """
         if self._evaluator_queues:
             raise VitrageError('add_evaluator_workers called more than once')
-        workers = self._conf.evaluator.workers or ps.get_worker_count()
+        workers = self._conf.evaluator.workers
         queues = [multiprocessing.JoinableQueue() for i in range(workers)]
         self.add(EvaluatorWorker,
                  args=(self._conf, queues, workers),

@@ -100,6 +100,7 @@ class ConsistencyEnforcer(object):
         return self._filter_vertices_to_be_deleted(vertices)
 
     def _push_events_to_queue(self, vertices, action):
+        events = []
         for vertex in vertices:
             event = {
                 DSProps.ENTITY_TYPE: CONSISTENCY_DATASOURCE,
@@ -112,7 +113,8 @@ class ConsistencyEnforcer(object):
                 VProps.VITRAGE_CATEGORY: vertex[VProps.VITRAGE_CATEGORY],
                 VProps.IS_REAL_VITRAGE_ID: True
             }
-            self.actions_callback('consistency', event)
+            events.append(event)
+        self.actions_callback('consistency', events)
 
     @staticmethod
     def _filter_vertices_to_be_deleted(vertices):
