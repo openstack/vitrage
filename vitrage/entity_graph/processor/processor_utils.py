@@ -67,7 +67,7 @@ def delete_placeholder_vertex(g, vertex):
     """Checks if it is a placeholder vertex, and if so deletes it """
 
     LOG.debug('Asked to delete a placeholder vertex: %s with %d neighbors',
-              str(vertex), len(g.get_edges(vertex.vertex_id)))
+              vertex, len(g.get_edges(vertex.vertex_id)))
 
     if not vertex[VProps.VITRAGE_IS_PLACEHOLDER]:
         return
@@ -90,7 +90,7 @@ def get_vertex_types(vertex):
     vitrage_category = vertex.get(VProps.VITRAGE_CATEGORY)
     vitrage_type = vertex.get(VProps.VITRAGE_TYPE)
     if not vitrage_category:
-        LOG.warning('no vitrage_category in vertex: %s', str(vertex))
+        LOG.warning('no vitrage_category in vertex: %s', vertex)
     return vitrage_category, vitrage_type
 
 

@@ -39,8 +39,8 @@ def get_connection_from_config(conf):
                   {'name': connection_scheme, 'namespace': _NAMESPACE})
         mgr = driver.DriverManager(_NAMESPACE, connection_scheme)
 
-    except Exception as e:
-        LOG.exception('Failed to get scheme %s. Exception: %s ', str(url), e)
+    except Exception:
+        LOG.exception('Failed to get scheme %s.' % url)
         return None
 
     @tenacity.retry(

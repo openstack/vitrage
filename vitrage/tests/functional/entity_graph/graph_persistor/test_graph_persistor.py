@@ -60,7 +60,7 @@ class TestGraphPersistor(TestFunctionalBase, TestConfiguration):
                 graph_persistor.persist_event(
                     pre_item, current_item, is_vertex, graph, self.event_id)
             except Exception as e:
-                self.fail_msg = 'persist_event failed with exception ' + str(e)
+                self.fail_msg = 'persist_event failed with exception %s' % e
             self.event_id = self.event_id + 1
 
         # Subscribe graph changes to callback, so events are written to db

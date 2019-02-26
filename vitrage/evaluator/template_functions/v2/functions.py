@@ -70,11 +70,11 @@ def get_attr(match, *args):
 
     if attr is None:
         LOG.warning('Attribute %s not found for vertex %s',
-                    attr_name, str(vertex))
+                    attr_name, vertex)
 
     LOG.debug('Function get_attr called with template_id %s and attr_name %s.'
               'Matched vertex properties: %s. Returned attribute value: %s',
-              template_id, attr_name, str(entity_props), attr)
+              template_id, attr_name, entity_props, attr)
 
     return attr
 

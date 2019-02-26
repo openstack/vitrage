@@ -73,7 +73,7 @@ def subgraph_matching(base_graph, subgraph, matches, validate=False):
                                           validate)
     if not initial_sg:
         LOG.warning('subgraph_matching:Initial sub-graph creation failed')
-        LOG.warning('subgraph_matching: Known matches: %s', str(matches))
+        LOG.warning('subgraph_matching: Known matches: %s', matches)
         return final_subgraphs
     queue = [initial_sg]
 
@@ -201,7 +201,7 @@ def _get_edges_to_mapped_vertices(graph, vertex_id):
     for e in graph.get_edges(vertex_id):
         t_neighbor = graph.get_vertex(e.other_vertex(vertex_id))
         if not t_neighbor:
-            raise VitrageAlgorithmError('Cant get vertex for edge' + str(e))
+            raise VitrageAlgorithmError('Cant get vertex for edge %s' % e)
         if t_neighbor and t_neighbor.get(MAPPED_V_ID):
             subgraph_edges_to_mapped_vertices.append(e)
     return set(subgraph_edges_to_mapped_vertices)
@@ -222,7 +222,7 @@ def _graph_contains_subgraph_edges(graph, subgraph, subgraph_edges):
         graph_v_id_source = subgraph.get_vertex(e.source_id).get(MAPPED_V_ID)
         graph_v_id_target = subgraph.get_vertex(e.target_id).get(MAPPED_V_ID)
         if not graph_v_id_source or not graph_v_id_target:
-            raise VitrageAlgorithmError('Cant get vertex for edge' + str(e))
+            raise VitrageAlgorithmError('Cant get vertex for edge %s' % e)
         found_graph_edge = graph.get_edge(graph_v_id_source,
                                           graph_v_id_target,
                                           e.label)

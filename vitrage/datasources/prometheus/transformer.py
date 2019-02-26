@@ -95,6 +95,6 @@ class PrometheusTransformer(AlarmTransformerBase):
 
     @staticmethod
     def get_enrich_query(event):
-        LOG.debug('event for enrich query: %s', str(event))
+        LOG.debug('event for enrich query: %s', event)
         entity_unique_props = event.get(PDProps.ENTITY_UNIQUE_PROPS)
         return entity_unique_props

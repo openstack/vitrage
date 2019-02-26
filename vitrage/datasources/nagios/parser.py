@@ -51,11 +51,11 @@ class NagiosParser(object):
                 service = self._parse_service_row(service_row)
 
                 if service:
-                    LOG.debug('Appending service: %s', str(service))
+                    LOG.debug('Appending service: %s', service)
                     services.append(service)
                 else:
                     LOG.debug('service is None for service_row: %s',
-                              str(service_row))
+                              service_row)
 
         LOG.debug('Done parsing Nagios status')
 

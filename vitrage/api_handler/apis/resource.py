@@ -41,9 +41,9 @@ class ResourceApis(base.EntityGraphApisBase):
         LOG.debug(
             'ResourceApis get_resources - resource_type: %s, all_tenants: %s,'
             ' query: %s',
-            str(resource_type),
+            resource_type,
             all_tenants,
-            str(query))
+            query)
 
         query = self._get_query(ctx, resource_type, all_tenants, query)
         resources = self.entity_graph.get_vertices(query_dict=query)
@@ -57,10 +57,10 @@ class ResourceApis(base.EntityGraphApisBase):
         LOG.debug(
             'ResourceApis count_resources - type: %s, all_tenants: %s,'
             ' query: %s, group_by: %s',
-            str(resource_type),
+            resource_type,
             all_tenants,
-            str(query),
-            str(group_by))
+            query,
+            group_by)
 
         query = self._get_query(ctx, resource_type, all_tenants, query)
         if group_by is None:

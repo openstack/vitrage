@@ -46,8 +46,8 @@ class EvaluatorNotifier(object):
                     publisher_id='vitrage.evaluator',
                     topics=[topic_prefix + '.' + notifier])
 
-        except Exception as e:
-            LOG.info('Evaluator Notifier - missing configuration %s' % str(e))
+        except Exception:
+            LOG.exception('Evaluator Notifier - missing configuration')
 
     @property
     def enabled(self):
@@ -63,7 +63,7 @@ class EvaluatorNotifier(object):
 
         LOG.debug('execution_engine: %s, properties: %s',
                   execution_engine,
-                  str(properties))
+                  properties)
 
         try:
             if execution_engine in self.oslo_notifiers:

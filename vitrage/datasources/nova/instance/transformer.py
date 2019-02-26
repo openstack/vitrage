@@ -117,7 +117,7 @@ class InstanceTransformer(ResourceTransformerBase):
         return [host_neighbor]
 
     def _create_entity_key(self, event):
-        LOG.debug('Creating key for instance event: %s', str(event))
+        LOG.debug('Creating key for instance event: %s', event)
 
         instance_id = self._get_field_extractor(event).entity_id(event)
         key_fields = self._key_values(NOVA_INSTANCE_DATASOURCE, instance_id)

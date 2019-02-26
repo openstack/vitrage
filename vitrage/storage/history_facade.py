@@ -253,7 +253,7 @@ class HistoryFacadeConnection(object):
                                     "'filter_by' and 'filter_vals' differs")
         for d in sort_dirs:
             if d not in (ASC, DESC):
-                raise VitrageInputError("Unknown sort direction %s", str(d))
+                raise VitrageInputError("Unknown sort direction %s" % d)
 
     @staticmethod
     def _add_time_frame_to_query(query, start, end):

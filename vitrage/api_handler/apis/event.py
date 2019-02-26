@@ -69,5 +69,5 @@ class EventApis(object):
                 driver='messagingv2',
                 publisher_id=self.publisher,
                 topics=['vitrage_notifications'])
-        except Exception as e:
-            LOG.info('Failed to initialize oslo notifier %s', str(e))
+        except Exception:
+            LOG.exception('Failed to initialize oslo notifier')

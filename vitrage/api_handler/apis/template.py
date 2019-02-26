@@ -35,7 +35,7 @@ class TemplateApis(object):
 
     def validate_template(self, ctx, templates, template_type, params=None):
         LOG.debug("TemplateApis validate_template type: %s content: %s",
-                  str(template_type), str(templates))
+                  template_type, templates)
 
         files_content = [t[1] for t in templates]
         paths = [t[0] for t in templates]
@@ -78,7 +78,7 @@ class TemplateApis(object):
 
         if type(uuids) != list:
             uuids = [uuids]
-        LOG.info("Deleting templates %s ", str(uuids))
+        LOG.info("Deleting templates %s ", uuids)
         templates = [t for _id in uuids for t in db.templates.query(uuid=_id)
                      if t.status != TStatus.DELETED]
         if not templates:

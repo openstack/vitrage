@@ -93,7 +93,7 @@ class ScenarioEvaluator(object):
                 self.process_event(vertex, None, True)
         LOG.info(
             'Run %s Evaluator on %s items - took %s',
-            action_mode, str(len(vertices)), str(time.time() - start_time))
+            action_mode, len(vertices), (time.time() - start_time))
 
     def process_event(self, before, current, is_vertex, *args, **kwargs):
         """Notification of a change in the entity graph.
@@ -112,8 +112,8 @@ class ScenarioEvaluator(object):
 
         LOG.debug('Process event - starting')
         LOG.debug("Element before event: %s, Current element: %s",
-                  str(before),
-                  str(current))
+                  before,
+                  current)
 
         before_scenarios = self._get_element_scenarios(before, is_vertex)
         current_scenarios = self._get_element_scenarios(current, is_vertex)
@@ -122,8 +122,8 @@ class ScenarioEvaluator(object):
 
         if len(before_scenarios) + len(current_scenarios):
             LOG.debug("Number of relevant scenarios found: undo = %s, do = %s",
-                      str(len(before_scenarios)),
-                      str(len(current_scenarios)))
+                      len(before_scenarios),
+                      len(current_scenarios))
 
         actions = self._process_and_get_actions(before,
                                                 before_scenarios,
@@ -136,7 +136,7 @@ class ScenarioEvaluator(object):
             actions_to_preform = self._analyze_and_filter_actions(actions)
         except Exception:
             LOG.exception("Evaluator error, will not execute actions %s",
-                          str(actions))
+                          actions)
 
         self._action_executor.execute(actions_to_preform)
         LOG.debug('Process event - completed')
@@ -168,7 +168,7 @@ class ScenarioEvaluator(object):
     def _process_and_get_actions(self, element, triggered_scenarios, mode):
         actions = []
         for triggered_scenario in triggered_scenarios:
-            LOG.debug("Processing: %s", str(triggered_scenario))
+            LOG.debug("Processing: %s", triggered_scenario)
             scenario_element = triggered_scenario[0]
             scenario = triggered_scenario[1]
             actions.extend(self._process_scenario(element,

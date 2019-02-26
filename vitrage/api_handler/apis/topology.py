@@ -41,7 +41,7 @@ class TopologyApis(base.EntityGraphApisBase):
     @base.lock_graph
     def get_topology(self, ctx, graph_type, depth, query, root, all_tenants):
         LOG.debug("TopologyApis get_topology - root: %s, all_tenants=%s",
-                  str(root), all_tenants)
+                  root, all_tenants)
 
         project_id = ctx.get(TenantProps.TENANT, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)

@@ -95,7 +95,7 @@ class DoctorDriver(AlarmDriverBase):
 
         """
 
-        LOG.debug('Going to enrich event: %s', str(event))
+        LOG.debug('Going to enrich event: %s', event)
 
         event[DSProps.EVENT_TYPE] = event[EventProps.TYPE]
 
@@ -109,7 +109,7 @@ class DoctorDriver(AlarmDriverBase):
                                              self._filter_get_erroneous,
                                              event[EventProps.TIME])
 
-        LOG.debug('Enriched event: %s', str(event))
+        LOG.debug('Enriched event: %s', event)
 
         if event:
             return DoctorDriver.make_pickleable([event], DOCTOR_DATASOURCE,

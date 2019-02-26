@@ -70,7 +70,7 @@ class Vertex(PropertiesElement):
 
     def __repr__(self):
         return '{vertex_id : %s, properties : %s}' % \
-               (str(self.vertex_id), str(self.properties))
+               (self.vertex_id, self.properties)
 
     def __eq__(self, other):
         """Compare two vertices
@@ -132,8 +132,7 @@ class Edge(PropertiesElement):
         self.label = label
 
     def __hash__(self):
-        return hash('%s%s%s' % (str(self.source_id), str(self.target_id),
-                                str(self.label)))
+        return hash('%s%s%s' % (self.source_id, self.target_id, self.label))
 
     def __repr__(self):
         return '{source_id : %s, target_id : %s, ' \

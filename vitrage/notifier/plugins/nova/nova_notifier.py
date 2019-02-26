@@ -57,10 +57,10 @@ class NovaNotifier(NotifierBase):
     def _mark_host_down(self, host_id, is_down):
         try:
             LOG.info('Nova services.force_down - host id: %s, is_down: %s',
-                     str(host_id), str(is_down))
+                     host_id, is_down)
             response = self.client.services.force_down(
                 host_id, 'nova-compute', is_down)
-            LOG.info('RESPONSE %s', str(response.to_dict()))
+            LOG.info('RESPONSE %s', response.to_dict())
         except Exception:
             LOG.exception('Failed to services.force_down.')
 
@@ -70,6 +70,6 @@ class NovaNotifier(NotifierBase):
             LOG.info('Nova servers.reset_state - server: %s, state: %s',
                      server_id, state)
             response = self.client.servers.reset_state(server_id, state)
-            LOG.info('RESPONSE %s', str(response))
+            LOG.info('RESPONSE %s', response)
         except Exception:
             LOG.exception('Failed to execute servers.reset_state.')

@@ -35,7 +35,7 @@ class RcaApis(base.EntityGraphApisBase):
     @base.lock_graph
     def get_rca(self, ctx, root, all_tenants):
         LOG.debug("RcaApis get_rca - root: %s, all_tenants=%s",
-                  str(root), all_tenants)
+                  root, all_tenants)
 
         project_id = ctx.get(TenantProps.TENANT, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)

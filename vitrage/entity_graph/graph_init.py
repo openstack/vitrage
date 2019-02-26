@@ -107,7 +107,7 @@ class VitrageGraphInit(object):
         for v in self.graph.get_vertices():
             if not v.get(VProps.VITRAGE_CACHED_ID):
                 LOG.warning("Missing vitrage_cached_id in the vertex. "
-                            "Vertex is not added to the ID cache %s", str(v))
+                            "Vertex is not added to the ID cache %s", v)
             else:
                 TransformerBase.key_to_uuid_cache[v[VProps.VITRAGE_CACHED_ID]]\
                     = v.vertex_id
@@ -137,7 +137,7 @@ class EventsCoordination(object):
             try:
                 return do_work_func(event)
             except Exception:
-                LOG.exception('Got Exception for event %s', str(event))
+                LOG.exception('Got Exception for event %s' % event)
 
         self._do_work_func = do_work
 

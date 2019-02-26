@@ -123,8 +123,8 @@ class SnmpParsingService(coord.Service):
                 driver='messagingv2',
                 publisher_id=self.publisher,
                 topics=['vitrage_notifications'])
-        except Exception as e:
-            LOG.warning('Failed to initialize oslo notifier %s', str(e))
+        except Exception:
+            LOG.exception('Failed to initialize oslo notifier')
 
     def _send_snmp_to_queue(self, snmp_trap):
         if str == type(snmp_trap):

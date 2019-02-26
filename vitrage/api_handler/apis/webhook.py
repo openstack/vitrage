@@ -40,8 +40,7 @@ class WebhookApis(object):
 
     def delete_webhook(self, ctx, id):
 
-        LOG.info("Delete webhook with id: %s",
-                 str(id))
+        LOG.info("Delete webhook with id: %s", id)
 
         deleted_rows_count = self.db_conn.webhooks.delete(id)
 
@@ -72,7 +71,7 @@ class WebhookApis(object):
             self.db_conn.webhooks.create(db_row)
             return db_row_to_dict(db_row)
         except Exception as e:
-            LOG.exception("Failed to add webhook to DB: %s", str(e))
+            LOG.exception("Failed to add webhook to DB")
             return {"ERROR": str(e)}
 
     def get_webhook(self, ctx, id):
@@ -92,7 +91,7 @@ class WebhookApis(object):
                             id)
                 return None
         except Exception as e:
-            LOG.exception("Failed to get webhook: %s", str(e))
+            LOG.exception("Failed to get webhook")
             return {"ERROR": str(e)}
 
     def _webhook_to_db_row(self, url, headers, regex_filter, ctx):

@@ -29,8 +29,8 @@ class AlarmDataAccumulator(object):
     def append_active(self, alarm_id, timestamp):
 
         if alarm_id in self.active_start_times:
-            LOG.debug("Active alarm {} was started twice. Second time at {}".
-                      format(alarm_id, str(timestamp)))
+            LOG.debug("Active alarm %s was started twice. Second time at %s",
+                      alarm_id, timestamp)
             return
 
         self.active_start_times[alarm_id] = timestamp

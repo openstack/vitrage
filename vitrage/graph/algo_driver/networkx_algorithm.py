@@ -57,7 +57,7 @@ class NXAlgorithm(GraphAlgorithm):
 
         if match_func and not match_func(root_data):
             LOG.info('graph_query_vertices: root %s does not match filter %s',
-                     str(root_id), str(query_dict))
+                     root_id, query_dict)
             return graph
 
         n_result = []

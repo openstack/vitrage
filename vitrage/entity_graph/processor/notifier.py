@@ -53,8 +53,8 @@ class GraphNotifier(object):
             notifier_plugins = conf.notifiers
             if notifier_topic and notifier_plugins:
                 topics.append(notifier_topic)
-        except Exception as e:
-            LOG.info('Graph Notifier - missing configuration %s' % str(e))
+        except Exception:
+            LOG.exception('Graph Notifier - missing configuration')
 
         try:
             machine_learning_topic = \
@@ -62,8 +62,8 @@ class GraphNotifier(object):
             machine_learning_plugins = conf.machine_learning.plugins
             if machine_learning_topic and machine_learning_plugins:
                 topics.append(machine_learning_topic)
-        except Exception as e:
-            LOG.info('Machine Learning - missing configuration %s' % str(e))
+        except Exception:
+            LOG.info('Machine Learning - missing configuration')
 
         return topics
 
@@ -81,7 +81,7 @@ class GraphNotifier(object):
             curr.properties[VProps.RESOURCE] = graph.get_vertex(
                 curr.get(VProps.VITRAGE_RESOURCE_ID))
 
-        LOG.debug('notification_types : %s', str(notification_types))
+        LOG.debug('notification_types : %s', notification_types)
         LOG.debug('notification properties : %s', curr.properties)
 
         for notification_type in notification_types:
@@ -142,7 +142,7 @@ class PersistNotifier(object):
             curr.properties[EProps.SOURCE_ID] = curr.source_id
             curr.properties[EProps.TARGET_ID] = curr.target_id
 
-        LOG.debug('persist_notification_types : %s', str(notification_types))
+        LOG.debug('persist_notification_types : %s', notification_types)
         LOG.debug('persist_notification properties : %s', curr.properties)
 
         for notification_type in notification_types:

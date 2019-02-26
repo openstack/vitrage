@@ -179,8 +179,8 @@ class ScenarioRepository(object):
             target_set = frozenset(edge_desc.target.properties.items())
         except Exception as e:
             LOG.error('frozenset for edge failed - Source:%s Target:%s',
-                      str(edge_desc.source),
-                      str(edge_desc.target))
+                      edge_desc.source,
+                      edge_desc.target)
             raise e
         return EdgeKeyScenario(edge_desc.edge.label, source_set, target_set)
 

@@ -76,6 +76,5 @@ class MistralNotifier(NotifierBase):
                 else:
                     LOG.error('Failed to execute Mistral action')
 
-            except Exception as e:
-                LOG.warning('Failed to execute Mistral action. Exception: %s',
-                            str(e))
+            except Exception:
+                LOG.exception('Failed to execute Mistral action.')

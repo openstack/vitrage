@@ -67,7 +67,7 @@ class TemplateController(RootRestController):
     @pecan.expose('json')
     def delete(self, **kwargs):
         uuid = kwargs['uuid']
-        LOG.info("delete template. uuid: %s", str(uuid))
+        LOG.info("delete template. uuid: %s", uuid)
 
         enforce("template delete",
                 pecan.request.headers,

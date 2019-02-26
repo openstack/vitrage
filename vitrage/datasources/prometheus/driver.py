@@ -257,7 +257,7 @@ class PrometheusDriver(AlarmDriverBase):
 
         """
 
-        LOG.debug('Going to enrich event: %s', str(event))
+        LOG.debug('Going to enrich event: %s', event)
 
         alarms = []
         details = event.get(EProps.DETAILS)
@@ -265,7 +265,7 @@ class PrometheusDriver(AlarmDriverBase):
             alarms = self._enrich_alerts(details.get(PProps.ALERTS, []),
                                          event_type)
 
-        LOG.debug('Enriched event. Created alert events: %s', str(alarms))
+        LOG.debug('Enriched event. Created alert events: %s', alarms)
 
         return self.make_pickleable(alarms, PROMETHEUS_DATASOURCE,
                                     DatasourceAction.UPDATE)

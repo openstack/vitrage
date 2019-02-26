@@ -158,7 +158,7 @@ class DefinitionsValidator(object):
                     re.compile(value)
                 except Exception:
                     LOG.error('%s %s status code: %s' % (status_msgs[47],
-                                                         str(key), 47))
+                                                         key, 47))
                     return get_content_fault_result(47)
 
         return get_content_correct_result()

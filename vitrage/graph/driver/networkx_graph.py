@@ -115,7 +115,7 @@ class NXGraph(Graph):
         properties = self._g.node.get(v_id, None)
         if properties is not None:
             return vertex_copy(v_id, properties)
-        LOG.debug("get_vertex item not found. v_id=%s", str(v_id))
+        LOG.debug("get_vertex item not found. v_id=%s", v_id)
         return None
 
     def get_edge(self, source_id, target_id, label):
@@ -123,7 +123,7 @@ class NXGraph(Graph):
             properties = self._g.adj[source_id][target_id][label]
         except KeyError:
             LOG.debug("get_edge item not found. source_id=%s, target_id=%s, "
-                      "label=%s", str(source_id), str(target_id), str(label))
+                      "label=%s", source_id, target_id, label)
             return None
         if properties is not None:
             return edge_copy(source_id, target_id, label, properties)

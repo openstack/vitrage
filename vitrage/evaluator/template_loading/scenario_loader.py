@@ -45,7 +45,7 @@ class ScenarioLoader(object):
     def build_scenarios(self, scenarios_defs):
         scenarios = []
         for counter, scenario_def in enumerate(scenarios_defs):
-            scenario_id = "%s-scenario%s" % (self.name, str(counter))
+            scenario_id = "%s-scenario%s" % (self.name, counter)
             scenario_dict = scenario_def[TFields.SCENARIO]
             condition = parse_condition(scenario_dict[TFields.CONDITION])
             self.valid_target = calculate_action_target(
@@ -101,7 +101,7 @@ class ScenarioLoader(object):
         actions = []
 
         for counter, action_def in enumerate(actions_def):
-            action_id = '%s-action%s' % (scenario_id, str(counter))
+            action_id = '%s-action%s' % (scenario_id, counter)
             action_type = action_def[TFields.ACTION][TFields.ACTION_TYPE]
             action_loader = self._template_schema.loaders.get(action_type)
 

@@ -63,7 +63,7 @@ class AlarmDataProcessor(MachineLearningBase):
 
             # flush all data once num_of_events_to_flush is achieved
             if self.event_counter == self.num_of_events_to_flush:
-                LOG.debug("Persisting: {}".format(str(data)))
+                LOG.debug("Persisting: %s", data)
                 self.data_manager.flush_accumulations()
                 APersistor.save_accumulated_data(self.data_manager)
                 self.correlation_manager.output_correlations(self.data_manager)

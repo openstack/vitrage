@@ -117,4 +117,4 @@ def register_opts(conf, package_name, paths):
         except ImportError:
             pass
     LOG.error("Failed to import config options for %s. Not found in %s",
-              package_name, str(paths))
+              package_name, paths)

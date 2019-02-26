@@ -137,7 +137,7 @@ class ActionExecutor(object):
 
         LOG.debug('Notifying external engine %s. Properties: %s',
                   execution_engine,
-                  str(payload))
+                  payload)
         self.notifier.notify(execution_engine, payload)
 
     @staticmethod

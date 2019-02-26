@@ -85,8 +85,7 @@ class WebhookController(RootRestController):
 
     @pecan.expose('json')
     def post(self, **kwargs):
-        LOG.info("Add webhook with following props: %s" % str(
-            kwargs))
+        LOG.info("Add webhook with following props: %s" % kwargs)
         enforce('webhook add', pecan.request.headers,
                 pecan.request.enforcer, {})
         try:

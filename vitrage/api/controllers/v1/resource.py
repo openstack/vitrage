@@ -79,7 +79,7 @@ class ResourcesController(RootRestController):
                     pecan.request.enforcer, {})
 
         LOG.info('get resources with type: %s, all_tenants: %s, query: %s',
-                 resource_type, all_tenants, str(query))
+                 resource_type, all_tenants, query)
 
         resources = pecan.request.client.call(
             pecan.request.context,

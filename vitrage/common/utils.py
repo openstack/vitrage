@@ -76,8 +76,8 @@ def get_portion(lst, num_of_portions, portion_index):
     if num_of_portions < 1 or portion_index < 0 or \
             portion_index >= num_of_portions:
         raise Exception('Cannot get_portion %s %s',
-                        str(num_of_portions),
-                        str(portion_index))
+                        num_of_portions,
+                        portion_index)
 
     list_copy = copy.copy(lst)
     random.Random(0.5).shuffle(list_copy)
@@ -107,7 +107,7 @@ def md5(obj):
             return hashlib.md5(obj).hexdigest()
         else:
             return hashlib.md5(obj.encode('utf-8')).hexdigest()
-    raise Exception('Unknown object for md5 %s', str(obj))
+    raise Exception('Unknown object for md5 %s' % obj)
 
 
 def fmt(docstr):

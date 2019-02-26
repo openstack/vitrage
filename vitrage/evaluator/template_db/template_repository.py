@@ -89,7 +89,7 @@ def _validate_template(db, template, template_type, params=None):
     elif template_type == TType.EQUIVALENCE:
         result = base.Result("", True, "", "No Validation")
     else:
-        raise VitrageError("Unknown template type %s", template_type)
+        raise VitrageError("Unknown template type %s" % template_type)
     return result
 
 

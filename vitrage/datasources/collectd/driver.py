@@ -72,7 +72,7 @@ class CollectdDriver(AlarmDriverBase):
                     CProps.RESOURCE_NAME: element_config['name']
                 }
 
-            LOG.debug('collectd mappings: %s', str(mappings))
+            LOG.debug('collectd mappings: %s', mappings)
 
             return mappings
         except Exception:

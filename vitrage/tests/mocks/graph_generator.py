@@ -165,7 +165,7 @@ class GraphGenerator(object):
         props = self._load_resource_file(filename, 'vertices')
         if props.get(VProps.ID):
             props[VProps.ID] = self.generate_mock_uuid()
-        props[VProps.NAME] = "%s-%s" % (props[VProps.VITRAGE_TYPE], str(index))
+        props[VProps.NAME] = "%s-%s" % (props[VProps.VITRAGE_TYPE], index)
         props[VProps.VITRAGE_ID] = self.generate_mock_uuid()
         return Vertex(props[VProps.VITRAGE_ID], props)
 
