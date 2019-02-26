@@ -45,9 +45,11 @@ status_msgs = {
     62: 'metadata is a mandatory section.',
     63: 'Unsupported version. Version must be one of: {versions}'
         .format(versions=TemplateSchemaFactory.supported_versions()),
-    64: 'metadata section must contain a type field in version 2. Type must be'
-        ' one of: {types}'.format(types=TemplateTypes.types()),
+    64: 'metadata section must contain a type field starting from version 2. '
+        'Type must be one of: {types}'.format(types=TemplateTypes.types()),
     65: 'Invalid template type. Type must be one of: {types}'
+        .format(types=TemplateTypes.types()),
+    66: 'Missing template type. Type must be one of: {types}'
         .format(types=TemplateTypes.types()),
 
     # scenarios section status messages 80-99

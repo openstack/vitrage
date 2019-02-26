@@ -15,13 +15,15 @@ from oslo_log import log
 from oslo_utils import uuidutils
 
 from vitrage.common.constants import TemplateStatus
-from vitrage.common.constants import TemplateTopologyFields as TFields
 from vitrage.common.constants import TemplateTypes as TType
 from vitrage.common.exception import VitrageError
 from vitrage.evaluator.base import Template
+from vitrage.evaluator.template_fields import TemplateFields as TFields
 from vitrage.evaluator.template_functions.v2 import resolve_parameters
 from vitrage.evaluator import template_validation
 from vitrage.evaluator.template_validation import base
+from vitrage.evaluator.template_validation.content.base import \
+    get_content_fault_result
 from vitrage.storage.sqlalchemy import models
 
 LOG = log.getLogger(__name__)
@@ -42,6 +44,9 @@ def add_templates_to_db(db, templates, cli_type, params=None):
         result = _validate_template(db, template, final_type, params)
         if result.is_valid_config:
             result = resolve_parameters(template, params)
+            if result.is_valid_config and TFields.PARAMETERS in template:
+                # remove the 'parameters' section, it is no longer needed
+                del template[TFields.PARAMETERS]
 
         # validate again, with the resolved parameters
         if result.is_valid_config:
@@ -66,7 +71,8 @@ def validate_templates(db, templates, cli_type, params):
     for template in templates:
         final_type = template[METADATA].get(TFields.TYPE, cli_type)
         if not final_type or (cli_type and cli_type != final_type):
-            results.append(base.Result("", False, "", "Unknown template type"))
+            results.append(
+                get_content_fault_result(66, "Unknown template type"))
         else:
             results.append(
                 _validate_template(db, template, final_type, params))

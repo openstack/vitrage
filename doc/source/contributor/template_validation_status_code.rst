@@ -49,11 +49,15 @@ The following describes all the possible status code and their messages:
 +------------------+---------------------------------------------------------+-------------------------------+
 | 63               | Unsupported version. Version must be one of: {versions} | content                       |
 +------------------+---------------------------------------------------------+-------------------------------+
-| 64               | metadata section must contain a type field in version 2.| content                       |
-|                  | Type must be one of: {standard, equivalence, definition}| content                       |
+| 64               | metadata section must contain a type field starting     | content                       |
+|                  | from version 2.                                         |                               |
+|                  | Type must be one of: {standard, equivalence, definition}|                               |
 +------------------+---------------------------------------------------------+-------------------------------+
 | 65               | Invalid template type. Type must be one of: {standard,  | content                       |
-|                  | equivalence, definition}                                | content                       |
+|                  | equivalence, definition}                                |                               |
++------------------+---------------------------------------------------------+-------------------------------+
+| 66               | Missing template type. Type must be one of: {standard,  | content                       |
+|                  | equivalence, definition}                                |                               |
 +------------------+---------------------------------------------------------+-------------------------------+
 | 80               | scenarios is a mandatory section                        | syntax                        |
 +------------------+---------------------------------------------------------+-------------------------------+
