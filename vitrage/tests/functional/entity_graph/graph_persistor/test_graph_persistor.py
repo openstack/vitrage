@@ -73,6 +73,7 @@ class TestGraphPersistor(TestFunctionalBase, TestConfiguration):
         edge = g.get_edges(vertices[0].vertex_id).pop()
         edge[EdgeProperties.VITRAGE_IS_DELETED] = True
         g.update_edge(edge)
+        graph_persistor.flush_events()
 
         # Store graph:
         graph_persistor.store_graph()
@@ -85,6 +86,7 @@ class TestGraphPersistor(TestFunctionalBase, TestConfiguration):
         edge = g.get_edges(vertices[2].vertex_id).pop()
         edge[EdgeProperties.RELATIONSHIP_TYPE] = 'kuku'
         g.update_edge(edge)
+        graph_persistor.flush_events()
 
         self.assertIsNone(self.fail_msg, 'callback failed')
 

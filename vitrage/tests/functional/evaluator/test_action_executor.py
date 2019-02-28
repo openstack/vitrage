@@ -38,6 +38,7 @@ from vitrage.evaluator.actions.evaluator_event_transformer \
     import VITRAGE_DATASOURCE
 from vitrage.evaluator.actions.recipes.action_steps import ADD_VERTEX
 from vitrage.evaluator.actions.recipes.base import EVALUATOR_EVENT_TYPE
+from vitrage.evaluator.scenario_evaluator import ActionInfo
 from vitrage.evaluator.template_data import ActionSpecs
 from vitrage.evaluator.template_fields import TemplateFields as TFields
 from vitrage.opts import register_opts
@@ -84,8 +85,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         event_queue, action_executor = self._init_executer()
 
         # Test Action - do
-        action_executor.execute(action_spec, ActionMode.DO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.DO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         host_vertex_after = processor.entity_graph.get_vertex(
             host_vertex_before.vertex_id)
@@ -104,8 +106,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         self.assertEqual(v_state_after, OperationalResourceState.SUBOPTIMAL)
 
         # Test Action - undo
-        action_executor.execute(action_spec, ActionMode.UNDO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.UNDO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         host_vertex_after_undo = processor.entity_graph.get_vertex(
             host_vertex_before.vertex_id)
@@ -134,8 +137,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         event_queue, action_executor = self._init_executer()
 
         # Test Action - do
-        action_executor.execute(action_spec, ActionMode.DO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.DO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         instance_vertex_after = processor.entity_graph.get_vertex(
             instance_vertex_before.vertex_id)
@@ -144,8 +148,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         self.assertTrue(instance_vertex_after.get(VProps.IS_MARKED_DOWN))
 
         # Test Action - undo
-        action_executor.execute(action_spec, ActionMode.UNDO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.UNDO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         instance_vertex_after_undo = processor.entity_graph.get_vertex(
             instance_vertex_before.vertex_id)
@@ -170,8 +175,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         event_queue, action_executor = self._init_executer()
 
         # Test Action - do
-        action_executor.execute(action_spec, ActionMode.DO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.DO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         host_vertex_after = processor.entity_graph.get_vertex(
             host_vertex_before.vertex_id)
@@ -180,8 +186,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         self.assertTrue(host_vertex_after.get(VProps.IS_MARKED_DOWN))
 
         # Test Action - undo
-        action_executor.execute(action_spec, ActionMode.UNDO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.UNDO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         host_vertex_after_undo = processor.entity_graph.get_vertex(
             host_vertex_before.vertex_id)
@@ -227,8 +234,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
                                                       alarm1.vertex_id,
                                                       EdgeLabel.CAUSES)
         # Test Action - do
-        action_executor.execute(action_spec, ActionMode.DO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.DO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         new_edge = processor.entity_graph.get_edge(alarm2.vertex_id,
                                                    alarm1.vertex_id,
@@ -267,8 +275,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         event_queue, action_executor = self._init_executer()
 
         # Test Action
-        action_executor.execute(action_spec, ActionMode.DO)
-        processor.process_event(event_queue.get())
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.DO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         after_alarms = processor.entity_graph.get_vertices(
             vertex_attr_filter=alarm_vertex_attrs)
@@ -330,9 +339,9 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         event_queue, action_executor = self._init_executer()
 
         # Test Action - undo
-        action_executor.execute(action_spec, ActionMode.UNDO)
-        event = event_queue.get()
-        processor.process_event(event)
+        action_executor.execute(
+            [ActionInfo(action_spec, ActionMode.UNDO, None, None)])
+        self._consume_queue(event_queue, processor)
 
         after_alarms = processor.entity_graph.get_vertices(
             vertex_attr_filter=alarm_vertex_attrs)

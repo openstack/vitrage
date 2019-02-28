@@ -17,7 +17,7 @@ from __future__ import absolute_import
 
 from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from sqlalchemy.engine import url as sqlalchemy_url
 from sqlalchemy import func
 
@@ -146,6 +146,14 @@ class BaseTableConn(object):
         super(BaseTableConn, self).__init__()
         self._engine_facade = engine_facade
 
+    def bulk_create(self, items):
+        if not items:
+            return
+
+        session = self._engine_facade.get_session()
+        with session.begin():
+            session.bulk_save_objects(items)
+
     def query_filter(self, model, **kwargs):
         session = self._engine_facade.get_session()
         query = session.query(model)
@@ -225,6 +233,21 @@ class ActiveActionsConnection(base.ActiveActionsConnection, BaseTableConn):
             trigger=trigger)
         return query.all()
 
+    def query_similar(self, actions):
+        """Query DB for all actions with same properties"""
+        session = self._engine_facade.get_session()
+        query = session.query(models.ActiveAction)
+
+        filters = []
+        for source, target, extra_info, action_type in actions:
+            filters.append(
+                and_(models.ActiveAction.action_type == action_type,
+                     models.ActiveAction.extra_info == extra_info,
+                     models.ActiveAction.source_vertex_id == source,
+                     models.ActiveAction.target_vertex_id == target,))
+        query = query.filter(or_(*filters))
+        return query.all()
+
     def delete(self,
                action_type=None,
                extra_info=None,
@@ -242,6 +265,20 @@ class ActiveActionsConnection(base.ActiveActionsConnection, BaseTableConn):
             action_id=action_id,
             score=score,
             trigger=trigger)
+        return query.delete()
+
+    def bulk_delete(self, actions):
+        if not actions:
+            return
+        session = self._engine_facade.get_session()
+        query = session.query(models.ActiveAction)
+
+        filters = []
+        for trigger, action_id in actions:
+            filters.append(
+                and_(models.ActiveAction.trigger == trigger,
+                     models.ActiveAction.action_id == action_id))
+        query = query.filter(or_(*filters))
         return query.delete()
 
 

@@ -51,3 +51,13 @@ class TestFunctionalBase(TestEntityGraphUnitBase):
             snap_vals={DSProps.DATASOURCE_ACTION:
                        DatasourceAction.INIT_SNAPSHOT})
         return mock_driver.generate_sequential_events_list(gen_list)
+
+    @staticmethod
+    def _consume_queue(event_queue, processor):
+        while not event_queue.empty():
+            data = event_queue.get()
+            if isinstance(data, list):
+                for event in data:
+                    processor.process_event(event)
+            else:
+                processor.process_event(data)

@@ -28,6 +28,7 @@ class GraphPersistency(object):
         self.conf = conf
         self.db = db
         self.graph = graph
+        self.events_buffer = []
 
     def store_graph(self):
         LOG.info('Persisting graph...')
@@ -91,7 +92,13 @@ class GraphPersistency(object):
 
         event_row = models.Event(payload=curr, is_vertex=is_vertex,
                                  event_id=event_id)
-        self.db.events.create(event_row)
+        self.events_buffer.append(event_row)
+
+    def flush_events(self):
+        if not self.events_buffer:
+            return
+        self.db.events.bulk_create(self.events_buffer)
+        self.events_buffer = []
 
     @staticmethod
     def is_important_change(before, curr, *args):

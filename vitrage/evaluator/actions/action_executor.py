@@ -45,6 +45,8 @@ from vitrage.utils import datetime as datetime_utils
 LOG = log.getLogger(__name__)
 
 EVALUATOR_EVENT = 'evaluator.event'
+TARGET = 'target'
+SOURCE = 'source'
 
 
 class ActionExecutor(object):
@@ -64,7 +66,17 @@ class ActionExecutor(object):
             EXECUTE_EXTERNAL: self._execute_external,
         }
 
-    def execute(self, action_spec, action_mode):
+    def execute(self, actions):
+        if not actions:
+            return
+
+        events = []
+        for action in actions:
+            LOG.info('Action: %s', self._action_str(action))
+            events.extend(self._execute(action.specs, action.mode))
+        self.actions_callback(EVALUATOR_EVENT, events)
+
+    def _execute(self, action_spec, action_mode):
 
         action_recipe = self.action_recipes[action_spec.type]
         if action_mode == ActionMode.DO:
@@ -72,8 +84,10 @@ class ActionExecutor(object):
         else:
             steps = action_recipe.get_undo_recipe(action_spec)
 
+        events = []
         for step in steps:
-            self.action_step_defs[step.type](step.params)
+            events.append(self.action_step_defs[step.type](step.params))
+        return events
 
     def _add_vertex(self, params):
 
@@ -81,7 +95,7 @@ class ActionExecutor(object):
         ActionExecutor._add_default_properties(event)
         event[EVALUATOR_EVENT_TYPE] = ADD_VERTEX
 
-        self.actions_callback(EVALUATOR_EVENT, event)
+        return event
 
     def _update_vertex(self, params):
 
@@ -89,14 +103,14 @@ class ActionExecutor(object):
         ActionExecutor._add_default_properties(event)
         event[EVALUATOR_EVENT_TYPE] = UPDATE_VERTEX
 
-        self.actions_callback(EVALUATOR_EVENT, event)
+        return event
 
     def _remove_vertex(self, params):
         event = copy.deepcopy(params)
         ActionExecutor._add_default_properties(event)
         event[EVALUATOR_EVENT_TYPE] = REMOVE_VERTEX
 
-        self.actions_callback(EVALUATOR_EVENT, event)
+        return event
 
     def _add_edge(self, params):
 
@@ -104,7 +118,7 @@ class ActionExecutor(object):
         ActionExecutor._add_default_properties(event)
         event[EVALUATOR_EVENT_TYPE] = ADD_EDGE
 
-        self.actions_callback(EVALUATOR_EVENT, event)
+        return event
 
     def _remove_edge(self, params):
 
@@ -112,7 +126,7 @@ class ActionExecutor(object):
         ActionExecutor._add_default_properties(event)
         event[EVALUATOR_EVENT_TYPE] = REMOVE_EDGE
 
-        self.actions_callback(EVALUATOR_EVENT, event)
+        return event
 
     def _execute_external(self, params):
 
@@ -158,3 +172,11 @@ class ActionExecutor(object):
             "%s.%s" % (ExecuteMistral.__module__, ExecuteMistral.__name__))
 
         return recipes
+
+    @staticmethod
+    def _action_str(action):
+        s = action.specs.targets.get(SOURCE, {}).get(VProps.VITRAGE_ID, '')
+        t = action.specs.targets.get(TARGET, {}).get(VProps.VITRAGE_ID, '')
+        return '%s %s \'%s\' targets (%s,%s)' % (action.mode.upper(),
+                                                 action.specs.type,
+                                                 action.action_id, s, t)
