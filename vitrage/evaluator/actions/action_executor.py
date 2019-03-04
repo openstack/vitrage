@@ -86,7 +86,9 @@ class ActionExecutor(object):
 
         events = []
         for step in steps:
-            events.append(self.action_step_defs[step.type](step.params))
+            event = self.action_step_defs[step.type](step.params)
+            if event:
+                events.append(event)
         return events
 
     def _add_vertex(self, params):
