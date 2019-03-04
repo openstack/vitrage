@@ -380,7 +380,7 @@ Adding/removing a template
 - The template will be validated before loading. Validation errors are written
   to the log. Templates with validation errors are skipped.
 
-Common parameters and their acceptable values - for writing templates
+Common properties and their acceptable values - for writing templates
 ---------------------------------------------------------------------
 
 +-------------------+-----------------------+-------------------------+------------------------------------+

@@ -33,6 +33,10 @@ The template is written in YAML language, with the following structure:
     name: <unique template identifier>
     type: standard
     description: <what this template does>
+   parameters: <an optional section>
+    example_param:
+     description: <description of the parameter>
+     default: <a default value for the parameter>
    entities:
     example_host:
      type: nova.host
@@ -55,6 +59,8 @@ The template is divided into three main sections:
   - ``name`` - the name of the template
   - ``type`` - the type of the template. Currently only `standard` is supported
   - ``description`` - a brief description of what the template does (optional)
+
+- ``parameters`` - an optional section with parameters that are used inside the template
 
 - ``entities`` - describes the resources and alarms which are relevant to the template scenario (corresponds to a vertex in the entity graph). These are referenced later on.
 
@@ -293,6 +299,37 @@ regular expression:
      type: zabbix
      rawtext.regex: Interface ([_a-zA-Z0-9'-]+) down on {HOST.NAME}
 
+
+Parameters
+----------
+Some properties in the template definition can be defined as parameters and
+assigned with actual values upon template creation. This allows easy reuse of
+a similar template structure for different alarm types.
+
+For example, the following two templates can be written using a single template
+with parameters:
+
+* a high CPU load on a host causes high CPU load on the instances
+* insufficient memory on a host causes insufficient memory on the instances
+
+To use parameters, add a ``parameters`` section to the template. This section
+defines all parameters that are used in the template. Each parameter can have
+two optional properties:
+
+* ``description``: explanation on the purpose of the parameter
+* ``default``: default value for the parameter
+
+Using a parameter inside the template is done by calling the ``get_param()``
+function. For example:
+
+::
+
+    name: get_param(alarm_name)
+
+**Note:** In order to be able to create multiple templates from the
+parametrized template, the template name must also be defined as a parameter.
+
+
 Functions
 ---------
 Some properties of an action can be defined using functions. On version 2, one
@@ -328,6 +365,10 @@ in the template.
               host_name: get_attr(host, name)
               retries: 5
 
+get_param
+^^^^^^^^^
+See `Parameters`_
+
 
 Examples
 ########
@@ -342,7 +383,8 @@ The following template demonstrates:
    instances.
 2. How to link alarms for purposes of root cause analysis (RCA). Specifically,
    if there is high CPU load on the host and CPU performance problems on the
-   hosted instances, we link them with a `causes` relationship, according to the optional property `causing_alarm`.
+   hosted instances, we link them with a `causes` relationship, according to
+   the optional property `causing_alarm`.
 
 .. code-block:: yaml
 
@@ -352,16 +394,16 @@ The following template demonstrates:
         type: standard
         description: when there is high CPU load on the host, show implications on the instances
     entities:
-        - host:
-            type: nova.host
-        - host_alarm:
-            type: zabbix
-            name: host high cpu load
-        - instance:
-            type: nova.instance
-        - instance_alarm:
-            category: ALARM
-            severity: CRITICAL
+        host:
+          type: nova.host
+        host_alarm:
+          type: zabbix
+          name: host high cpu load
+        instance:
+          type: nova.instance
+        instance_alarm:
+          category: ALARM
+          severity: CRITICAL
     scenarios:
      - condition: host_alarm [on] host AND host [contains] instance
        actions:
@@ -390,11 +432,11 @@ is any alarm of severity `CRITICAL` on it.
         type: standard
         description: deduced state for all instance with alarms
     entities:
-        - instance:
-            type: nova.instance
-        - instance_alarm:
-            category: ALARM
-            severity: CRITICAL
+        instance:
+          type: nova.instance
+        instance_alarm:
+          category: ALARM
+          severity: CRITICAL
     scenarios:
      - condition: instance_alarm [on] instance
        actions:
@@ -418,9 +460,9 @@ that the entity exists.
         type: standard
         description: raise deduced alarm for all hosts in error
     entities:
-        - host_in_error:
-            type: nova.host
-            state: error
+        host_in_error:
+          type: nova.host
+          state: error
     scenarios:
      - condition: host_in_error
        actions:
@@ -443,18 +485,18 @@ an alarm on the hosting zone or an alarm on the hosting host.
         type: standard
         description: deduced alarm using or in condition
     entities:
-        - zone:
-            type: nova.zone
-        - zone_alarm:
-            category: ALARM
-            name: zone connectivity problem
-        - host:
-            type: nova.host
-        - host_alarm:
-            type: zabbix
-            name: host connectivity problem
-        - instance:
-            type: nova.instance
+        zone:
+          type: nova.zone
+        zone_alarm:
+          category: ALARM
+          name: zone connectivity problem
+        host:
+          type: nova.host
+        host_alarm:
+          type: zabbix
+          name: host connectivity problem
+        instance:
+          type: nova.instance
     scenarios:
      - condition: (host_alarm [on] host OR (zone_alarm [on] zone AND zone [contains] host)) AND host [contains] instance
        actions:
@@ -462,6 +504,64 @@ an alarm on the hosting zone or an alarm on the hosting host.
             target: instance
             alarm_name: instance_connectivity_problem
             severity: CRITICAL
+
+
+Example 5: A template with parameters
+=====================================
+This template will raise a deduced alarm on an instance if there is an alarm
+on the host.
+
+
+.. code-block:: yaml
+
+    metadata:
+        version: 3
+        name: get_param(template_name)
+        type: standard
+        description: If there is an alarm on a host, raise alarms on its instances
+    parameters:
+        template_name:
+        host_alarm_type:
+           description: the type of the alarm on the host
+           default: zabbix
+        host_alarm_name:
+           description: the name of the alarm on the host
+        instance_alarm_name:
+           description: the name of the alarm on to be raised by Vitrage on the instance
+        instance_alarm_severity:
+           description: the severity of the alarm on to be raised by Vitrage on the instance
+           default: WARNING
+    entities:
+        zone:
+            type: nova.zone
+        host:
+            type: nova.host
+        host_alarm:
+            type: get_param(host_alarm_type)
+            name: get_param(host_alarm_name)
+        instance:
+            type: nova.instance
+    scenarios:
+     - condition: host_alarm [on] host AND host [contains] instance
+       actions:
+         - raise_alarm:
+            target: instance
+            alarm_name: get_param(instance_alarm_name)
+            severity: get_param(instance_alarm_severity)
+
+
+`vitrage template add` should be called with the following parameters:
+
+* template_name
+* host_alarm_type (optional)
+* host_alarm_name
+* instance_alarm_name
+* instance_alarm_severity (optional)
+
+::
+
+  vitrage template add --path template_with_params.yaml --params template_name=cpu_template host_alarm_name='High CPU on host' instance_alarm_name='CPU performance degradation on the instance'
+
 
 Applying the template
 #####################
@@ -484,7 +584,7 @@ Applying the template will evaluate it against the existing entity graph as well
     vitrage template add --path /home/stack/my_new_template.yaml
 
 
-Common parameters and their acceptable values
+Common properties and their acceptable values
 =============================================
 
 +-------------------+-----------------------+-------------------------+------------------------------------+
