@@ -104,16 +104,17 @@ class DriversNotificationEndpoint(object):
         return messaging.get_notification_listener(transport, targets, [self])
 
     def info(self, ctxt, publisher_id, event_type, payload, metadata):
-        funcs = self._enrich_event_methods[str(event_type)]
+        enrich_event_methods = self._enrich_event_methods[event_type]
         events = []
-        for func in funcs:
-            result = func(payload, event_type)
+        for enrich_event_method in enrich_event_methods:
+            result = enrich_event_method(payload, event_type)
             if isinstance(result, list):
                 events += result
             else:
                 events.append(result)
         events = [x for x in events if x is not None]
-        LOG.info('EVENTS ENQUEUED: \n' + str(events))
+        LOG.info('EVENTS ENQUEUED:[%s] [%s] \n%s', publisher_id,
+                 event_type, events)
         self._processor_func(events)
 
 
