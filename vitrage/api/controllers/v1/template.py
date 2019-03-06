@@ -136,7 +136,7 @@ class TemplateController(RootRestController):
     def _show_template(uuid):
         try:
             templates = pecan.request.storage.templates.query(uuid=uuid)
-            if not templates:
+            if not templates or templates[0].status == TStatus.DELETED:
                 raise VitrageError("Template %s not found", uuid)
             return templates[0].file_content
         except Exception:
