@@ -13,6 +13,7 @@
 # under the License.
 
 from itertools import chain
+from jsonschema import validate
 from six.moves import reduce
 
 from oslo_log import log
@@ -21,6 +22,7 @@ from vitrage.common.constants import DatasourceProperties as DSProps
 from vitrage.common.constants import GraphAction
 from vitrage.datasources.driver_base import DriverBase
 from vitrage.datasources.static import STATIC_DATASOURCE
+from vitrage.datasources.static import STATIC_SCHEMA
 from vitrage.datasources.static import StaticFields
 from vitrage.utils import file as file_utils
 
@@ -39,10 +41,15 @@ class StaticDriver(DriverBase):
         self.entities_cache = []
 
     @staticmethod
-    def _is_valid_config(config):
+    def _is_valid_config(config, path):
         """check for validity of configuration"""
-        # TODO(yujunz) check with yaml schema or reuse template validation
-        return StaticFields.DEFINITIONS in config
+        try:
+            validate(config, STATIC_SCHEMA)
+            return True
+        except Exception:
+            msg = "Invalid config file: %s" % path
+            LOG.exception(msg)
+            return False
 
     @staticmethod
     def get_event_types():
@@ -103,9 +110,7 @@ class StaticDriver(DriverBase):
     def _get_entities_from_file(cls, path):
         config = file_utils.load_yaml_file(path)
 
-        if not cls._is_valid_config(config):
-            LOG.warning("Skipped invalid config (possible obsoleted): {}"
-                        .format(path))
+        if not cls._is_valid_config(config, path):
             return []
 
         definitions = config[StaticFields.DEFINITIONS]

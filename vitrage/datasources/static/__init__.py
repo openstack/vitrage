@@ -45,6 +45,75 @@ OPTS = [
                help='static data sources configuration directory')]
 
 
+STATIC_SCHEMA = {
+    "type": "object",
+    "required": ["definitions"],
+    "properties": {
+        "metadata": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                },
+                "description": {
+                    "type": "string",
+                },
+            }
+        },
+        "definitions": {
+            "type": "object",
+            "required": ["entities", "relationships"],
+            "properties": {
+                "entities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["static_id"],
+                        "properties": {
+                            "static_id": {
+                                "type": "string",
+                            },
+                            "type": {
+                                "type": "string",
+                            },
+                            "name": {
+                                "type": "string",
+                            },
+                            "id": {
+                                "type": "string",
+                            },
+                            "state": {
+                                "type": "string",
+                            },
+                        },
+                    },
+                },
+                "relationships": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["source", "target",
+                                     "relationship_type"],
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                            },
+                            "target": {
+                                "type": "string",
+                            },
+                            "relationship_type": {
+                                "type": "string",
+                            },
+                        },
+                    },
+                },
+            }
+        },
+    },
+}
+
+
 class StaticFields(object):
     """yaml fields for static definitions"""
     METADATA = 'metadata'
