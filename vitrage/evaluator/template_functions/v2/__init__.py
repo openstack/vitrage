@@ -27,9 +27,6 @@ LOG = log.getLogger(__name__)
 
 
 def resolve_parameters(template_def, params=None):
-    if not params:
-        return get_content_correct_result()
-
     result, template_schema = get_template_schema(template_def)
     if not result.is_valid_config:
         return result
