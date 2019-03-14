@@ -1,0 +1,11 @@
+---
+prelude: |
+    Vitrage Stein release contains some significant changes:
+
+    - New and simplified template language! the new templates are shorter and
+      much easier to understand and reuse:
+      https://docs.openstack.org/vitrage/latest/contributor/vitrage-templates.html
+    - Added a Trove datasource and a Zaqar notifier.
+    - New APIs for querying Vitrage services and for resource count.
+    - Performance improvements and faster data retrieval. The memory signature
+      and processing runtime were significantly reduced.
