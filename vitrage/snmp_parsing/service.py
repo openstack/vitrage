@@ -13,7 +13,6 @@
 # under the License.
 
 from datetime import datetime
-import json
 
 from oslo_log import log
 import oslo_messaging
@@ -43,6 +42,8 @@ class SnmpParsingService(coord.Service):
         super(SnmpParsingService, self).__init__(worker_id, conf)
         self.conf = conf
         self.listening_port = conf.snmp_parsing.snmp_listening_port
+        self.oid_mapping = \
+            load_yaml_file(self.conf.snmp_parsing.oid_mapping)
         self._init_oslo_notifier()
 
     def run(self):
@@ -104,7 +105,7 @@ class SnmpParsingService(coord.Service):
         binds_dict = {}
         for oid, val in var_binds:
             u_oid = self._convert_obj_to_unicode(oid)
-            binds_dict[u_oid] = int(val) if type(val) == Integer \
+            binds_dict[u_oid] = int(val) if isinstance(val, Integer) \
                 else self._convert_obj_to_unicode(val)
         return binds_dict
 
@@ -127,8 +128,6 @@ class SnmpParsingService(coord.Service):
             LOG.exception('Failed to initialize oslo notifier')
 
     def _send_snmp_to_queue(self, snmp_trap):
-        if str == type(snmp_trap):
-            snmp_trap = json.loads(snmp_trap)
         try:
             event_type = self._get_event_type(snmp_trap)
             if not event_type:
@@ -147,12 +146,11 @@ class SnmpParsingService(coord.Service):
             LOG.warning('Snmp failed to post event. Exception: %s', e)
 
     def _get_event_type(self, snmp_trap):
-        yaml_file_content = load_yaml_file(self.conf.snmp_parsing.oid_mapping)
-        if not yaml_file_content:
+        if not self.oid_mapping:
             LOG.warning('No snmp trap is configured!')
             return None
 
-        for mapping_info in yaml_file_content:
+        for mapping_info in self.oid_mapping:
             system_oid = extract_field_value(mapping_info, SEProps.SYSTEM_OID)
             conf_system = extract_field_value(mapping_info, SEProps.SYSTEM)
             if conf_system == extract_field_value(snmp_trap, system_oid):
