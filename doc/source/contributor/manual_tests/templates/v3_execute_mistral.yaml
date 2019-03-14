@@ -1,0 +1,17 @@
+metadata:
+ version: 3
+ name: v3_execute_mistral
+ description: execute mistral
+ type: standard
+entities:
+ alarm:
+  name: alarm_for_mistral
+ host:
+  type: nova.host
+scenarios:
+ - condition: alarm [on] host
+   actions:
+     - execute_mistral:
+        workflow: workflow1
+        input:
+         farewell: get_attr(host,name)

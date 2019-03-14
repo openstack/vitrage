@@ -9,6 +9,13 @@ Vitrage Devstack Installation
 
 * `Enabling Vitrage in horizon <https://github.com/openstack/vitrage-dashboard/blob/master/README.rst>`_
 
+
+.. toctree::
+   :maxdepth: 1
+
+   manual-tests
+
+
 External Monitor Installation
 =============================
 

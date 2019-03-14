@@ -1,0 +1,31 @@
+metadata:
+ version: 3
+ name: High memory consumption
+ description: Version 3 template of high memory consumption
+ type: standard
+entities:
+ host_alarm:
+  type: zabbix
+  rawtext: host network interface is down
+ instance:
+  type: nova.instance
+ host:
+  type: nova.host
+ foo:
+   name.regex: kuku
+scenarios:
+ - condition: host_alarm [ on ] host
+   actions:
+     - set_state:
+        state: ERROR
+        target: host
+ - condition: host_alarm [ on ] host AND host [ contains ] instance
+   actions:
+     - raise_alarm:
+        target: instance
+        alarm_name: Instance high memory consumption
+        severity: WARNING
+        causing_alarm: host_alarm
+     - set_state:
+        state: SUBOPTIMAL
+        target: instance

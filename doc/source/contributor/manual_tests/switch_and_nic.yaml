@@ -1,0 +1,19 @@
+metadata:
+  description: static configuration with switches
+  name: switch_and_nic
+definitions:
+  entities:
+  - id: 12345
+    name: nic-1
+    static_id: nic-1
+    type: nic
+    state: available
+  - id: 23456
+    name: switch-2
+    static_id: switch-2
+    type: switch
+    state: available
+  relationships:
+  - relationship_type: attached
+    source: nic-1
+    target: switch-2
