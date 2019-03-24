@@ -18,8 +18,8 @@ export DEVSTACK_GATE_TEMPEST=1
 export DEVSTACK_GATE_TEMPEST_NOTESTS=1
 export KEEP_LOCALRC=1
 
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage git://git.openstack.org/openstack/vitrage'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage-tempest-plugin git://git.openstack.org/openstack/vitrage-tempest-plugin'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage https://git.openstack.org/openstack/vitrage'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage-tempest-plugin https://git.openstack.org/openstack/vitrage-tempest-plugin'
 
 # we don't want swift
 DEVSTACK_LOCAL_CONFIG+=$'\ndisable_service s-account s-container s-object s-proxy'
