@@ -22,12 +22,12 @@ export KEEP_LOCALRC=1
 
 
 # if [ -z ${DEVSTACK_LOCAL_CONFIG+x} ]; then
-#     DEVSTACK_LOCAL_CONFIG="enable_plugin vitrage git://git.openstack.org/openstack/vitrage"
+#     DEVSTACK_LOCAL_CONFIG="enable_plugin vitrage https://git.openstack.org/openstack/vitrage"
 # fi
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin heat git://git.openstack.org/openstack/heat'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin ceilometer git://git.openstack.org/openstack/ceilometer'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin aodh git://git.openstack.org/openstack/aodh'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin mistral git://git.openstack.org/openstack/mistral'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin heat https://git.openstack.org/openstack/heat'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin ceilometer https://git.openstack.org/openstack/ceilometer'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin aodh https://git.openstack.org/openstack/aodh'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin mistral https://git.openstack.org/openstack/mistral'
 
 DEVSTACK_LOCAL_CONFIG+=$'\ndisable_service ceilometer-alarm-evaluator,ceilometer-alarm-notifier'
 DEVSTACK_LOCAL_CONFIG+=$'\ndisable_service n-net'
