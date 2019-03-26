@@ -293,7 +293,7 @@ class ScenarioEvaluator(object):
         return ActionSpecs(action_spec.id,
                            action_spec.type,
                            real_items,
-                           action_spec.properties)
+                           copy.deepcopy(action_spec.properties))
 
     @staticmethod
     def _generate_action_id(action_spec):
