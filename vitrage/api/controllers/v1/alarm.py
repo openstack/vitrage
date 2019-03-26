@@ -57,22 +57,19 @@ class AlarmsController(BaseAlarmsController):
 
         LOG.info('returns show alarm with vitrage id %s', vitrage_id)
 
-        try:
-            return self._show_alarm(vitrage_id)
-        except Exception:
-            LOG.exception('Failed to load JSON.')
-            abort(404, "Failed to show alarm.")
+        return self._show_alarm(vitrage_id)
 
     @staticmethod
     def _show_alarm(vitrage_id):
-        alarm_json = pecan.request.client.call(pecan.request.context,
-                                               'show_alarm',
-                                               vitrage_id=vitrage_id)
-        LOG.info(alarm_json)
-
         try:
-            alarms_list = json.loads(alarm_json)
-            return alarms_list
+            alarm_json = pecan.request.client.call(pecan.request.context,
+                                                   'show_alarm',
+                                                   vitrage_id=vitrage_id)
+            LOG.info(alarm_json)
+            if not alarm_json:
+                abort(404, "Failed to find alarm %s" % vitrage_id)
+
+            return json.loads(alarm_json)
 
         except Exception:
             LOG.exception('Failed to load JSON.')

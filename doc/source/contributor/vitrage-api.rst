@@ -197,7 +197,8 @@ Response Status Code
 ====================
 
 -  200 - OK
--  400 - Bad request
+-  403 - Forbidden
+-  404 - Not Found
 
 Response Body
 =============
@@ -1247,7 +1248,7 @@ Response Status code
 ====================
 
 -  200 - OK
--  400 - Bad request
+-  404 - Not Found
 
 Response Body
 =============
