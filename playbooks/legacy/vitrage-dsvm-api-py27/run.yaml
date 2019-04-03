@@ -47,9 +47,19 @@
           export -f gate_hook
 
           function post_test_hook {
+              if [[ "$TEMPEST_VERSION" != "master" ]]; then
+                 # use vitrage-tempest-plugin $TEMPEST_VERSION
+                 # which is defined in the devstackgaterc file
+
+                 cd $BASE/new/vitrage-tempest-plugin/
+                 git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
+              fi
+
               source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'api'
           }
           export -f post_test_hook
+
+          export DEVSTACK_GATE_SETTINGS=/opt/stack/new/vitrage/devstack/devstackgaterc
 
           cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
           ./safe-devstack-vm-gate-wrap.sh
