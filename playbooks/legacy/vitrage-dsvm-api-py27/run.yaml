@@ -47,6 +47,10 @@
           export -f gate_hook
 
           function post_test_hook {
+              # use vitrage-tempest-plugin 2.2.0 in stein
+              cd $BASE/new/vitrage-tempest-plugin/
+              git_checkout_tag vitrage-tempest-plugin 2.2.0
+
               source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'api'
           }
           export -f post_test_hook
