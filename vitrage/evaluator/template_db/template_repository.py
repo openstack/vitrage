@@ -32,11 +32,11 @@ METADATA = 'metadata'
 NAME = 'name'
 
 
-def add_templates_to_db(db, templates, cli_type, params=None):
+def add_templates_to_db(db, templates, template_type, params=None):
     db_rows = list()
     for template in templates:
-        final_type = template[METADATA].get(TFields.TYPE, cli_type)
-        if not final_type or (cli_type and cli_type != final_type):
+        final_type = template[METADATA].get(TFields.TYPE, template_type)
+        if not final_type or (template_type and template_type != final_type):
             db_rows.append(_get_error_result(template, final_type,
                                              "Unknown template type"))
             continue
@@ -66,11 +66,11 @@ def add_templates_to_db(db, templates, cli_type, params=None):
     return db_rows
 
 
-def validate_templates(db, templates, cli_type, params):
+def validate_templates(db, templates, template_type, params):
     results = list()
     for template in templates:
-        final_type = template[METADATA].get(TFields.TYPE, cli_type)
-        if not final_type or (cli_type and cli_type != final_type):
+        final_type = template[METADATA].get(TFields.TYPE, template_type)
+        if not final_type or (template_type and template_type != final_type):
             results.append(
                 get_content_fault_result(66, "Unknown template type"))
         else:
