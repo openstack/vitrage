@@ -194,6 +194,21 @@ function configure_vitrage {
         disable_vitrage_datasource nagios
     fi
 
+    # remove static vitrage datasource if it's not enabled
+    if [[ "$VITRAGE_USE_STATIC" == "False" ]]; then
+        disable_vitrage_datasource static
+    fi
+
+    # remove doctor vitrage datasource if it's not enabled
+    if [[ "$VITRAGE_USE_DOCTOR" == "False" ]]; then
+        disable_vitrage_datasource doctor
+    fi
+
+    # remove prometheus vitrage datasource if it's not enabled
+    if [[ "$VITRAGE_USE_PROMETHEUS" == "False" ]]; then
+        disable_vitrage_datasource prometheus
+    fi
+
     # add default datasources
     iniset $VITRAGE_CONF datasources types $VITRAGE_DEFAULT_DATASOURCES
 
