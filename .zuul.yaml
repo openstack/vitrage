@@ -3,7 +3,6 @@
       - check-requirements
       - openstack-lower-constraints-jobs
       - openstack-python-jobs
-      - openstack-python35-jobs
       - openstack-python36-jobs
       - openstack-python37-jobs
       - publish-openstack-docs-pti
@@ -13,17 +12,17 @@
         - vitrage-dsvm-api-py27
         - vitrage-dsvm-datasources-py27
         - vitrage-dsvm-mock-py27
-        - vitrage-dsvm-api-py35
-        - vitrage-dsvm-datasources-py35
-        - vitrage-dsvm-mock-py35
+        - vitrage-dsvm-api-py3
+        - vitrage-dsvm-datasources-py3
+        - vitrage-dsvm-mock-py3
         - grenade-vitrage
     gate:
       queue: vitrage
       jobs:
         - vitrage-dsvm-api-py27
         - vitrage-dsvm-datasources-py27
-        - vitrage-dsvm-api-py35
-        - vitrage-dsvm-datasources-py35
+        - vitrage-dsvm-api-py3
+        - vitrage-dsvm-datasources-py3
         - grenade-vitrage
 
 - job:
@@ -45,10 +44,10 @@
       - ^releasenotes/.*$
 
 - job:
-    name: vitrage-dsvm-api-py35
+    name: vitrage-dsvm-api-py3
     parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-api-py35/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-api-py35/post.yaml
+    run: playbooks/legacy/vitrage-dsvm-api-py3/run.yaml
+    post-run: playbooks/legacy/vitrage-dsvm-api-py3/post.yaml
     timeout: 7800
     required-projects:
       - openstack-infra/devstack-gate
@@ -81,10 +80,10 @@
       - ^releasenotes/.*$
 
 - job:
-    name: vitrage-dsvm-datasources-py35
+    name: vitrage-dsvm-datasources-py3
     parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-datasources-py35/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-datasources-py35/post.yaml
+    run: playbooks/legacy/vitrage-dsvm-datasources-py3/run.yaml
+    post-run: playbooks/legacy/vitrage-dsvm-datasources-py3/post.yaml
     timeout: 7800
     required-projects:
       - openstack-infra/devstack-gate
@@ -116,11 +115,11 @@
       - ^releasenotes/.*$
 
 - job:
-    name: vitrage-dsvm-mock-py35
+    name: vitrage-dsvm-mock-py3
     parent: legacy-dsvm-base
     voting: false
-    run: playbooks/legacy/vitrage-dsvm-mock-py35/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-mock-py35/post.yaml
+    run: playbooks/legacy/vitrage-dsvm-mock-py3/run.yaml
+    post-run: playbooks/legacy/vitrage-dsvm-mock-py3/post.yaml
     timeout: 7800
     required-projects:
       - openstack-infra/devstack-gate

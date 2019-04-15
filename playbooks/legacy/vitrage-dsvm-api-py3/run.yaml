@@ -1,5 +1,5 @@
 - hosts: all
-  name: Autoconverted job legacy-vitrage-dsvm-mock-py35 from old job gate-vitrage-dsvm-mock-py35-ubuntu-xenial-nv
+  name: Autoconverted job legacy-vitrage-dsvm-api-py3 from old job gate-vitrage-dsvm-api-py35-ubuntu-xenial-nv
   tasks:
 
     - name: Ensure legacy workspace directory
@@ -29,6 +29,8 @@
           set -x
           export PYTHONUNBUFFERED=true
           export PROJECTS="openstack/python-vitrageclient $PROJECTS"
+          export PROJECTS="openstack/aodh $PROJECTS"
+          export PROJECTS="openstack/mistral $PROJECTS"
           export PROJECTS="openstack/vitrage $PROJECTS"
           export PROJECTS="openstack/vitrage-tempest-plugin $PROJECTS"
 
@@ -40,7 +42,7 @@
           export -f pre_test_hook
 
           function gate_hook {
-              source $BASE/new/vitrage/devstack/gate_hook_mock.sh
+              source $BASE/new/vitrage/devstack/gate_hook.sh
           }
           export -f gate_hook
 
@@ -53,11 +55,11 @@
                  git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
               fi
 
-              source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'mock'
+              source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'api'
           }
           export -f post_test_hook
 
-          export DEVSTACK_GATE_SETTINGS=$BASE/new/vitrage/devstack/devstackgaterc
+          export DEVSTACK_GATE_SETTINGS=/opt/stack/new/vitrage/devstack/devstackgaterc
 
           cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
           ./safe-devstack-vm-gate-wrap.sh

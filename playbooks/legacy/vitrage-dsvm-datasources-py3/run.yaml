@@ -1,5 +1,5 @@
 - hosts: all
-  name: Autoconverted job legacy-vitrage-dsvm-api-py35 from old job gate-vitrage-dsvm-api-py35-ubuntu-xenial-nv
+  name: Autoconverted job legacy-vitrage-dsvm-datasources-py3 from old job gate-vitrage-dsvm-datasources-py35-ubuntu-xenial-nv
   tasks:
 
     - name: Ensure legacy workspace directory
@@ -55,7 +55,7 @@
                  git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
               fi
 
-              source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'api'
+              source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'datasources'
           }
           export -f post_test_hook
 
