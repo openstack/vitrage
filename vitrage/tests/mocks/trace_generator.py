@@ -50,6 +50,7 @@ MOCK_DRIVER_PATH = '%s/mock_configurations/driver' % \
 DRIVER_AODH_UPDATE_D = 'driver_aodh_update_dynamic.json'
 DRIVER_DOCTOR_UPDATE_D = 'driver_doctor_update_dynamic.json'
 DRIVER_COLLECTD_UPDATE_D = 'driver_collectd_update_dynamic.json'
+DRIVER_KAPACITOR_UPDATE_D = 'driver_kapacitor_update_dynamic.json'
 DRIVER_HOST_SNAPSHOT_D = 'driver_host_snapshot_dynamic.json'
 DRIVER_INST_SNAPSHOT_D = 'driver_inst_snapshot_dynamic.json'
 DRIVER_INST_SNAPSHOT_S = 'driver_inst_snapshot_static.json'
@@ -80,6 +81,7 @@ TRANS_AODH_SNAPSHOT_D = 'transformer_aodh_snapshot_dynamic.json'
 TRANS_AODH_UPDATE_D = 'transformer_aodh_update_dynamic.json'
 TRANS_DOCTOR_UPDATE_D = 'transformer_doctor_update_dynamic.json'
 TRANS_COLLECTD_UPDATE_D = 'transformer_collectd_update_dynamic.json'
+TRANS_KAPACITOR_UPDATE_D = 'transformer_kapacitor_update_dynamic.json'
 TRANS_PROMETHEUS_UPDATE_D = 'transformer_prometheus_update_dynamic.json'
 TRANS_INST_SNAPSHOT_D = 'transformer_inst_snapshot_dynamic.json'
 TRANS_HOST_SNAPSHOT_D = 'transformer_host_snapshot_dynamic.json'
@@ -124,6 +126,7 @@ class EventTraceGenerator(object):
             {DRIVER_AODH_UPDATE_D: _get_aodh_alarm_update_driver_values,
              DRIVER_DOCTOR_UPDATE_D: _get_simple_update_driver_values,
              DRIVER_COLLECTD_UPDATE_D: _get_simple_update_driver_values,
+             DRIVER_KAPACITOR_UPDATE_D: _get_simple_update_driver_values,
              DRIVER_KUBE_SNAPSHOT_D: _get_k8s_node_snapshot_driver_values,
              DRIVER_INST_SNAPSHOT_D: _get_vm_snapshot_driver_values,
              DRIVER_INST_UPDATE_LEGACY_D: _get_vm_update_legacy_driver_values,
@@ -149,6 +152,7 @@ class EventTraceGenerator(object):
              TRANS_AODH_UPDATE_D: _get_trans_aodh_alarm_snapshot_values,
              TRANS_DOCTOR_UPDATE_D: _get_simple_trans_alarm_update_values,
              TRANS_COLLECTD_UPDATE_D: _get_simple_trans_alarm_update_values,
+             TRANS_KAPACITOR_UPDATE_D: _get_simple_trans_alarm_update_values,
              TRANS_PROMETHEUS_UPDATE_D: _get_simple_trans_alarm_update_values,
              TRANS_INST_SNAPSHOT_D: _get_trans_vm_snapshot_values,
              TRANS_HOST_SNAPSHOT_D: _get_trans_host_snapshot_values,

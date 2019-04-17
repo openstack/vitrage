@@ -28,6 +28,7 @@ Datasources
    k8s_datasource
    nova-config
    prometheus-datasource
+   kapacitor-datasource
 
 Notifiers
 ---------

@@ -214,6 +214,18 @@ def simple_collectd_alarm_generators(update_vals=None):
                                     tg.TRANS_COLLECTD_UPDATE_D, update_vals)
 
 
+def simple_kapacitor_alarm_generators(update_vals=None):
+    """A function for returning Kapacitor alarm event generators.
+
+    Returns generators for a given number of Kapacitor alarms.
+
+    :param update_vals: preset values for ALL update events
+    :return: generators for alarms as specified
+    """
+    return _simple_alarm_generators('Kapacitor',
+                                    tg.TRANS_KAPACITOR_UPDATE_D, update_vals)
+
+
 def simple_prometheus_alarm_generators(update_vals=None):
     """A function for returning Prometheus alert event generators.
 
