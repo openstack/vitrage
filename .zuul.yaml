@@ -34,7 +34,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-api-py27/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -52,7 +52,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-api-py35/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -70,7 +70,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-datasources-py27/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -88,7 +88,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-datasources-py35/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -107,7 +107,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-mock-py27/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/python-vitrageclient
       - openstack/vitrage
       - openstack/vitrage-tempest-plugin
@@ -124,7 +124,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-mock-py35/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/python-vitrageclient
       - openstack/vitrage
       - openstack/vitrage-tempest-plugin
@@ -140,8 +140,8 @@
     post-run: playbooks/legacy/vitrage-grenade/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-dev/grenade
-      - openstack-infra/devstack-gate
+      - openstack/grenade
+      - openstack/devstack-gate
       - openstack/vitrage
       - openstack/python-vitrageclient
     irrelevant-files:
