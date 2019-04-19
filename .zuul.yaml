@@ -28,7 +28,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-api-py27/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -46,7 +46,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-api-py35/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -64,7 +64,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-datasources-py27/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
@@ -82,7 +82,7 @@
     post-run: playbooks/legacy/vitrage-dsvm-datasources-py35/post.yaml
     timeout: 7800
     required-projects:
-      - openstack-infra/devstack-gate
+      - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
       - openstack/python-vitrageclient
