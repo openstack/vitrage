@@ -24,7 +24,7 @@ Project Resources
 
 * Project documentation: https://docs.openstack.org/vitrage/latest/
 * Wiki page: https://wiki.openstack.org/wiki/Vitrage
-* Source: https://git.openstack.org/cgit/openstack/vitrage
+* Source: https://opendev.org/openstack/vitrage
 * StoryBoard: https://storyboard.openstack.org/#!/project/openstack/vitrage
 * Release notes: https://docs.openstack.org/releasenotes/vitrage
 

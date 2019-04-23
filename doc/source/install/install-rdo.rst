@@ -70,8 +70,8 @@ is vitrage.yaml
 
 
 
-.. _api-paste.ini: https://git.openstack.org/cgit/openstack/vitrage/tree/etc/vitrage/api-paste.ini
-.. _datasources_values: https://git.openstack.org/cgit/openstack/vitrage/tree/etc/vitrage/datasources_values
+.. _api-paste.ini: https://opendev.org/openstack/vitrage/src/branch/master/etc/vitrage/api-paste.ini
+.. _datasources_values: https://opendev.org/openstack/vitrage/src/branch/master/etc/vitrage/datasources_values
 
 Create the vitrage.conf file
 ============================
@@ -188,7 +188,7 @@ Install the Vitrage Dashboard
 
 Follow the vitrage-dashboard_ installation procedure.
 
-.. _vitrage-dashboard: https://git.openstack.org/cgit/openstack/vitrage-dashboard/tree/doc/source/contributor/installation.rst
+.. _vitrage-dashboard: https://opendev.org/openstack/vitrage-dashboard/src/branch/master/doc/source/contributor/installation.rst
 
 Automatic
 +++++++++
