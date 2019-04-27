@@ -10,10 +10,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import math
 import os
+from os import path
+import sys
 
 import pecan
 
+from distutils import spawn
 from oslo_config import cfg
 from oslo_log import log
 from oslo_utils import uuidutils
@@ -76,6 +80,45 @@ def load_app(conf):
 
 
 def build_server(conf):
+    uwsgi = spawn.find_executable("uwsgi")
+    if not uwsgi:
+        LOG.warning('uwsgi not installed, starting a TEST server')
+        build_simple_server(conf)
+    else:
+        build_uwsgi_server(conf, uwsgi)
+
+
+def wsgi_file():
+    return path.join(path.dirname(__file__), 'app.wsgi')
+
+
+def build_uwsgi_server(conf, uwsgi):
+
+    args = [
+        "--if-not-plugin", "python", "--plugin", "python", "--endif",
+        "--http-socket", "%s:%d" % (conf.api.host, conf.api.port),
+        "--master",
+        "--enable-threads",
+        "--thunder-lock",
+        "--hook-master-start", "unix_signal:15 gracefully_kill_them_all",
+        "--die-on-term",
+        "--processes", str(math.floor(conf.api.workers * 1.5)),
+        "--threads", str(conf.api.workers),
+        "--lazy-apps",
+        "--chdir", "/",
+        "--wsgi-file", wsgi_file(),
+        "--procname-prefix", "vitrage",
+        "--pyargv", " ".join(sys.argv[1:]),
+    ]
+
+    virtual_env = os.getenv("VIRTUAL_ENV")
+    if virtual_env is not None:
+        args.extend(["-H", os.getenv("VIRTUAL_ENV", ".")])
+
+    return os.execl(uwsgi, uwsgi, *args)
+
+
+def build_simple_server(conf):
     app = load_app(conf)
     # Create the WSGI server and start it
     host, port = conf.api.host, conf.api.port
@@ -91,6 +134,8 @@ def build_server(conf):
     else:
         LOG.info('serving on http://%(host)s:%(port)s',
                  {'host': host, 'port': port})
+
+    LOG.info('"DANGER! For testing only, do not use in production"')
 
     serving.run_simple(host, port,
                        app, processes=conf.api.workers)
