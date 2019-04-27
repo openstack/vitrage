@@ -36,7 +36,7 @@ VITRAGE_USE_STATIC=$(trueorfalse False VITRAGE_USE_STATIC)
 VITRAGE_USE_DOCTOR=$(trueorfalse False VITRAGE_USE_DOCTOR)
 VITRAGE_USE_PROMETHEUS=$(trueorfalse False VITRAGE_USE_PROMETHEUS)
 
-VITRAGE_DEFAULT_DATASOURCES=${VITRAGE_DEFAULT_DATASOURCES:-nova.host,nova.instance,nova.zone,nagios,static,aodh,cinder.volume,neutron.network,neutron.port,heat.stack,doctor,prometheus,trove.instance,trove.cluster}
+VITRAGE_DEFAULT_DATASOURCES=${VITRAGE_DEFAULT_DATASOURCES:-nova.host,nova.instance,nova.zone,nagios,static,aodh,cinder.volume,neutron.network,neutron.port,heat.stack,doctor,prometheus,trove.instance,trove.cluster,monasca}
 
 # for now dont use pip install for the client
 LIBS_FROM_GIT=python-vitrageclient

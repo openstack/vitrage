@@ -18,6 +18,7 @@ from oslo_utils import importutils as utils
 
 from vitrage import keystone_client
 
+
 LOG = log.getLogger(__name__)
 
 OPTS = [
@@ -30,6 +31,7 @@ OPTS = [
     cfg.StrOpt('mistral_version', default='2', help='Mistral version'),
     cfg.StrOpt('gnocchi_version', default='1', help='Gnocchi version'),
     cfg.StrOpt('trove_version', default='1', help='Trove version'),
+    cfg.StrOpt('monasca_version', default='2_0', help='Monasca version'),
     cfg.BoolOpt('use_nova_versioned_notifications',
                 default=True,
                 help='Indicates whether to use Nova versioned notifications.'
@@ -49,7 +51,8 @@ _client_modules = {
     'heat': 'heatclient.client',
     'mistral': 'mistralclient.api.v2.client',
     'gnocchi': 'gnocchiclient.v1.client',
-    'trove': 'troveclient.v1.client'
+    'trove': 'troveclient.v1.client',
+    'monasca': 'monascaclient.client'
 }
 
 
@@ -205,3 +208,22 @@ def zaqar_client(conf):
         return client
     except Exception:
         LOG.exception('Create Zaqar client - Got Exception.')
+
+
+def monasca_client(conf):
+    """Get an instance of Monasca client"""
+    try:
+        mon_client = driver_module('monasca')
+
+        session = keystone_client.get_session(conf)
+        endpoint = session.get_endpoint(service_type='monitoring',
+                                        interface='publicURL')
+        client = mon_client.Client(
+            api_version=conf.monasca_version,
+            session=session,
+            endpoint=endpoint
+        )
+        LOG.info('Monasca client created')
+        return client
+    except Exception:
+        LOG.exception('Create Monasca client - Got Exception.')

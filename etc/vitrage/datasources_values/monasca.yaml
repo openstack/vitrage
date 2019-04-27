@@ -1,0 +1,17 @@
+category: ALARM
+values:
+  - aggregated values:
+      priority: 30
+      original values:
+        - name: ALARM
+          operational_value: CRITICAL
+  - aggregated values:
+      priority: 20
+      original values:
+        - name: UNDETERMINED
+          operational_value: N/A
+  - aggregated values:
+      priority: 10
+      original values:
+        - name: OK
+          operational_value: OK
