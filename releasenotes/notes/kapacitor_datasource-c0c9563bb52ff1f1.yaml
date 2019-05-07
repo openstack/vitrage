@@ -1,0 +1,6 @@
+---
+features:
+  - A new ``Kapacitor Datasource`` was added, to handle alerts coming
+    from Kapacitor. Kapacitor is an alarming engine in the TICK Stack.
+    It is build on an Open Source core, processing metric of host or
+    instance store in InfluxDB to export alerts.

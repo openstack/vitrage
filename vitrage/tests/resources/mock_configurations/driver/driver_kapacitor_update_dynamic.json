@@ -1,0 +1,12 @@
+{
+  "level": "CRITICAL",
+  "priority": "critical",
+  "host": "compute-1",
+  "details": "DETAIL INFO :: LEVEL: CRITICAL - ID: mem high-host=compute-1 - NAME : mem - VALUE: 9.746241910865896 - TASKNAME: chronograf-v1-2d1fad8a-1c52-4eca-8721-c7af36faf7c - GROUP: host=compute-1 - TAGS: map[host:compute-1] - TIME: 2019-04-22 08:11:00 &#43;0000 UTC",
+  "time": "2019-04-22T08:11:00Z",
+  "duration": 0,
+  "message": "mem high",
+  "id": "mem high-host=compute-1",
+  "recoverable": "True",
+  "previousLevel": "OK"
+}

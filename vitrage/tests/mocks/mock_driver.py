@@ -618,3 +618,24 @@ def simple_k8s_nodes_generators(nodes_num, snapshot_events=0):
              }
         )
     return tg.get_trace_generators(test_entity_spec_list)
+
+
+def simple_kapacitor_alarm_generators(update_vals=None):
+    """A function for returning Kapacitor alarm event generators.
+
+    Returns generators for a given number of Kapacitor alarms.
+
+    :param update_vals: preset values for ALL update events
+    :return: generators for alarms as specified
+    """
+
+    test_entity_spec_list = [({
+        tg.DYNAMIC_INFO_FKEY: tg.DRIVER_KAPACITOR_UPDATE_D,
+        tg.STATIC_INFO_FKEY: None,
+        tg.EXTERNAL_INFO_KEY: update_vals,
+        tg.MAPPING_KEY: None,
+        tg.NAME_KEY: 'Kapacitor alarm generator',
+        tg.NUM_EVENTS: 1
+    })]
+
+    return tg.get_trace_generators(test_entity_spec_list)

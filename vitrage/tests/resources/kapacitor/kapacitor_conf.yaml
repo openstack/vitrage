@@ -1,0 +1,16 @@
+kapacitor:
+  - alert:
+      host: cloud.compute1
+    vitrage_resource:
+      type: nova.host
+      name: compute-1
+  - alert:
+      host: compute-(.*)
+    vitrage_resource:
+      type: nova.host
+      name: ${kapacitor_host}
+  - alert:
+      host: (.*)
+    vitrage_resource:
+      type: nova.instance
+      name: ${kapacitor_host}
