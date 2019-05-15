@@ -42,6 +42,7 @@ from vitrage.machine_learning.plugins.jaccard_correlation.\
     correlation_collection import CorrelationPriorities as CPriorities
 from vitrage.tests import base
 
+CONF = cfg.CONF
 
 ACTIVE_TIMESTAMP = datetime.datetime.utcnow()
 ACTIVE_TIMESTAMP = ACTIVE_TIMESTAMP.strftime(TIMESTAMP_FORMAT)
@@ -149,36 +150,19 @@ INACTIVE_ALARMS = [DELETED_DEDUCED_ALARM_1, DELETED_AODH_ALARM_1,
 
 
 class JaccardCorrelationTest(base.BaseTest):
-    OPTS = [
-        cfg.StrOpt('output_folder', default='/tmp',
-                   help='folder to write all reports to'),
-        cfg.FloatOpt('correlation_threshold', default=0,
-                     help='threshold of interesting correlations'),
-        cfg.FloatOpt('high_corr_score', default=0.9,
-                     help='high correlation lower limit'),
-        cfg.FloatOpt('med_corr_score', default=0.5,
-                     help='medium correlation lower limit'),
-    ]
+    def setUp(self):
+        super(JaccardCorrelationTest, self).setUp()
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(JaccardCorrelationTest, cls).setUpClass()
+        self.data_manager = ADAccumulator(AData({}, {}))
+        self.collection = \
+            CCollection(CONF.jaccard_correlation.high_corr_score,
+                        CONF.jaccard_correlation.med_corr_score)
+        self.correlation_manager = CManager()
+        self.activate_timestamps = {}
+        self.inactivate_timestamps = {}
+        self.alarm_ids = self._setup_expected_active_alarms_ids()
 
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group='jaccard_correlation')
-
-        cls.data_manager = ADAccumulator(AData({}, {}))
-        cls.collection = \
-            CCollection(cls.conf.jaccard_correlation.high_corr_score,
-                        cls.conf.jaccard_correlation.med_corr_score)
-        cls.correlation_manager = CManager(cls.conf)
-        cls.activate_timestamps = {}
-        cls.inactivate_timestamps = {}
-        cls.alarm_ids = cls._setup_expected_active_alarms_ids()
-
-    @staticmethod
-    def _setup_expected_active_alarms_ids():
+    def _setup_expected_active_alarms_ids(self):
         alarm_ids = []
         for alarm in ACTIVE_ALARMS:
             alarm_name = alarm[VProps.RAWTEXT] if alarm.get(VProps.RAWTEXT) \
@@ -379,7 +363,7 @@ class JaccardCorrelationTest(base.BaseTest):
             _dump_correlations(str(now) + "_correlations_test.out",
                                report)
 
-        file_path = self.conf.jaccard_correlation.output_folder + '/' + \
+        file_path = CONF.jaccard_correlation.output_folder + '/' + \
             str(now) + "_correlations_test.out"
         is_file = os.path.isfile(file_path)
 

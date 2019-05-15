@@ -1,4 +1,4 @@
-# Copyright 2015 - Alcatel-Lucent
+#
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
@@ -10,7 +10,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 from oslo_config import cfg
 from oslo_db import options as db_options
 from oslo_log import log
@@ -20,46 +19,42 @@ from osprofiler import opts as osprofiler_opts
 from vitrage import keystone_client
 from vitrage import messaging
 from vitrage import opts
-from vitrage.opts import register_opts
 
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
-def prepare_service(args=None, conf=None, config_files=None):
+def parse_config(args, default_config_files=None):
     set_defaults()
-    if conf is None:
-        conf = cfg.ConfigOpts()
-    log.register_options(conf)
-    policy_opts.set_defaults(conf)
-    osprofiler_opts.set_defaults(conf)
-    db_options.set_defaults(conf)
+    log.register_options(CONF)
+    policy_opts.set_defaults(CONF)
+    osprofiler_opts.set_defaults(CONF)
+    db_options.set_defaults(CONF)
 
     for group, options in opts.list_opts():
-        conf.register_opts(list(options),
+        CONF.register_opts(list(options),
                            group=None if group == 'DEFAULT' else group)
 
-    conf(args, project='vitrage', validate_default_values=True,
-         default_config_files=config_files)
+    CONF(args[1:], project='vitrage', validate_default_values=True,
+         default_config_files=default_config_files)
 
-    if conf.profiler.enabled:
+    if CONF.profiler.enabled:
         osprofiler_initializer.init_from_conf(
-            conf=conf,
+            conf=CONF,
             context=None,
-            project="vitrage",
-            service="api",
-            host=conf.api.host)
+            project='vitrage',
+            service='api',
+            host=CONF.api.host
+        )
 
-    for datasource in conf.datasources.types:
-        register_opts(conf, datasource, conf.datasources.path)
+    for datasource in CONF.datasources.types:
+        opts.register_opts(datasource, CONF.datasources.path)
 
-    keystone_client.register_keystoneauth_opts(conf)
-
-    log.setup(conf, 'vitrage')
-    conf.log_opt_values(LOG, log.DEBUG)
+    keystone_client.register_keystoneauth_opts()
+    log.setup(CONF, 'vitrage')
+    CONF.log_opt_values(LOG, log.DEBUG)
     messaging.setup()
-
-    return conf
 
 
 def set_defaults():

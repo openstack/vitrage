@@ -20,11 +20,11 @@ from vitrage.tests.unit.entity_graph.base import TestEntityGraphUnitBase
 
 class TestFunctionalBase(TestEntityGraphUnitBase):
 
-    def _create_processor_with_graph(self, conf, processor=None):
+    def _create_processor_with_graph(self, processor=None):
         events = self._create_mock_events()
 
         if not processor:
-            processor = self.create_processor_and_graph(conf)
+            processor = self.create_processor_and_graph()
 
         for event in events:
             processor.process_event(event)

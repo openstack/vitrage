@@ -39,16 +39,13 @@ class ZabbixDriverTest(ZabbixBaseTest):
                         + '/zabbix/zabbix_conf.yaml'),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(ZabbixDriverTest, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=ZABBIX_DATASOURCE)
+    def setUp(self):
+        super(ZabbixDriverTest, self).setUp()
+        self.conf_reregister_opts(self.OPTS, group=ZABBIX_DATASOURCE)
 
     def test_get_all(self):
         # Test Setup
-        zabbix_driver = MockZabbixDriver(self.conf)
+        zabbix_driver = MockZabbixDriver()
 
         alarm_data1 = self._extract_alarm_data(triggerid='1', status='1')
         alarm_data2 = self._extract_alarm_data(triggerid='2', status='1',
@@ -72,7 +69,7 @@ class ZabbixDriverTest(ZabbixBaseTest):
 
         # Step 1 - Services with status OK should not be returned
         # Test setup scenario
-        zabbix_driver = MockZabbixDriver(self.conf)
+        zabbix_driver = MockZabbixDriver()
 
         alarm_data1 = self._extract_alarm_data()
         alarm_data2 = self._extract_alarm_data(z_resource_name='compute-2')
@@ -160,7 +157,7 @@ class ZabbixDriverTest(ZabbixBaseTest):
 
         # Step 1 - get changes when all alarms are OK
         # Test setup
-        zabbix_driver = MockZabbixDriver(self.conf)
+        zabbix_driver = MockZabbixDriver()
 
         alarm_data1 = self._extract_alarm_data(priority='2')
         alarm_data2 = self._extract_alarm_data(z_resource_name='compute-2',
@@ -266,7 +263,7 @@ class ZabbixDriverTest(ZabbixBaseTest):
 
         # Step 1 - get changes
         # Step setup
-        zabbix_driver = MockZabbixDriver(self.conf)
+        zabbix_driver = MockZabbixDriver()
 
         alarm_data1 = self._extract_alarm_data(priority='2', value='1')
         alarm_data2 = self._extract_alarm_data(z_resource_name='compute-2',
@@ -372,7 +369,7 @@ class ZabbixDriverTest(ZabbixBaseTest):
 
         # Step 1 - delete inactive alarm
         # Step setup
-        zabbix_driver = MockZabbixDriver(self.conf)
+        zabbix_driver = MockZabbixDriver()
 
         zabbix_driver.set_alarm_datas([alarm_data1, alarm_data2, alarm_data3])
         zabbix_driver.set_alarm_datas([alarm_data1, alarm_data2])

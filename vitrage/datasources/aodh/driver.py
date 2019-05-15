@@ -32,10 +32,9 @@ LOG = log.getLogger(__name__)
 
 class AodhDriver(AlarmDriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(AodhDriver, self).__init__()
         self._client = None
-        self.conf = conf
         self._init_aodh_event_actions()
         self._init_convert_aodh_alarm_rule_actions()
         self._init_alarm_type_to_rule()
@@ -86,7 +85,7 @@ class AodhDriver(AlarmDriverBase):
     @property
     def client(self):
         if not self._client:
-            self._client = os_clients.aodh_client(self.conf)
+            self._client = os_clients.aodh_client()
         return self._client
 
     def _vitrage_type(self):

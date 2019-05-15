@@ -14,6 +14,7 @@
 import ast
 import re
 
+from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
@@ -26,6 +27,7 @@ from vitrage.notifier.plugins.base import NotifierBase
 from vitrage.notifier.plugins.webhook import utils as webhook_utils
 from vitrage import storage
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 URL = 'url'
 IS_ADMIN_WEBHOOK = 'is_admin_webhook'
@@ -65,10 +67,10 @@ class Webhook(NotifierBase):
     def get_notifier_name():
         return 'webhook'
 
-    def __init__(self, conf):
-        super(Webhook, self).__init__(conf)
-        self._db = storage.get_connection_from_config(self.conf)
-        self.max_retries = self.conf.webhook.max_retries
+    def __init__(self):
+        super(Webhook, self).__init__()
+        self._db = storage.get_connection_from_config()
+        self.max_retries = CONF.webhook.max_retries
         self.default_headers = {'content-type': 'application/json'}
 
     def process_event(self, data, event_type):

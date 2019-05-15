@@ -32,8 +32,7 @@ LOG = log.getLogger(__name__)
                     info={}, hide_args=False, trace_private=False)
 class EventApis(object):
 
-    def __init__(self, conf):
-        self.conf = conf
+    def __init__(self):
         self._init_oslo_notifier()
 
     def post(self, ctx, event_time, event_type, details):
@@ -65,7 +64,7 @@ class EventApis(object):
             self.publisher = 'api_%s' % socket.gethostname()
 
             self.oslo_notifier = oslo_messaging.Notifier(
-                get_transport(self.conf),
+                get_transport(),
                 driver='messagingv2',
                 publisher_id=self.publisher,
                 topics=['vitrage_notifications'])

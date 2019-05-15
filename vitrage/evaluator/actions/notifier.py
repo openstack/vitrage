@@ -11,6 +11,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 
@@ -18,15 +20,16 @@ from vitrage.common.constants import NotifierEventTypes
 from vitrage.messaging import get_transport
 
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class EvaluatorNotifier(object):
     """Allows writing to message bus"""
-    def __init__(self, conf):
+    def __init__(self, ):
         self.oslo_notifiers = {}
         try:
-            notifier_plugins = conf.notifiers
+            notifier_plugins = CONF.notifiers
 
             LOG.debug('notifier_plugins: %s', notifier_plugins)
 
@@ -35,13 +38,13 @@ class EvaluatorNotifier(object):
                 return
 
             topic_prefix = \
-                conf.evaluator_actions.evaluator_notification_topic_prefix
+                CONF.evaluator_actions.evaluator_notification_topic_prefix
 
             for notifier in notifier_plugins:
                 LOG.debug('Adding evaluator notifier %s', notifier)
 
                 self.oslo_notifiers[notifier] = oslo_messaging.Notifier(
-                    get_transport(conf),
+                    get_transport(),
                     driver='messagingv2',
                     publisher_id='vitrage.evaluator',
                     topics=[topic_prefix + '.' + notifier])

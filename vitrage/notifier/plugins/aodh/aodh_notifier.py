@@ -39,9 +39,9 @@ class AodhNotifier(NotifierBase):
     def get_notifier_name():
         return AODH_DATASOURCE
 
-    def __init__(self, conf):
-        super(AodhNotifier, self).__init__(conf)
-        self.client = os_clients.aodh_client(conf)
+    def __init__(self):
+        super(AodhNotifier, self).__init__()
+        self.client = os_clients.aodh_client()
 
     def process_event(self, data, event_type):
         response = None

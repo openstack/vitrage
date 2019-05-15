@@ -42,18 +42,20 @@ class TestHeatStack(TestDataSourcesBase):
                     help='base path for data sources')
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestHeatStack, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestHeatStack, self).setUp()
+        self.cfg_fixture.config(group='datasources',
+                                types=[
+                                    HEAT_STACK_DATASOURCE,
+                                    NOVA_HOST_DATASOURCE,
+                                    NOVA_INSTANCE_DATASOURCE,
+                                    NOVA_ZONE_DATASOURCE,
+                                    CINDER_VOLUME_DATASOURCE])
+        self.load_datasources()
 
     def test_heat_stack_validity(self):
         # Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
         self.assertThat(processor.entity_graph,
                         matchers.HasLength(
                             self._num_total_expected_vertices())

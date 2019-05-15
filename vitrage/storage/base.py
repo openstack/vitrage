@@ -20,7 +20,7 @@ import six
 class Connection(object):
     """Base class for storage system connections."""
 
-    def __init__(self, conf, url):
+    def __init__(self, url):
         pass
 
     @property

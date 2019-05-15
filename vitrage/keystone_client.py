@@ -24,22 +24,23 @@ from keystoneclient.v3 import client as ks_client_v3
 from oslo_config import cfg
 from oslo_log import log
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 CFG_GROUP = "service_credentials"
 
 
-def get_session(conf):
+def get_session():
     """Get a vitrage service credentials auth session."""
-    auth_plugin = ka_loading.load_auth_from_conf_options(conf, CFG_GROUP)
+    auth_plugin = ka_loading.load_auth_from_conf_options(CONF, CFG_GROUP)
     return ka_loading.load_session_from_conf_options(
-        conf, CFG_GROUP, auth=auth_plugin
+        CONF, CFG_GROUP, auth=auth_plugin
     )
 
 
-def get_client(conf):
+def get_client():
     """Return a client for keystone v3 endpoint."""
-    sess = get_session(conf)
+    sess = get_session()
     return ks_client_v3.Client(session=sess)
 
 
@@ -57,10 +58,10 @@ def get_client_on_behalf_user(auth_plugin):
     return ks_client_v3.Client(session=sess)
 
 
-def create_trust_id(conf, trustor_user_id, trustor_project_id, roles,
+def create_trust_id(trustor_user_id, trustor_project_id, roles,
                     auth_plugin):
     """Create a new trust using the vitrage service user."""
-    admin_client = get_client(conf)
+    admin_client = get_client()
     trustee_user_id = admin_client.session.get_user_id()
 
     client = get_client_on_behalf_user(auth_plugin)
@@ -98,10 +99,10 @@ OPTS = [
 ]
 
 
-def register_keystoneauth_opts(conf):
-    ka_loading.register_auth_conf_options(conf, CFG_GROUP)
+def register_keystoneauth_opts():
+    ka_loading.register_auth_conf_options(CONF, CFG_GROUP)
     ka_loading.register_session_conf_options(
-        conf, CFG_GROUP,
+        CONF, CFG_GROUP,
         deprecated_opts={'cacert': [
             cfg.DeprecatedOpt('os-cacert', group=CFG_GROUP),
             cfg.DeprecatedOpt('os-cacert', group="DEFAULT")]

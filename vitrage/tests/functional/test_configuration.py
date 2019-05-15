@@ -15,8 +15,6 @@ import os
 import sys
 import yaml
 
-from oslo_db.options import database_opts
-
 from vitrage.common.constants import TemplateStatus
 from vitrage.common.constants import TemplateTypes as TType
 from vitrage.evaluator.template_db.template_repository import \
@@ -27,29 +25,26 @@ from vitrage.storage.sqlalchemy import models
 
 class TestConfiguration(object):
 
-    @classmethod
-    def add_db(cls, conf):
-        conf.register_opts(database_opts, group='database')
-        db_name = "sqlite:///test-%s-%s.db" % (cls.__name__,
+    def add_db(self):
+        db_name = "sqlite:///test-%s-%s.db" % (type(self).__name__,
                                                sys.version_info[0])
-        conf.set_override('connection', db_name, group='database')
-        cls._db = storage.get_connection_from_config(conf)
-        engine = cls._db._engine_facade.get_engine()
+        self.config(group='database', connection=db_name)
+        self._db = storage.get_connection_from_config()
+        engine = self._db._engine_facade.get_engine()
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(engine)
-        return cls._db
+        return self._db
 
-    @classmethod
-    def add_templates(cls, templates_dir, templates_type=TType.STANDARD):
+    def add_templates(self, templates_dir, templates_type=TType.STANDARD):
         yamls = [t for t in TestConfiguration.load_yaml_files(templates_dir)]
-        templates = add_templates_to_db(cls._db, yamls, templates_type)
+        templates = add_templates_to_db(self._db, yamls, templates_type)
         for t in templates:
             if t.status == TemplateStatus.LOADING:
-                cls._db.templates.update(t.uuid, 'status',
-                                         TemplateStatus.ACTIVE)
+                self._db.templates.update(t.uuid, 'status',
+                                          TemplateStatus.ACTIVE)
             if t.status == TemplateStatus.DELETING:
-                cls._db.templates.update(t.uuid, 'status',
-                                         TemplateStatus.DELETED)
+                self._db.templates.update(t.uuid, 'status',
+                                          TemplateStatus.DELETED)
         return templates
 
     @staticmethod

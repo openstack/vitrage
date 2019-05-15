@@ -39,9 +39,6 @@ class CinderVolumeTransformer(ResourceTransformerBase):
         'volume.attach.end': GraphAction.UPDATE_RELATIONSHIP
     }
 
-    def __init__(self, transformers, conf):
-        super(CinderVolumeTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
 
         volume_name = extract_field_value(entity_event,

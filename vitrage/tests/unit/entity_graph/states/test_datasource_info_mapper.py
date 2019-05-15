@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from testtools import matchers
 
 from vitrage.common.constants import EntityCategory
@@ -34,42 +33,28 @@ from vitrage.tests.mocks import utils
 
 class TestDatasourceInfoMapper(base.BaseTest):
 
-    ENTITY_GRAPH_OPTS = [
-        cfg.StrOpt('datasources_values_dir',
-                   default=utils.get_resources_dir() + '/datasources_values'),
-    ]
+    def _load_datasources(self):
+        for datasource_name in self.conf.datasources.types:
+            register_opts(datasource_name, self.conf.datasources.path)
 
-    DATASOURCES_OPTS = [
-        cfg.ListOpt('types',
-                    default=[NAGIOS_DATASOURCE,
-                             NOVA_HOST_DATASOURCE,
-                             NOVA_INSTANCE_DATASOURCE,
-                             NOVA_ZONE_DATASOURCE,
-                             AODH_DATASOURCE],
-                    help='Names of supported data sources'),
-
-        cfg.ListOpt('path',
-                    default=['vitrage.datasources'],
-                    help='base path for datasources')
-    ]
-
-    @staticmethod
-    def _load_datasources(conf):
-        for vitrage_type in conf.datasources.types:
-            register_opts(conf, vitrage_type, conf.datasources.path)
-
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestDatasourceInfoMapper, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.ENTITY_GRAPH_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls._load_datasources(cls.conf)
+    def setUp(self):
+        super(TestDatasourceInfoMapper, self).setUp()
+        self.cfg_fixture.config(
+            group='entity_graph',
+            datasources_values_dir=utils.get_resources_dir() +
+            '/datasources_values')
+        self.cfg_fixture.config(group='datasources',
+                                types=[
+                                    NAGIOS_DATASOURCE,
+                                    NOVA_HOST_DATASOURCE,
+                                    NOVA_INSTANCE_DATASOURCE,
+                                    NOVA_ZONE_DATASOURCE,
+                                    AODH_DATASOURCE])
+        self._load_datasources()
 
     def test_load_datasource_value_without_errors(self):
         # action
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # test assertions
 
@@ -80,30 +65,27 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_load_datasources_value_with_errors(self):
         # setup
-        entity_graph_opts = [
-            cfg.StrOpt('datasources_values_dir',
-                       default=utils.get_resources_dir() +
-                       '/datasources_values/erroneous_values'),
-        ]
-        conf = cfg.ConfigOpts()
-        conf.register_opts(entity_graph_opts, group='entity_graph')
-        conf.register_opts(self.DATASOURCES_OPTS, group='datasources')
-        self._load_datasources(conf)
+        self.cfg_fixture.config(
+            group='entity_graph',
+            datasources_values_dir=utils.get_resources_dir() +
+            '/datasources_values/erroneous_values'
+        )
+        self._load_datasources()
 
         # action
-        info_mapper = DatasourceInfoMapper(conf)
+        info_mapper = DatasourceInfoMapper()
 
         # test assertions
         missing_values = 1
         erroneous_values = 1
         num_valid_datasources = len(info_mapper.datasources_value_confs) + \
             missing_values + erroneous_values
-        self.assertThat(conf.datasources.types,
+        self.assertThat(self.conf.datasources.types,
                         matchers.HasLength(num_valid_datasources))
 
     def test_vitrage_operational_value_exists(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         vitrage_operational_value = \
@@ -116,7 +98,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_operational_value_not_exists(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         vitrage_operational_value = \
@@ -129,7 +111,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_operational_value_DS_not_exists_and_value_not_exist(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         vitrage_operational_value = \
@@ -142,7 +124,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_operational_value_DS_not_exists_and_value_exist(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         vitrage_operational_value = \
@@ -155,7 +137,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_value_priority(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         value_priority = \
@@ -166,7 +148,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_value_priority_not_exists(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         value_priority = \
@@ -178,7 +160,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_value_priority_datasource_not_exists(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
 
         # action
         value_priority = \
@@ -191,7 +173,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_aggregated_value(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
         metadata1 = {VProps.VITRAGE_STATE: 'SUSPENDED'}
         new_vertex1 = create_vertex('12345',
                                     vitrage_category=EntityCategory.RESOURCE,
@@ -221,7 +203,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_aggregated_value_functionalities(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
         new_vertex1 = create_vertex('12345',
                                     vitrage_category=EntityCategory.RESOURCE,
                                     vitrage_type=NOVA_INSTANCE_DATASOURCE,
@@ -266,7 +248,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_aggregated_value_datasource_not_exists(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
         metadata = {VProps.VITRAGE_STATE: 'SUSPENDED'}
         new_vertex = create_vertex('12345',
                                    vitrage_category=EntityCategory.RESOURCE,
@@ -285,7 +267,7 @@ class TestDatasourceInfoMapper(base.BaseTest):
 
     def test_vitrage_aggregated_value_DS_not_exists_and_wrong_state(self):
         # setup
-        info_mapper = DatasourceInfoMapper(self.conf)
+        info_mapper = DatasourceInfoMapper()
         metadata = {VProps.VITRAGE_STATE: 'SUSPENDED'}
         new_vertex = create_vertex('12345',
                                    vitrage_category=EntityCategory.RESOURCE,

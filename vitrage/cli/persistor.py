@@ -16,9 +16,10 @@ import sys
 
 import cotyledon
 from oslo_log import log
+
 from vitrage.cli import VITRAGE_TITLE
+from vitrage.common import config
 from vitrage.persistency.service import PersistorService
-from vitrage import service
 from vitrage import storage
 
 LOG = log.getLogger(__name__)
@@ -26,10 +27,10 @@ LOG = log.getLogger(__name__)
 
 def main():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
-    db_connection = storage.get_connection_from_config(conf)
+    config.parse_config(sys.argv)
+    db_connection = storage.get_connection_from_config()
     sm = cotyledon.ServiceManager()
-    sm.add(PersistorService, args=(conf, db_connection))
+    sm.add(PersistorService, args=(db_connection,))
     sm.run()
 
 

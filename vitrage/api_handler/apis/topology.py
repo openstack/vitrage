@@ -34,9 +34,6 @@ LOG = log.getLogger(__name__)
                     info={}, hide_args=False, trace_private=False)
 class TopologyApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf, api_lock):
-        super(TopologyApis, self).__init__(entity_graph, conf, api_lock)
-
     @timed_method(log_results=True)
     @base.lock_graph
     def get_topology(self, ctx, graph_type, depth, query, root, all_tenants):

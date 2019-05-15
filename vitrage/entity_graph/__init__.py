@@ -17,6 +17,8 @@ from oslo_config import cfg
 
 from stevedore import driver
 
+CONF = cfg.CONF
+
 OPTS = [
     cfg.StrOpt('datasources_values_dir',
                default='/etc/vitrage/datasources_values',
@@ -35,10 +37,10 @@ OPTS = [
 EVALUATOR_TOPIC = 'vitrage.evaluator'
 
 
-def get_graph_driver(conf):
+def get_graph_driver():
     try:
         mgr = driver.DriverManager('vitrage.entity_graph',
-                                   conf.entity_graph.graph_driver,
+                                   CONF.entity_graph.graph_driver,
                                    invoke_on_load=True)
         return mgr.driver
     except ImportError:

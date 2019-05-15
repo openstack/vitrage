@@ -58,7 +58,7 @@ class ZabbixTransformerTest(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=ZABBIX_DATASOURCE)
         cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+            HostTransformer(cls.transformers)
 
     def test_create_entity_key(self):
         LOG.debug('Test get key from nova instance transformer')
@@ -67,7 +67,7 @@ class ZabbixTransformerTest(base.BaseTest):
         spec_list = mock_sync.simple_zabbix_alarm_generators(host_num=1,
                                                              events_num=1)
         zabbix_alarms = mock_sync.generate_sequential_events_list(spec_list)
-        transformer = ZabbixTransformer(self.transformers, self.conf)
+        transformer = ZabbixTransformer(self.transformers)
         event = zabbix_alarms[0]
         self.enrich_event(event)
 
@@ -96,7 +96,7 @@ class ZabbixTransformerTest(base.BaseTest):
         for alarm in zabbix_alarms:
             # Test action
             self.enrich_event(alarm, format_timestamp=False)
-            wrapper = ZabbixTransformer(self.transformers, self.conf)\
+            wrapper = ZabbixTransformer(self.transformers)\
                 .transform(alarm)
             self._validate_vertex(wrapper.vertex, alarm)
 
@@ -173,7 +173,7 @@ class ZabbixTransformerTest(base.BaseTest):
         edge = neighbor.edge
         self.assertEqual(EdgeLabel.ON, edge.label)
 
-        alarm_key = ZabbixTransformer(self.transformers, self.conf).\
+        alarm_key = ZabbixTransformer(self.transformers).\
             _create_entity_key(event)
         alarm_uuid = TransformerBase.uuid_from_deprecated_vitrage_id(alarm_key)
         self.assertEqual(alarm_uuid, edge.source_id)

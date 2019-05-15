@@ -30,8 +30,8 @@ class MockNagiosDriver(NagiosDriver):
     def enrich_event(self, event, event_type):
         pass
 
-    def __init__(self, conf):
-        super(MockNagiosDriver, self).__init__(conf)
+    def __init__(self):
+        super(MockNagiosDriver, self).__init__()
         self.service_datas = None
 
     def set_service_datas(self, service_datas):

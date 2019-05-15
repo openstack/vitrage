@@ -14,36 +14,37 @@
 
 from kubernetes import client
 from kubernetes import config
+from oslo_log import cfg
 from oslo_log import log
 from vitrage.datasources.driver_base import DriverBase
 from vitrage.datasources.kubernetes.properties import KUBERNETES_DATASOURCE
 from vitrage.datasources.kubernetes.properties import KubernetesProperties\
     as kubProp
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class KubernetesDriver(DriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(KubernetesDriver, self).__init__()
         self._client = None
-        self.conf = conf
 
     @property
     def client(self):
         if not self._client:
-            self._client = self._k8s_client(self.conf)
+            self._client = self._k8s_client()
         return self._client
 
     @staticmethod
-    def _k8s_client(conf):
+    def _k8s_client():
         try:
-            if not conf.kubernetes.config_file:
+            if not CONF.kubernetes.config_file:
                 LOG.warning('kubernetes config file is not defined')
                 return
 
-            kubeconf = conf.kubernetes.config_file
+            kubeconf = CONF.kubernetes.config_file
             config.load_kube_config(config_file=kubeconf)
             k8s_client = client.CoreV1Api()
             if k8s_client is None:

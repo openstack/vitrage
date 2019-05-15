@@ -40,9 +40,6 @@ class NetworkTransformer(ResourceTransformerBase):
         'network.delete.end': GraphAction.DELETE_ENTITY,
     }
 
-    def __init__(self, transformers, conf):
-        super(NetworkTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
 
         name = entity_event[NetworkProps.NAME]

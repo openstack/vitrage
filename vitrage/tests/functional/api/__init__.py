@@ -18,13 +18,10 @@
 """
 import os
 
-from oslo_config import fixture as fixture_config
 import sys
 import webtest
 
 from vitrage.api import app
-from vitrage import service
-
 from vitrage.tests import base
 
 
@@ -37,28 +34,24 @@ class FunctionalTest(base.BaseTest):
 
     PATH_PREFIX = ''
 
-    # noinspection PyAttributeOutsideInit
     def setUp(self):
         super(FunctionalTest, self).setUp()
-        conf = service.prepare_service(args=[], config_files=[])
-        self.CONF = self.useFixture(fixture_config.Config(conf)).conf
 
         vitrage_init_file = sys.modules['vitrage'].__file__
         vitrage_root = os.path.abspath(
             os.path.join(os.path.dirname(vitrage_init_file), '..', ))
 
-        self.CONF.set_override('paste_config', os.path.join(vitrage_root,
+        self.conf.set_override('paste_config', os.path.join(vitrage_root,
                                                             'etc', 'vitrage',
                                                             'api-paste.ini'),
                                group='api')
 
-        self.CONF.set_override('auth_mode', self.auth, group='api')
+        self.conf.set_override('auth_mode', self.auth, group='api')
 
-        self.CONF.set_override('connection',
-                               'sqlite:///test.db',
+        self.conf.set_override('connection', 'sqlite:///test.db',
                                group='database')
 
-        self.app = webtest.TestApp(app.load_app(self.CONF))
+        self.app = webtest.TestApp(app.load_app())
 
     def put_json(self, path, params, expect_errors=False, headers=None,
                  extra_environ=None, status=None):

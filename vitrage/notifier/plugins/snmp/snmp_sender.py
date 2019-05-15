@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from oslo_log import log as logging
 from pysnmp.entity.engine import SnmpEngine
 from pysnmp.hlapi.asyncore.sync.compat.ntforg import sendNotification
@@ -27,6 +28,7 @@ from vitrage.common.constants import VertexProperties as VProps
 from vitrage.notifier.plugins.snmp.base import SnmpSenderBase
 from vitrage.utils.file import load_yaml_file
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 # TODO(annarez): change NA to N/A
@@ -43,12 +45,11 @@ PORT_PAT = re.compile('\d+')
 
 
 class SnmpSender(SnmpSenderBase):
-    def __init__(self, conf):
-        super(SnmpSender, self).__init__(conf)
-        self.hosts = load_yaml_file(self.conf.snmp.consumers, True)
-        self.oid_tree = load_yaml_file(self.conf.snmp.oid_tree, True)
+    def __init__(self):
+        self.hosts = load_yaml_file(CONF.snmp.consumers, True)
+        self.oid_tree = load_yaml_file(CONF.snmp.oid_tree, True)
         self.alarm_mapping = \
-            load_yaml_file(self.conf.snmp.alarm_oid_mapping, True)
+            load_yaml_file(CONF.snmp.alarm_oid_mapping, True)
         self.oids, self.var_fields = self._build_oids()
 
     def send_snmp(self, alarm_data):

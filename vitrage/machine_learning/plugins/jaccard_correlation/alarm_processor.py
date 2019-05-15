@@ -14,6 +14,8 @@
 
 from collections import namedtuple
 from datetime import datetime
+
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import NotifierEventTypes
@@ -28,6 +30,8 @@ from vitrage.machine_learning.plugins.jaccard_correlation.\
 from vitrage.machine_learning.plugins.jaccard_correlation.correlation_manager\
     import CorrelationManager as CM
 
+CONF = cfg.CONF
+
 LOG = log.getLogger(__name__)
 
 AlarmID = namedtuple('AlarmID', [VProps.VITRAGE_RESOURCE_ID,
@@ -41,12 +45,12 @@ class AlarmDataProcessor(MachineLearningBase):
     def get_plugin_name():
         return 'jaccard_correlation'
 
-    def __init__(self, conf):
-        super(AlarmDataProcessor, self).__init__(conf)
+    def __init__(self):
+        super(AlarmDataProcessor, self).__init__()
         self.data_manager = ADAcummulator(APersistor.load_data())
-        self.correlation_manager = CM(conf)
+        self.correlation_manager = CM()
         self.num_of_events_to_flush = \
-            conf.jaccard_correlation.num_of_events_to_flush
+            CONF.jaccard_correlation.num_of_events_to_flush
         self.event_counter = 0
 
     def process_event(self, data, event_type):

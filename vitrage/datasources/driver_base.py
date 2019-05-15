@@ -29,9 +29,6 @@ class DriverBase(object):
 
     _datasource_name = None
 
-    def __init__(self):
-        pass
-
     @abc.abstractmethod
     def get_all(self, datasource_action):
         pass

@@ -54,11 +54,11 @@ class TestHeatStackTransformer(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=HEAT_STACK_DATASOURCE)
         cls.transformers[HEAT_STACK_DATASOURCE] = \
-            HeatStackTransformer(cls.transformers, cls.conf)
+            HeatStackTransformer(cls.transformers)
         cls.transformers[CINDER_VOLUME_DATASOURCE] = \
-            CinderVolumeTransformer(cls.transformers, cls.conf)
+            CinderVolumeTransformer(cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
+            InstanceTransformer(cls.transformers)
 
     def test_create_placeholder_vertex(self):
         LOG.debug('Heat Stack transformer test: Create placeholder vertex')

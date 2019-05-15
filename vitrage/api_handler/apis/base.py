@@ -76,9 +76,8 @@ RESOURCES_ALL_QUERY = {
 
 class EntityGraphApisBase(object):
 
-    def __init__(self, entity_graph, conf, api_lock, db=None):
+    def __init__(self, entity_graph, api_lock, db=None):
         self.entity_graph = entity_graph
-        self.conf = conf
         self.db = db
         self.api_lock = api_lock
 

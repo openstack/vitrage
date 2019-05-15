@@ -33,7 +33,7 @@ class TestStaticDriver(base.BaseTest):
     @classmethod
     def setUpClass(cls):
         super(TestStaticDriver, cls).setUpClass()
-        cls.static_driver = driver.StaticDriver(None)
+        cls.static_driver = driver.StaticDriver()
 
     def test_get_all(self):
         self._set_conf()
@@ -209,6 +209,4 @@ class TestStaticDriver(base.BaseTest):
             cfg.StrOpt('directory', default=default_dir),
         ]
 
-        self.conf = cfg.ConfigOpts()
-        self.conf.register_opts(opts, group=STATIC_DATASOURCE)
-        self.static_driver.cfg = self.conf
+        self.conf_reregister_opts(opts, group=STATIC_DATASOURCE)

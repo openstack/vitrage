@@ -42,18 +42,20 @@ class TestNagios(TestDataSourcesBase):
                     help='base path for data sources')
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestNagios, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestNagios, self).setUp()
+        self.cfg_fixture.config(group='datasources',
+                                types=[
+                                    NAGIOS_DATASOURCE,
+                                    NOVA_HOST_DATASOURCE,
+                                    NOVA_INSTANCE_DATASOURCE,
+                                    NOVA_ZONE_DATASOURCE
+                                ])
+        self.load_datasources()
 
     def test_nagios_validity(self):
         # Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
         self.assertThat(processor.entity_graph,
                         matchers.HasLength(
                             self._num_total_expected_vertices())

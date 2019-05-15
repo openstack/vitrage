@@ -38,9 +38,6 @@ class ZoneTransformer(ResourceTransformerBase):
     STATE_AVAILABLE = 'available'
     STATE_UNAVAILABLE = 'unavailable'
 
-    def __init__(self, transformers, conf):
-        super(ZoneTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
 
         zone_name = extract_field_value(entity_event, ZoneProps.ZONE_NAME)

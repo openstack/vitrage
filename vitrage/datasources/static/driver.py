@@ -16,6 +16,7 @@ from itertools import chain
 from jsonschema import validate
 from six.moves import reduce
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import DatasourceProperties as DSProps
@@ -26,6 +27,7 @@ from vitrage.datasources.static import STATIC_SCHEMA
 from vitrage.datasources.static import StaticFields
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
@@ -35,9 +37,8 @@ class StaticDriver(DriverBase):
                    StaticFields.TYPE,
                    StaticFields.ID}
 
-    def __init__(self, conf):
+    def __init__(self):
         super(StaticDriver, self).__init__()
-        self.cfg = conf
         self.entities_cache = []
 
     @staticmethod
@@ -77,7 +78,7 @@ class StaticDriver(DriverBase):
         return self.entities_cache
 
     def _get_all_entities(self):
-        files = file_utils.list_files(self.cfg.static.directory, '.yaml', True)
+        files = file_utils.list_files(CONF.static.directory, '.yaml', True)
         return list(reduce(chain, [self._get_entities_from_file(path)
                                    for path in files], []))
 

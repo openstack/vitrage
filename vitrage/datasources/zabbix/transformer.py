@@ -32,9 +32,6 @@ from vitrage.utils.datetime import format_unix_timestamp
 
 class ZabbixTransformer(AlarmTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(ZabbixTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)
 

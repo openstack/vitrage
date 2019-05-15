@@ -15,6 +15,7 @@
 
 from __future__ import absolute_import
 
+from oslo_config import cfg
 from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log
 from sqlalchemy import and_, or_
@@ -30,12 +31,13 @@ from vitrage.storage.history_facade import HistoryFacadeConnection
 from vitrage.storage.sqlalchemy import models
 from vitrage.storage.sqlalchemy.models import Template
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class Connection(base.Connection):
-    def __init__(self, conf, url):
-        options = dict(conf.database.items())
+    def __init__(self, url):
+        options = dict(CONF.database.items())
         # set retries to 0 , since reconnection is already implemented
         # in storage.__init__.get_connection_from_config function
         options['max_retries'] = 0
@@ -44,7 +46,6 @@ class Connection(base.Connection):
             options.pop(opt.name, None)
         self._engine_facade = db_session.EngineFacade(self._dress_url(url),
                                                       **options)
-        self.conf = conf
         self._active_actions = ActiveActionsConnection(self._engine_facade)
         self._events = EventsConnection(self._engine_facade)
         self._templates = TemplatesConnection(self._engine_facade)

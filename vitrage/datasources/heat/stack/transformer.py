@@ -46,9 +46,6 @@ class HeatStackTransformer(ResourceTransformerBase):
         'orchestration.stack.delete.end': GraphAction.DELETE_ENTITY,
     }
 
-    def __init__(self, transformers, conf):
-        super(HeatStackTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
 
         stack_name = extract_field_value(entity_event, StackProps.STACK_NAME)

@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
+
 from vitrage.common.constants import DatasourceAction
 from vitrage.common.constants import DatasourceProperties as DSProps
 from vitrage.common.constants import GraphAction
@@ -26,6 +28,8 @@ from vitrage.datasources.neutron.port import NEUTRON_PORT_DATASOURCE
 from vitrage.datasources.nova.instance.driver import InstanceDriver
 from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
 from vitrage import os_clients
+
+CONF = cfg.CONF
 
 
 class HeatStackDriver(DriverBase):
@@ -44,21 +48,20 @@ class HeatStackDriver(DriverBase):
         'OS::Neutron::Port': PortDriver
     }
 
-    def __init__(self, conf):
+    def __init__(self):
         super(HeatStackDriver, self).__init__()
         self._client = None
-        self._conf = conf
         self._filter_resource_types()
 
     @property
     def client(self):
         if not self._client:
-            self._client = os_clients.heat_client(self._conf)
+            self._client = os_clients.heat_client()
         return self._client
 
     @staticmethod
-    def get_topic(conf):
-        return conf[HEAT_STACK_DATASOURCE].notification_topic
+    def get_topic():
+        return CONF[HEAT_STACK_DATASOURCE].notification_topic
 
     @staticmethod
     def get_event_types():
@@ -93,7 +96,7 @@ class HeatStackDriver(DriverBase):
         return self.client.stacks.get(_id).to_dict()['parent']
 
     def _filter_resource_types(self):
-        types = self._conf.datasources.types
+        types = CONF.datasources.types
 
         self.RESOURCE_TYPE = {key: value for key, value in
                               self.RESOURCE_TYPE.items() if value in types}

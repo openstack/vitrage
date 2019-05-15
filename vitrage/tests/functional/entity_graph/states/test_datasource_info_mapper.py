@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-
 from vitrage.common.constants import DatasourceAction as DSAction
 from vitrage.common.constants import GraphAction
 from vitrage.common.constants import VertexProperties as VProps
@@ -24,18 +22,13 @@ from vitrage.tests.functional.base import TestFunctionalBase
 
 class TestDatasourceInfoMapperFunctional(TestFunctionalBase):
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestDatasourceInfoMapperFunctional, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestDatasourceInfoMapperFunctional, self).setUp()
+        self.load_datasources()
 
     def test_state_on_update(self):
         # setup
-        processor = self.create_processor_and_graph(self.conf)
+        processor = self.create_processor_and_graph()
         event = self._create_event(spec_type='INSTANCE_SPEC',
                                    datasource_action=DSAction.INIT_SNAPSHOT)
 

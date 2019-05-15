@@ -11,7 +11,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from oslo_config import cfg
 
 from vitrage.common.constants import EdgeProperties
 from vitrage.common.constants import VertexProperties
@@ -25,20 +24,16 @@ from vitrage.tests.mocks.graph_generator import GraphGenerator
 
 class TestGraphPersistor(TestFunctionalBase, TestConfiguration):
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestGraphPersistor, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.add_db(cls.conf)
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestGraphPersistor, self).setUp()
+        self.conf.register_opts(self.PROCESSOR_OPTS, group='entity_graph')
+        self.conf.register_opts(self.DATASOURCES_OPTS, group='datasources')
+        self.add_db()
+        self.load_datasources()
 
     def test_graph_store_and_query_recent_snapshot(self):
         g = GraphGenerator().create_graph()
-        graph_persistor = graph_persistency.GraphPersistency(self.conf,
-                                                             self._db, g)
+        graph_persistor = graph_persistency.GraphPersistency(self._db, g)
         graph_persistor.store_graph()
         recovered_data = graph_persistor.query_recent_snapshot()
         recovered_graph = self.load_snapshot(recovered_data)
@@ -47,8 +42,7 @@ class TestGraphPersistor(TestFunctionalBase, TestConfiguration):
     def test_event_store_and_replay_events(self):
         g = GraphGenerator().create_graph()
         vertices = g.get_vertices()
-        graph_persistor = graph_persistency.GraphPersistency(self.conf,
-                                                             self._db, g)
+        graph_persistor = graph_persistency.GraphPersistency(self._db, g)
         self.fail_msg = None
         self.event_id = 1
 

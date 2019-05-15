@@ -32,17 +32,16 @@ LOG = log.getLogger(__name__)
 
 class CeilometerDriver(AlarmDriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(CeilometerDriver, self).__init__()
         self._client = None
-        self.conf = conf
         self._init_aodh_event_actions()
         self._cache_all_alarms()
 
     @property
     def client(self):
         if not self._client:
-            self._client = os_clients.ceilometer_client(self.conf)
+            self._client = os_clients.ceilometer_client()
         return self._client
 
     def _vitrage_type(self):

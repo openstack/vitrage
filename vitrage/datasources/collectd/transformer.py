@@ -28,9 +28,6 @@ from vitrage.utils.datetime import format_unix_timestamp
 
 class CollectdTransformer(AlarmTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(CollectdTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         # The Collectd datasource does not support snapshot mode
         return None

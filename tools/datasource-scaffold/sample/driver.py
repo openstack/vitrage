@@ -22,9 +22,8 @@ LOG = log.getLogger(__name__)
 
 class SampleDriver(DriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(SampleDriver, self).__init__()
-        self.cfg = conf
 
     @staticmethod
     def get_event_types():

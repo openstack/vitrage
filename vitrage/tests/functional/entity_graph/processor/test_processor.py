@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-
 from vitrage.tests.functional.base import \
     TestFunctionalBase
 
@@ -24,17 +22,12 @@ class TestProcessorFunctional(TestFunctionalBase):
     HOST_SPEC = 'HOST_SPEC'
     INSTANCE_SPEC = 'INSTANCE_SPEC'
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestProcessorFunctional, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestProcessorFunctional, self).setUp()
+        self.load_datasources()
 
     def test_create_entity_graph(self):
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         self.assertEqual(self._num_total_expected_vertices(),
                          processor.entity_graph.num_vertices())

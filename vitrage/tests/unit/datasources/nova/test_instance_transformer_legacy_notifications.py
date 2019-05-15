@@ -31,10 +31,10 @@ class NovaInstanceTransformerLegacyNotifTest(
                     default=False),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(NovaInstanceTransformerLegacyNotifTest, cls).setUpClass()
+    def setUp(self):
+        super(NovaInstanceTransformerLegacyNotifTest, self).setUp()
+        self.cfg_fixture.config(
+            use_nova_versioned_notifications=False)
 
     def test_update_event_transform(self):
         LOG.debug('Test actual transform action for update events')

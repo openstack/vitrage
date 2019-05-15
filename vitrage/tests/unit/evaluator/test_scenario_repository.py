@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from testtools import matchers
 
 from vitrage.common.constants import EntityCategory
@@ -30,33 +29,19 @@ from vitrage.utils import file as file_utils
 
 
 class ScenarioRepositoryTest(base.BaseTest, TestConfiguration):
-    BASE_DIR = utils.get_resources_dir() + '/templates/general'
-    OPTS = [
-        cfg.StrOpt('templates_dir',
-                   default=BASE_DIR,
-                   ),
-        cfg.StrOpt('equivalences_dir',
-                   default='equivalences',
-                   ),
-    ]
-
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(ScenarioRepositoryTest, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group='evaluator')
-        cls.add_db(cls.conf)
-        cls.add_templates(cls.conf.evaluator.templates_dir)
-        templates_dir_path = cls.conf.evaluator.templates_dir
-        cls.template_defs = file_utils.load_yaml_files(templates_dir_path)
-
-        cls.scenario_repository = ScenarioRepository(cls.conf)
+    def setUp(self):
+        super(ScenarioRepositoryTest, self).setUp()
+        self.add_db()
+        templates_dir = utils.get_resources_dir() + '/templates/general'
+        self.add_templates(templates_dir)
+        templates_dir_path = templates_dir
+        self.template_defs = file_utils.load_yaml_files(templates_dir_path)
+        self.scenario_repository = ScenarioRepository()
 
     def test_template_loader(self):
 
         # Test Action
-        scenario_repository = ScenarioRepository(self.conf)
+        scenario_repository = ScenarioRepository()
 
         # Test assertions
         self.assertIsNotNone(scenario_repository)
@@ -110,19 +95,12 @@ class ScenarioRepositoryTest(base.BaseTest, TestConfiguration):
 
 class RegExTemplateTest(base.BaseTest, TestConfiguration):
 
-    BASE_DIR = utils.get_resources_dir() + '/templates/regex'
-    OPTS = [
-        cfg.StrOpt('templates_dir',
-                   default=BASE_DIR)]
-
-    @classmethod
-    def setUpClass(cls):
-        super(RegExTemplateTest, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group='evaluator')
-        cls.add_db(cls.conf)
-        cls.add_templates(cls.conf.evaluator.templates_dir)
-        cls.scenario_repository = ScenarioRepository(cls.conf)
+    def setUp(self):
+        super(RegExTemplateTest, self).setUp()
+        templates_dir = utils.get_resources_dir() + '/templates/regex'
+        self.add_db()
+        self.add_templates(templates_dir)
+        self.scenario_repository = ScenarioRepository()
 
     def test_basic_regex(self):
 
@@ -178,31 +156,20 @@ class RegExTemplateTest(base.BaseTest, TestConfiguration):
 
 
 class EquivalentScenarioTest(base.BaseTest, TestConfiguration):
-    BASE_DIR = utils.get_resources_dir() + '/templates/equivalent_scenarios/'
-    OPTS = [
-        cfg.StrOpt('templates_dir',
-                   default=BASE_DIR,
-                   ),
-        cfg.StrOpt('def_templates_dir',
-                   default=(utils.get_resources_dir() +
-                            '/templates/def_template_tests'),
-                   ),
-        cfg.StrOpt('equivalences_dir',
-                   default=BASE_DIR + '/equivalences',),
-    ]
-
-    @classmethod
-    def setUpClass(cls):
-        super(EquivalentScenarioTest, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group='evaluator')
-        cls.add_db(cls.conf)
-        cls.add_templates(cls.conf.evaluator.templates_dir)
-        cls.add_templates(cls.conf.evaluator.equivalences_dir,
-                          TType.EQUIVALENCE)
-        cls.add_templates(cls.conf.evaluator.def_templates_dir,
-                          TType.DEFINITION)
-        cls.scenario_repository = ScenarioRepository(cls.conf)
+    def setUp(self):
+        super(EquivalentScenarioTest, self).setUp()
+        templates_dir = utils.get_resources_dir() + \
+            '/templates/equivalent_scenarios/'
+        equivalences_dir = templates_dir + '/equivalences'
+        def_templates_dir = utils.get_resources_dir() + \
+            '/templates/def_template_tests'
+        self.add_db()
+        self.add_templates(templates_dir)
+        self.add_templates(equivalences_dir,
+                           TType.EQUIVALENCE)
+        self.add_templates(def_templates_dir,
+                           TType.DEFINITION)
+        self.scenario_repository = ScenarioRepository()
 
     def test_expansion(self):
         entity_scenarios = self.scenario_repository.entity_scenarios

@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_utils import importutils
 
@@ -19,6 +20,7 @@ from vitrage.common.constants import NotifierEventTypes
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.notifier.plugins.base import NotifierBase
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 
@@ -27,10 +29,10 @@ class SnmpNotifier(NotifierBase):
     def get_notifier_name():
         return 'snmp'
 
-    def __init__(self, conf):
-        super(SnmpNotifier, self).__init__(conf)
+    def __init__(self):
+        super(SnmpNotifier, self).__init__()
         self.snmp_sender = \
-            importutils.import_object(conf.snmp.snmp_sender_class, conf)
+            importutils.import_object(CONF.snmp.snmp_sender_class)
 
     def process_event(self, data, event_type):
 

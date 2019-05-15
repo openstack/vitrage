@@ -35,7 +35,7 @@ DEF_TEMPLATES_DIR_OPT = 'def_templates_dir'
 
 
 class ScenarioRepository(object):
-    def __init__(self, conf, worker_index=None, workers_num=None):
+    def __init__(self, worker_index=None, workers_num=None):
         """Create an instance of ScenarioRepository
 
         :param conf:
@@ -45,7 +45,7 @@ class ScenarioRepository(object):
         self._templates = {}
         self._def_templates = {}
         self._all_scenarios = []
-        self._db = storage.get_connection_from_config(conf)
+        self._db = storage.get_connection_from_config()
         self.entity_equivalences = EquivalenceRepository().load(self._db)
         self.relationship_scenarios = defaultdict(list)
         self.entity_scenarios = defaultdict(list)

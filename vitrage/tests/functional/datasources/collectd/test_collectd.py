@@ -46,14 +46,16 @@ class TestCollectd(TestDataSourcesBase):
                     help='base path for data sources')
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestCollectd, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestCollectd, self).setUp()
+        self.cfg_fixture.config(group='datasources',
+                                types=[
+                                    COLLECTD_DATASOURCE,
+                                    NOVA_HOST_DATASOURCE,
+                                    NOVA_INSTANCE_DATASOURCE,
+                                    NOVA_ZONE_DATASOURCE
+                                ])
+        self.load_datasources()
 
     def test_collectd_alarm_on_host(self):
         self._test_collectd_alarm(NOVA_HOST_DATASOURCE, 'host-2', 'host-2')
@@ -63,7 +65,7 @@ class TestCollectd(TestDataSourcesBase):
 
     def _test_collectd_alarm(self, resource_type, resource_name, host_name):
         # Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
         self.assertThat(processor.entity_graph,
                         matchers.HasLength(
                             self._num_total_expected_vertices())

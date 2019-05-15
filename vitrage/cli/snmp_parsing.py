@@ -15,16 +15,17 @@
 import sys
 
 import cotyledon
+
 from vitrage.cli import VITRAGE_TITLE
-from vitrage import service
+from vitrage.common import config
 from vitrage.snmp_parsing.service import SnmpParsingService
 
 
 def main():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
+    config.parse_config(sys.argv)
     sm = cotyledon.ServiceManager()
-    sm.add(SnmpParsingService, args=(conf,))
+    sm.add(SnmpParsingService)
     sm.run()
 
 

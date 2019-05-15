@@ -14,6 +14,7 @@
 
 import os
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import EntityCategory
@@ -23,6 +24,7 @@ from vitrage.entity_graph.mappings.resource_handler import \
     ResourceHandler
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
@@ -34,8 +36,7 @@ class DatasourceInfoMapper(object):
     PRIORITY_VALUES = 'priority_values'
     UNDEFINED_DATASOURCE = 'undefined datasource'
 
-    def __init__(self, conf):
-        self.conf = conf
+    def __init__(self):
         self.category_normalizer = self._init_category_normalizer()
         self.datasources_value_confs = self._load_value_configurations()
 
@@ -62,7 +63,7 @@ class DatasourceInfoMapper(object):
             graph_vertex[VProps.VITRAGE_CATEGORY]
 
         if vitrage_type in self.datasources_value_confs or \
-                vitrage_type not in self.conf.datasources.types:
+                vitrage_type not in CONF.datasources.types:
             value_properties = \
                 self.category_normalizer[vitrage_category].value_properties()
             vitrage_operational_value, vitrage_aggregated_value, value_priority = \
@@ -115,11 +116,11 @@ class DatasourceInfoMapper(object):
         erroneous_datasources_conf = []
 
         files = file_utils.list_files(
-            self.conf.entity_graph.datasources_values_dir, '.yaml')
+            CONF.entity_graph.datasources_values_dir, '.yaml')
 
         for file_name in files:
             try:
-                full_path = self.conf.entity_graph.datasources_values_dir \
+                full_path = CONF.entity_graph.datasources_values_dir \
                     + '/' + file_name
                 operational_values, priority_values = \
                     self._retrieve_values_and_priorities_from_file(full_path)
@@ -227,7 +228,7 @@ class DatasourceInfoMapper(object):
                                   ok_datasources,
                                   error_datasources):
 
-        datasource_types = self.conf.datasources.types
+        datasource_types = CONF.datasources.types
         datasources_with_state_conf = ok_datasources + error_datasources
 
         for datasource_type in datasource_types:

@@ -25,9 +25,8 @@ LOG = logging.getLogger(__name__)
 
 class MistralNotifier(NotifierBase):
 
-    def __init__(self, conf):
-        super(MistralNotifier, self).__init__(conf)
-        self.conf = conf
+    def __init__(self):
+        super(MistralNotifier, self).__init__()
         self._client = None
 
     @staticmethod
@@ -41,7 +40,7 @@ class MistralNotifier(NotifierBase):
     @property
     def client(self):
         if not self._client:
-            self._client = os_clients.mistral_client(self.conf)
+            self._client = os_clients.mistral_client()
         return self._client
 
     def info(self, ctxt, publisher_id, event_type, payload, metadata):

@@ -16,6 +16,4 @@ from vitrage.datasources import transformer_base as tbase
 
 
 class ResourceTransformerBase(tbase.TransformerBase):
-
-    def __init__(self, transformers, conf):
-        super(ResourceTransformerBase, self).__init__(transformers, conf)
+    pass

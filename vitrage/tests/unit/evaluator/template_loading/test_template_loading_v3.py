@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from vitrage.evaluator.template_data import ActionSpecs
 from vitrage.evaluator.template_data import EdgeDescription
 from vitrage.evaluator.template_data import Scenario
@@ -59,11 +58,9 @@ class TemplateLoaderV3Test(BaseTest, TestConfiguration):
             Vertex('host', {'vitrage_type': 'nova.host'})),
     }
 
-    @classmethod
-    def setUpClass(cls):
-        super(TemplateLoaderV3Test, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.add_db(cls.conf)
+    def setUp(self):
+        super(TemplateLoaderV3Test, self).setUp()
+        self.add_db()
 
     def _load_scenarios(self, file=None, content=None):
         if file and not content:

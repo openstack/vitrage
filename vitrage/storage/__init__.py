@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from oslo_log import log
 import six.moves.urllib.parse as urlparse
 from stevedore import driver
@@ -21,16 +22,16 @@ from vitrage.utils.datetime import utcnow
 
 _NAMESPACE = 'vitrage.storage'
 
-
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 OPTS = []
 
 
-def get_connection_from_config(conf):
-    retries = conf.database.max_retries
-    url = conf.database.connection
+def get_connection_from_config():
+    retries = CONF.database.max_retries
+    url = CONF.database.connection
 
     try:
         # TOTO(iafek): check why this call randomly fails
@@ -44,12 +45,12 @@ def get_connection_from_config(conf):
         return None
 
     @tenacity.retry(
-        wait=tenacity.wait_fixed(conf.database.retry_interval),
+        wait=tenacity.wait_fixed(CONF.database.retry_interval),
         stop=tenacity.stop_after_attempt(retries if retries >= 0 else 5),
         reraise=True)
     def _get_connection():
         """Return an open connection to the database."""
-        return mgr.driver(conf, url)
+        return mgr.driver(url)
 
     return _get_connection()
 

@@ -14,8 +14,8 @@
 See http://pecan.readthedocs.org/en/latest/deployment.html for details.
 """
 from vitrage.api import app
-from vitrage import service
+from vitrage.common import config
 
 # Initialize the oslo configuration library and logging
-conf = service.prepare_service()
-application = app.load_app(conf)
+config.parse_config([])
+application = app.load_app()

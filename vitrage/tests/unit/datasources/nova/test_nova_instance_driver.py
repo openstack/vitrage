@@ -32,20 +32,13 @@ class NovaHostTransformerTest(base.BaseTest):
                    default=UpdateMethod.PUSH),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(NovaHostTransformerTest, cls).setUpClass()
-
     def test_use_versioned_notifications(self):
         LOG.debug('Nova instance driver test')
 
         # Test setup
-        driver = InstanceDriver(cfg.ConfigOpts())
-        driver.conf.register_opts([
-            cfg.BoolOpt('use_nova_versioned_notifications',
-                        default=True, required=True),
-        ])
+        driver = InstanceDriver()
+        self.cfg_fixture.config(
+            use_nova_versioned_notifications=True)
         update_versioned_event, update_legacy_event = self._create_events()
 
         # Test action
@@ -62,11 +55,9 @@ class NovaHostTransformerTest(base.BaseTest):
         LOG.debug('Nova instance driver test')
 
         # Test setup
-        driver = InstanceDriver(cfg.ConfigOpts())
-        driver.conf.register_opts([
-            cfg.BoolOpt('use_nova_versioned_notifications',
-                        default=False, required=True),
-        ])
+        driver = InstanceDriver()
+        self.cfg_fixture.config(
+            use_nova_versioned_notifications=False)
         update_versioned_event, update_legacy_event = self._create_events()
 
         # Test action

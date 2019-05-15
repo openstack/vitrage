@@ -13,7 +13,6 @@
 # under the License.
 
 import copy
-from oslo_config import cfg
 
 from pysnmp.proto.rfc1902 import Integer
 from pysnmp.proto.rfc1902 import ObjectIdentifier
@@ -109,32 +108,20 @@ DICT_EXPECTED = {
 
 
 class TestSnmpParsing(base.BaseTest):
-    OPTS = [
-        cfg.IntOpt('snmp_listening_port', default=8162,
-                   help='The listening port of snmp_parsing service'),
-        cfg.StrOpt('oid_mapping',
-                   default='vitrage/tests/resources/snmp_parsing/'
-                           'snmp_parsing_conf.yaml',
-                   help='The default path of oid_mapping yaml file'),
-    ]
-
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestSnmpParsing, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group='snmp_parsing')
-        cls.conf.register_opt(
-            cfg.StrOpt('backend_url', default='zake://'), group='coordination'
-        )
+    def setUp(self):
+        super(TestSnmpParsing, self).setUp()
+        self.cfg_fixture.config(
+            group='snmp_parsing',
+            oid_mapping='vitrage/tests/resources/snmp_parsing/'
+                        'snmp_parsing_conf.yaml')
 
     def test_convert_binds_to_dict(self):
-        parsing_service = SnmpParsingService(1, self.conf)
+        parsing_service = SnmpParsingService(1)
         dict_converted = parsing_service._convert_binds_to_dict(BINDS_REPORTED)
         self.assert_dict_equal(dict_converted, DICT_EXPECTED)
 
     def test_get_event_type(self):
-        parsing_service = SnmpParsingService(1, self.conf)
+        parsing_service = SnmpParsingService(1)
         event_type = parsing_service._get_event_type(DICT_EXPECTED)
         self.assertEqual(event_type, 'vitrage.snmp.event')
 
@@ -142,6 +129,6 @@ class TestSnmpParsing(base.BaseTest):
         converted_trap_diff_sys = copy.copy(DICT_EXPECTED)
         converted_trap_diff_sys.update(
             {u'1.3.6.1.4.1.3902.4101.1.3.1.12': u'Different System'})
-        parsing_service = SnmpParsingService(1, self.conf)
+        parsing_service = SnmpParsingService(1)
         event_type = parsing_service._get_event_type(converted_trap_diff_sys)
         self.assertIsNone(event_type)

@@ -30,9 +30,9 @@ class NovaNotifier(NotifierBase):
     def get_notifier_name():
         return 'nova'
 
-    def __init__(self, conf):
-        super(NovaNotifier, self).__init__(conf)
-        self.client = os_clients.nova_client(conf)
+    def __init__(self):
+        super(NovaNotifier, self).__init__()
+        self.client = os_clients.nova_client()
         self.actions = {
             NOVA_HOST_DATASOURCE: self._mark_host_down,
             NOVA_INSTANCE_DATASOURCE: self._reset_instance_state

@@ -18,6 +18,7 @@ import cotyledon
 import multiprocessing
 import multiprocessing.queues
 import os
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import uuidutils
@@ -45,6 +46,7 @@ from vitrage import messaging
 from vitrage import rpc as vitrage_rpc
 from vitrage import storage
 
+CONF = cfg.CONF
 LOG = None
 
 # Supported message types
@@ -67,9 +69,8 @@ class GraphWorkersManager(cotyledon.ServiceManager):
      - the queues used to communicate with these workers
      - methods interface to submit tasks to workers
     """
-    def __init__(self, conf):
+    def __init__(self):
         super(GraphWorkersManager, self).__init__()
-        self._conf = conf
         self._db = None
         self._evaluator_queues = []
         self._template_queues = []
@@ -93,10 +94,10 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         """
         if self._evaluator_queues:
             raise VitrageError('add_evaluator_workers called more than once')
-        workers = self._conf.evaluator.workers
+        workers = CONF.evaluator.workers
         queues = [multiprocessing.JoinableQueue() for i in range(workers)]
         self.add(EvaluatorWorker,
-                 args=(self._conf, queues, workers),
+                 args=(queues, workers),
                  workers=workers)
         self._evaluator_queues = queues
         self._all_queues.extend(queues)
@@ -111,9 +112,9 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         """
         if self._api_queues:
             raise VitrageError('add_api_workers called more than once')
-        workers = self._conf.api.workers
+        workers = CONF.api.workers
         queues = [multiprocessing.Queue() for i in range(workers)]
-        self.add(ApiWorker, args=(self._conf, queues), workers=workers)
+        self.add(ApiWorker, args=(queues,), workers=workers)
         self._api_queues = queues
         self._all_queues.extend(queues)
 
@@ -177,7 +178,7 @@ class GraphWorkersManager(cotyledon.ServiceManager):
         template_action = event.get(TEMPLATE_ACTION)
 
         if not self._db:
-            self._db = storage.get_connection_from_config(self._conf)
+            self._db = storage.get_connection_from_config()
 
         if template_action == ADD:
             templates = self._db.templates.query(status=TStatus.LOADING)
@@ -219,10 +220,8 @@ class GraphWorkersManager(cotyledon.ServiceManager):
 class GraphCloneWorkerBase(coord.Service):
     def __init__(self,
                  worker_id,
-                 conf,
                  task_queues):
-        super(GraphCloneWorkerBase, self).__init__(worker_id, conf)
-        self._conf = conf
+        super(GraphCloneWorkerBase, self).__init__(worker_id)
         self._task_queue = task_queues[worker_id]
         self._entity_graph = NXGraph()
 
@@ -285,7 +284,7 @@ class GraphCloneWorkerBase(coord.Service):
                 self._entity_graph.remove_edge(before)
 
     def _read_db_graph(self):
-        db = storage.get_connection_from_config(self._conf)
+        db = storage.get_connection_from_config()
         graph_snapshot = db.graph_snapshots.query()
         NXGraph.read_gpickle(graph_snapshot.graph_snapshot, self._entity_graph)
         GraphPersistency.do_replay_events(db, self._entity_graph,
@@ -296,25 +295,22 @@ class GraphCloneWorkerBase(coord.Service):
 class EvaluatorWorker(GraphCloneWorkerBase):
     def __init__(self,
                  worker_id,
-                 conf,
                  task_queues,
                  workers_num):
         super(EvaluatorWorker, self).__init__(
-            worker_id, conf, task_queues)
+            worker_id, task_queues)
         self._workers_num = workers_num
         self._evaluator = None
 
     name = 'EvaluatorWorker'
 
     def _init_instance(self):
-        scenario_repo = ScenarioRepository(self._conf, self.worker_id,
+        scenario_repo = ScenarioRepository(self.worker_id,
                                            self._workers_num)
         actions_callback = messaging.VitrageNotifier(
-            conf=self._conf,
             publisher_id='vitrage_evaluator',
             topics=[EVALUATOR_TOPIC]).notify
         self._evaluator = ScenarioEvaluator(
-            self._conf,
             self._entity_graph,
             scenario_repo,
             actions_callback,
@@ -338,7 +334,7 @@ class EvaluatorWorker(GraphCloneWorkerBase):
 
     def _reload_templates(self):
         LOG.info("reloading evaluator scenarios")
-        scenario_repo = ScenarioRepository(self._conf, self.worker_id,
+        scenario_repo = ScenarioRepository(self.worker_id,
                                            self._workers_num)
         self._evaluator.scenario_repo = scenario_repo
         self._evaluator.scenario_repo.log_enabled_scenarios()
@@ -347,7 +343,7 @@ class EvaluatorWorker(GraphCloneWorkerBase):
         # Here, we create a temporary ScenarioRepo to execute the needed
         # templates. Once _reload_templates is called, it will create a
         # non temporary ScenarioRepo, to replace this one
-        scenario_repo = ScenarioRepository(self._conf)
+        scenario_repo = ScenarioRepository()
         for s in scenario_repo._all_scenarios:
             s.enabled = False
             for template_name in template_names:
@@ -363,24 +359,23 @@ class ApiWorker(GraphCloneWorkerBase):
     name = 'ApiWorker'
 
     def _init_instance(self):
-        conf = self._conf
-        notifier = messaging.VitrageNotifier(conf, "vitrage.api",
+        notifier = messaging.VitrageNotifier("vitrage.api",
                                              [EVALUATOR_TOPIC])
-        db = storage.get_connection_from_config(conf)
-        transport = messaging.get_rpc_transport(conf)
-        target = oslo_messaging.Target(topic=conf.rpc_topic,
+        db = storage.get_connection_from_config()
+        transport = messaging.get_rpc_transport()
+        target = oslo_messaging.Target(topic=CONF.rpc_topic,
                                        server=uuidutils.generate_uuid())
         self.api_lock = threading.RLock()
 
         endpoints = [
-            TopologyApis(self._entity_graph, conf, self.api_lock),
-            AlarmApis(self._entity_graph, conf, self.api_lock, db),
-            RcaApis(self._entity_graph, conf, self.api_lock, db),
-            ResourceApis(self._entity_graph, conf, self.api_lock),
+            TopologyApis(self._entity_graph, self.api_lock),
+            AlarmApis(self._entity_graph, self.api_lock, db),
+            RcaApis(self._entity_graph, self.api_lock, db),
+            ResourceApis(self._entity_graph, self.api_lock),
             TemplateApis(notifier, db),
-            EventApis(conf),
-            WebhookApis(conf, db),
-            OperationalApis(conf, self._entity_graph),
+            EventApis(),
+            WebhookApis(db),
+            OperationalApis(self._entity_graph),
         ]
 
         server = vitrage_rpc.get_server(target, endpoints, transport)

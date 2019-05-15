@@ -12,6 +12,7 @@
 import gc
 import oslo_messaging
 
+from oslo_config import cfg
 from oslo_context import context
 from oslo_policy import policy
 from pecan import hooks
@@ -22,31 +23,32 @@ from vitrage import messaging
 from vitrage import rpc as vitrage_rpc
 from vitrage import storage
 
+CONF = cfg.CONF
+
 
 class ConfigHook(hooks.PecanHook):
     """Attach the configuration and policy enforcer object to the request. """
 
-    def __init__(self, conf):
-        self.conf = conf
-        self.enforcer = policy.Enforcer(conf)
+    def __init__(self):
+        self.enforcer = policy.Enforcer(CONF)
         self._register_rules()
 
     def _register_rules(self):
         self.enforcer.register_defaults(policies.list_rules())
 
     def before(self, state):
-        state.request.cfg = self.conf
+        state.request.cfg = CONF
         state.request.enforcer = self.enforcer
 
 
 class RPCHook(hooks.PecanHook):
     """Create and attach an rpc to the request. """
 
-    def __init__(self, conf):
-        transport = messaging.get_rpc_transport(conf)
-        target = oslo_messaging.Target(topic=conf.rpc_topic)
+    def __init__(self):
+        transport = messaging.get_rpc_transport()
+        target = oslo_messaging.Target(topic=CONF.rpc_topic)
         self.client = vitrage_rpc.get_client(transport, target)
-        self.check_backend = conf.api.check_backend
+        self.check_backend = CONF.api.check_backend
 
     def on_route(self, state):
         state.request.client = self.client
@@ -87,8 +89,8 @@ class ContextHook(hooks.PecanHook):
 
 class DBHook(hooks.PecanHook):
 
-    def __init__(self, conf):
-        self.storage = storage.get_connection_from_config(conf)
+    def __init__(self):
+        self.storage = storage.get_connection_from_config()
 
     def before(self, state):
         state.request.storage = self.storage
@@ -102,8 +104,8 @@ class GCHook(hooks.PecanHook):
 
 class CoordinatorHook(hooks.PecanHook):
 
-    def __init__(self, conf):
-        self.coordinator = coordination.Coordinator(conf)
+    def __init__(self):
+        self.coordinator = coordination.Coordinator()
         self.coordinator.start()
         self.coordinator.join_group()
 

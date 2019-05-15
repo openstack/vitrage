@@ -78,16 +78,13 @@ class TestNagiosConfig(base.BaseTest):
                              NON_EXISTING_MAPPING_2,
                              NON_EXISTING_MAPPING_3]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestNagiosConfig, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=NAGIOS_DATASOURCE)
+    def setUp(self):
+        super(TestNagiosConfig, self).setUp()
+        self.conf_reregister_opts(self.OPTS, NAGIOS_DATASOURCE)
 
     def test_nagios_configuration_loading(self):
         # Action
-        nagios_conf = NagiosConfig(self.conf)
+        nagios_conf = NagiosConfig()
 
         # Test assertions
         mappings = nagios_conf.mappings
@@ -147,7 +144,7 @@ class TestNagiosConfig(base.BaseTest):
         :return:
         """
         # Action
-        nagios_conf = NagiosConfig(self.conf)
+        nagios_conf = NagiosConfig()
 
         # Test assertions
         mapped_resource = nagios_conf.get_vitrage_resource(None)

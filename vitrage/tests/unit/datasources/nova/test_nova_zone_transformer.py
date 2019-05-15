@@ -53,9 +53,9 @@ class NovaZoneTransformerTest(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=NOVA_ZONE_DATASOURCE)
         cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+            HostTransformer(cls.transformers)
         cls.transformers[NOVA_ZONE_DATASOURCE] = \
-            ZoneTransformer(cls.transformers, cls.conf)
+            ZoneTransformer(cls.transformers)
 
     def test_create_placeholder_vertex(self):
 

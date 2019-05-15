@@ -14,6 +14,7 @@
 
 from collections import namedtuple
 
+from oslo_config import cfg
 from oslo_log import log
 import requests
 
@@ -26,16 +27,16 @@ from vitrage.datasources.nagios.properties import NagiosProperties\
     as NagiosProps
 from vitrage.datasources.nagios.properties import NagiosTestStatus
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class NagiosDriver(AlarmDriverBase):
     ServiceKey = namedtuple('ServiceKey', ['hostname', 'service'])
 
-    def __init__(self, conf):
+    def __init__(self):
         super(NagiosDriver, self).__init__()
-        self.conf = conf
-        self.config = NagiosConfig(conf)
+        self.config = NagiosConfig()
 
     def _vitrage_type(self):
         return NAGIOS_DATASOURCE
@@ -45,9 +46,9 @@ class NagiosDriver(AlarmDriverBase):
                                service=alarm[NagiosProps.SERVICE])
 
     def _get_alarms(self):
-        nagios_user = self.conf.nagios.user
-        nagios_password = self.conf.nagios.password
-        nagios_url = self.conf.nagios.url
+        nagios_user = CONF.nagios.user
+        nagios_password = CONF.nagios.password
+        nagios_url = CONF.nagios.url
 
         if not nagios_user:
             return []

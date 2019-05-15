@@ -85,7 +85,7 @@ class KeycloakTest(FunctionalTest):
         req_mock.get(OPENID_CONNECT_USERINFO)
 
         req = self._build_request()
-        auth = KeycloakAuth(mock.Mock(), self.CONF)
+        auth = KeycloakAuth(mock.Mock(), self.conf)
         auth.process_request(req)
 
         self.assertEqual('Confirmed', req.headers['X-Identity-Status'])

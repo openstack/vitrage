@@ -45,10 +45,10 @@ class TestStaticTransformer(base.BaseTest):
         cls.transformers = {}
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=STATIC_DATASOURCE)
-        cls.transformer = StaticTransformer(cls.transformers, cls.conf)
+        cls.transformer = StaticTransformer(cls.transformers)
         cls.transformers[STATIC_DATASOURCE] = cls.transformer
         cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+            HostTransformer(cls.transformers)
 
     # noinspection PyAttributeOutsideInit
     def setUp(self):

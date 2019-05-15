@@ -14,6 +14,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from futurist import periodics
 
+from oslo_config import cfg
 from oslo_log import log
 from vitrage.datasources import utils
 
@@ -23,22 +24,22 @@ from vitrage.common.utils import spawn
 from vitrage.entity_graph.consistency.consistency_enforcer import\
     ConsistencyEnforcer
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class Scheduler(object):
 
-    def __init__(self, conf, graph, driver_exec, persist):
+    def __init__(self, graph, driver_exec, persist):
         super(Scheduler, self).__init__()
-        self.conf = conf
         self.graph = graph
         self.driver_exec = driver_exec
         self.persist = persist
-        self.consistency = ConsistencyEnforcer(conf, graph)
+        self.consistency = ConsistencyEnforcer(graph)
         self.periodic = None
 
     def start_periodic_tasks(self, immediate_get_all):
-        thread_num = len(utils.get_pull_drivers_names(self.conf))
+        thread_num = len(utils.get_pull_drivers_names())
         thread_num += 2  # for consistency and get_all
         self.periodic = periodics.PeriodicWorker.create(
             [], executor_factory=lambda: ThreadPoolExecutor(
@@ -49,7 +50,7 @@ class Scheduler(object):
         spawn(self.periodic.start)
 
     def _add_consistency_timer(self):
-        spacing = self.conf.datasources.snapshots_interval
+        spacing = CONF.datasources.snapshots_interval
 
         @periodics.periodic(spacing=spacing)
         def consistency_periodic():
@@ -62,7 +63,7 @@ class Scheduler(object):
         LOG.info("added consistency_periodic (spacing=%s)", spacing)
 
     def _add_datasource_timers(self, run_immediately):
-        spacing = self.conf.datasources.snapshots_interval
+        spacing = CONF.datasources.snapshots_interval
 
         @periodics.periodic(spacing=spacing, run_immediately=run_immediately)
         def get_all_periodic():
@@ -71,9 +72,9 @@ class Scheduler(object):
         self.periodic.add(get_all_periodic)
         LOG.info("added get_all_periodic (spacing=%s)", spacing)
 
-        driver_names = utils.get_pull_drivers_names(self.conf)
+        driver_names = utils.get_pull_drivers_names()
         for d_name in driver_names:
-            spacing = self.conf[d_name].changes_interval
+            spacing = CONF[d_name].changes_interval
 
             @periodics.periodic(spacing=spacing)
             def get_changes_periodic(driver_name=d_name):

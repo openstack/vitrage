@@ -43,11 +43,9 @@ class PrometheusDriverTest(base.BaseTest):
             default=utils.get_resources_dir() + CONFIG_PATH),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=PROMETHEUS_DATASOURCE)
+    def setUp(self):
+        super(PrometheusDriverTest, self).setUp()
+        self.conf_reregister_opts(self.OPTS, group=PROMETHEUS_DATASOURCE)
 
     @mock.patch('socket.gethostbyaddr')
     def test_adjust_label_value(self, mock_socket):
@@ -55,7 +53,7 @@ class PrometheusDriverTest(base.BaseTest):
         # Test setup
         hostname = 'devstack-rocky-release-4'
         mock_socket.return_value = [hostname]
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         valid_ip = '127.0.0.1'
         not_ip = 'localhost'
         invalid_ip = '127.1'
@@ -78,7 +76,7 @@ class PrometheusDriverTest(base.BaseTest):
         # Test setup
         hostname = 'devstack-rocky-release-4'
         mock_socket.return_value = [hostname]
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         alerts = self._generate_alerts()
         host_alert_1 = alerts[0]
         host_alert_2 = alerts[1]
@@ -102,7 +100,7 @@ class PrometheusDriverTest(base.BaseTest):
         # Test setup
         hostname = 'devstack-rocky-release-4'
         mock_socket.return_value = [hostname]
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         alerts = self._generate_alerts()
         vm_alert_1 = alerts[2]
         vm_alert_2 = alerts[3]
@@ -122,7 +120,7 @@ class PrometheusDriverTest(base.BaseTest):
     def test_get_resource_alert_values(self):
 
         # Test setup
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         alerts = self._generate_alerts()
         alert_1 = alerts[0]
         alert_2 = alerts[3]
@@ -141,7 +139,7 @@ class PrometheusDriverTest(base.BaseTest):
     def test_get_conf_resource(self):
 
         # Test setup
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         alerts = self._generate_alerts()
         alert_1 = alerts[0]
         alert_2 = alerts[3]
@@ -160,7 +158,7 @@ class PrometheusDriverTest(base.BaseTest):
     def test_validate_ip(self):
 
         # Test setup
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         ipv4_without_port = '1.1.1.1'
         ipv4_with_port = '1.1.1.1:1'
         invalid_ipv4 = '1.1'
@@ -192,7 +190,7 @@ class PrometheusDriverTest(base.BaseTest):
         # Test setup
         mock_nova_client.servers.list.return_value = None
         mock_socket.return_value = ['devstack-rocky-release-4']
-        driver = PrometheusDriver(self.conf)
+        driver = PrometheusDriver()
         event = self._generate_event()
 
         # Test Action

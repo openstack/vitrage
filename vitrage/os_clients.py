@@ -18,7 +18,7 @@ from oslo_utils import importutils as utils
 
 from vitrage import keystone_client
 
-
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 OPTS = [
@@ -62,38 +62,38 @@ def driver_module(driver):
     return module
 
 
-def gnocchi_client(conf):
+def gnocchi_client():
     """Get an instance of the gnocchi client"""
     try:
         gn_client = driver_module('gnocchi')
         client = gn_client.Client(
-            session=keystone_client.get_session(conf))
+            session=keystone_client.get_session())
         LOG.info('Gnocchi client created')
         return client
     except Exception:
         LOG.exception('Create Gnocchi client - Got Exception')
 
 
-def aodh_client(conf):
+def aodh_client():
     """Get an instance of aodh client"""
     try:
         ao_client = driver_module('aodh')
         client = ao_client.Client(
-            conf.aodh_version,
-            session=keystone_client.get_session(conf))
+            CONF.aodh_version,
+            session=keystone_client.get_session())
         LOG.info('Aodh client created')
         return client
     except Exception:
         LOG.exception('Create Aodh client - Got Exception.')
 
 
-def ceilometer_client(conf):
+def ceilometer_client():
     """Get an instance of ceilometer client"""
     try:
         cm_client = driver_module('ceilometer')
         client = cm_client.get_client(
-            version=conf.ceilometer_version,
-            session=keystone_client.get_session(conf),
+            version=CONF.ceilometer_version,
+            session=keystone_client.get_session(),
         )
         LOG.info('Ceilometer client created')
         return client
@@ -101,13 +101,13 @@ def ceilometer_client(conf):
         LOG.exception('Create Ceilometer client - Got Exception.')
 
 
-def nova_client(conf):
+def nova_client():
     """Get an instance of nova client"""
     try:
         n_client = driver_module('nova')
         client = n_client.Client(
-            version=conf.nova_version,
-            session=keystone_client.get_session(conf),
+            version=CONF.nova_version,
+            session=keystone_client.get_session(),
         )
         LOG.info('Nova client created')
         return client
@@ -115,13 +115,13 @@ def nova_client(conf):
         LOG.exception('Create Nova client - Got Exception.')
 
 
-def trove_client(conf):
+def trove_client():
     """Get an instance of trove client"""
     try:
         tr_client = driver_module('trove')
         client = tr_client.Client(
-            version=conf.trove_version,
-            session=keystone_client.get_session(conf),
+            version=CONF.trove_version,
+            session=keystone_client.get_session(),
         )
         LOG.info('Trove client created')
         return client
@@ -129,13 +129,13 @@ def trove_client(conf):
         LOG.exception('Create Trove client - Got Exception.')
 
 
-def cinder_client(conf):
+def cinder_client():
     """Get an instance of cinder client"""
     try:
         cin_client = driver_module('cinder')
         client = cin_client.Client(
-            version=conf.cinder_version,
-            session=keystone_client.get_session(conf),
+            version=CONF.cinder_version,
+            session=keystone_client.get_session(),
         )
         LOG.info('Cinder client created')
         return client
@@ -143,13 +143,13 @@ def cinder_client(conf):
         LOG.exception('Create Cinder client - Got Exception.')
 
 
-def glance_client(conf):
+def glance_client():
     """Get an instance of glance client"""
     try:
         glan_client = driver_module('glance')
         client = glan_client.Client(
-            version=conf.glance_version,
-            session=keystone_client.get_session(conf),
+            version=CONF.glance_version,
+            session=keystone_client.get_session(),
         )
         LOG.info('Glance client created')
         return client
@@ -157,12 +157,12 @@ def glance_client(conf):
         LOG.exception('Create Glance client - Got Exception')
 
 
-def neutron_client(conf):
+def neutron_client():
     """Get an instance of neutron client"""
     try:
         ne_client = driver_module('neutron')
         client = ne_client.Client(
-            session=keystone_client.get_session(conf)
+            session=keystone_client.get_session()
         )
         LOG.info('Neutron client created')
         return client
@@ -170,13 +170,13 @@ def neutron_client(conf):
         LOG.exception('Create Neutron client - Got Exception.')
 
 
-def heat_client(conf):
+def heat_client():
     """Get an instance of heat client"""
     try:
         he_client = driver_module('heat')
         client = he_client.Client(
-            version=conf.heat_version,
-            session=keystone_client.get_session(conf)
+            version=CONF.heat_version,
+            session=keystone_client.get_session()
         )
         LOG.info('Heat client created')
         return client
@@ -184,12 +184,12 @@ def heat_client(conf):
         LOG.exception('Create Heat client - Got Exception.')
 
 
-def mistral_client(conf):
+def mistral_client():
     """Get an instance of Mistral client"""
     try:
         mi_client = driver_module('mistral')
         client = mi_client.Client(
-            session=keystone_client.get_session(conf),
+            session=keystone_client.get_session(),
         )
         LOG.info('Mistral client created')
         return client
@@ -197,12 +197,12 @@ def mistral_client(conf):
         LOG.exception('Create Mistral client - Got Exception.')
 
 
-def zaqar_client(conf):
+def zaqar_client():
     """Get an instance of Zaqar client"""
     try:
         z_client = driver_module('zaqar')
         client = z_client.Client(
-            session=keystone_client.get_session(conf),
+            session=keystone_client.get_session(),
         )
         LOG.info('Zaqar client created')
         return client
@@ -210,16 +210,16 @@ def zaqar_client(conf):
         LOG.exception('Create Zaqar client - Got Exception.')
 
 
-def monasca_client(conf):
+def monasca_client():
     """Get an instance of Monasca client"""
     try:
         mon_client = driver_module('monasca')
 
-        session = keystone_client.get_session(conf)
+        session = keystone_client.get_session()
         endpoint = session.get_endpoint(service_type='monitoring',
                                         interface='publicURL')
         client = mon_client.Client(
-            api_version=conf.monasca_version,
+            api_version=CONF.monasca_version,
             session=session,
             endpoint=endpoint
         )

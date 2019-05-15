@@ -27,6 +27,8 @@ from werkzeug import serving
 
 from vitrage.api import hooks
 
+CONF = cfg.CONF
+
 LOG = log.getLogger(__name__)
 
 # NOTE(sileht): pastedeploy uses ConfigParser to handle
@@ -40,13 +42,13 @@ APPCONFIGS = {}
 
 
 def setup_app(root, conf=None):
-    app_hooks = [hooks.ConfigHook(conf),
+    app_hooks = [hooks.ConfigHook(),
                  hooks.TranslationHook(),
                  hooks.GCHook(),
-                 hooks.RPCHook(conf),
+                 hooks.RPCHook(),
                  hooks.ContextHook(),
-                 hooks.DBHook(conf),
-                 hooks.CoordinatorHook(conf)]
+                 hooks.DBHook(),
+                 hooks.CoordinatorHook()]
 
     app = pecan.make_app(
         root,
@@ -57,53 +59,52 @@ def setup_app(root, conf=None):
     return app
 
 
-def load_app(conf):
+def load_app():
     global APPCONFIGS
-
     # Build the WSGI app
-    cfg_path = conf.api.paste_config
+    cfg_path = CONF.api.paste_config
     if not os.path.isabs(cfg_path):
-        cfg_path = conf.find_file(cfg_path)
+        cfg_path = CONF.find_file(cfg_path)
 
     if cfg_path is None or not os.path.exists(cfg_path):
-        raise cfg.ConfigFilesNotFoundError([conf.api.paste_config])
+        raise cfg.ConfigFilesNotFoundError([CONF.api.paste_config])
 
-    config = dict(conf=conf)
+    config = dict(conf=CONF)
     configkey = uuidutils.generate_uuid()
     APPCONFIGS[configkey] = config
 
     LOG.info('Full WSGI config used: %s', cfg_path)
 
-    appname = "vitrage+" + conf.api.auth_mode
+    appname = "vitrage+" + CONF.api.auth_mode
     return deploy.loadapp("config:" + cfg_path, name=appname,
                           global_conf={'configkey': configkey})
 
 
-def build_server(conf):
+def build_server():
     uwsgi = spawn.find_executable("uwsgi")
     if not uwsgi:
         LOG.warning('uwsgi not installed, starting a TEST server')
-        build_simple_server(conf)
+        build_simple_server()
     else:
-        build_uwsgi_server(conf, uwsgi)
+        build_uwsgi_server(uwsgi)
 
 
 def wsgi_file():
     return path.join(path.dirname(__file__), 'app.wsgi')
 
 
-def build_uwsgi_server(conf, uwsgi):
+def build_uwsgi_server(uwsgi):
 
     args = [
         "--if-not-plugin", "python", "--plugin", "python", "--endif",
-        "--http-socket", "%s:%d" % (conf.api.host, conf.api.port),
+        "--http-socket", "%s:%d" % (CONF.api.host, CONF.api.port),
         "--master",
         "--enable-threads",
         "--thunder-lock",
         "--hook-master-start", "unix_signal:15 gracefully_kill_them_all",
         "--die-on-term",
-        "--processes", str(math.floor(conf.api.workers * 1.5)),
-        "--threads", str(conf.api.workers),
+        "--processes", str(math.floor(CONF.api.workers * 1.5)),
+        "--threads", str(CONF.api.workers),
         "--lazy-apps",
         "--chdir", "/",
         "--buffer-size", "65535",
@@ -119,14 +120,14 @@ def build_uwsgi_server(conf, uwsgi):
     return os.execl(uwsgi, uwsgi, *args)
 
 
-def build_simple_server(conf):
-    app = load_app(conf)
+def build_simple_server():
+    app = load_app()
     # Create the WSGI server and start it
-    host, port = conf.api.host, conf.api.port
+    host, port = CONF.api.host, CONF.api.port
 
     LOG.info('Starting server in PID %s', os.getpid())
     LOG.info('Configuration:')
-    conf.log_opt_values(LOG, log.INFO)
+    CONF.log_opt_values(LOG, log.INFO)
 
     if host == '0.0.0.0':
         LOG.info(
@@ -139,7 +140,7 @@ def build_simple_server(conf):
     LOG.info('"DANGER! For testing only, do not use in production"')
 
     serving.run_simple(host, port,
-                       app, processes=conf.api.workers)
+                       app, processes=CONF.api.workers)
 
 
 def app_factory(global_config, **local_conf):

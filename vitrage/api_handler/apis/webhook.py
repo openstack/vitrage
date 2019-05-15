@@ -34,8 +34,7 @@ Result = namedtuple("Result", ["is_valid", "message"])
 class WebhookApis(object):
     DELETED_ROWS_SUCCESS = 1
 
-    def __init__(self, conf, db):
-        self.conf = conf
+    def __init__(self, db):
         self.db_conn = db
 
     def delete_webhook(self, ctx, id):

@@ -24,8 +24,7 @@ LOG = log.getLogger(__name__)
 
 
 class GraphPersistency(object):
-    def __init__(self, conf, db, graph):
-        self.conf = conf
+    def __init__(self, db, graph):
         self.db = db
         self.graph = graph
         self.events_buffer = []

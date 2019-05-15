@@ -13,7 +13,6 @@
 # under the License.
 
 import json
-from oslo_config import cfg
 from testtools import matchers
 
 from vitrage.api_handler.apis.template import TemplateApis
@@ -31,13 +30,11 @@ class TestTemplates(TestEntityGraphUnitBase, TestConfiguration):
         def notify(self, event_type, data):
             pass
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestTemplates, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.add_db(cls.conf)
-        cls.apis = TemplateApis(notifier=cls.MockNotifier(), db=cls._db)
-        cls.added_template = None
+    def setUp(self):
+        super(TestTemplates, self).setUp()
+        self.add_db()
+        self.apis = TemplateApis(notifier=self.MockNotifier(), db=self._db)
+        self.added_template = None
 
     def tearDown(self):
         super(TestTemplates, self).tearDown()

@@ -28,15 +28,14 @@ LOG = log.getLogger(__name__)
 
 class MonascaDriver(AlarmDriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(MonascaDriver, self).__init__()
-        self.conf = conf
         self.__client = None
 
     @property
     def client(self):
         if not self.__client:
-            self.__client = os_clients.monasca_client(self.conf)
+            self.__client = os_clients.monasca_client()
         return self.__client
 
     def _vitrage_type(self):

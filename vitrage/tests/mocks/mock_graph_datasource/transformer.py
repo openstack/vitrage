@@ -20,8 +20,8 @@ LOG = logging.getLogger(__name__)
 
 class MockTransformer(StaticTransformer):
 
-    def __init__(self, transformers, conf):
-        super(MockTransformer, self).__init__(transformers, conf)
+    def __init__(self, transformers):
+        super(MockTransformer, self).__init__(transformers)
 
     def _create_vertex(self, entity_event):
         vertex = super(MockTransformer, self)._create_vertex(entity_event)
