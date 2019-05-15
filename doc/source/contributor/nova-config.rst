@@ -16,7 +16,7 @@ Then you should set in ``/etc/vitrage/vitrage.conf``:
 
 .. code:: bash
 
-   [nova.instance]
+   [DEFAULT]
    use_nova_versioned_notifications = False
 
 
