@@ -189,6 +189,11 @@ function configure_vitrage {
         disable_vitrage_datasource trove.instance trove.cluster
     fi
 
+    # remove monasca vitrage datasource if nagios datasource not installed
+    if ! is_service_enabled monasca; then
+        disable_vitrage_datasource monasca
+    fi
+
     # remove nagios vitrage datasource if nagios datasource not installed
     if [[ "$VITRAGE_USE_NAGIOS" == "False" ]]; then
         disable_vitrage_datasource nagios
@@ -342,6 +347,12 @@ function modify_heat_global_index_policy_rule {
     fi
 }
 
+function add_monasca_rule_to_vitrage {
+    if is_service_enabled monasca; then
+       get_or_add_user_project_role "monasca-read-only-user" "vitrage" "admin"
+    fi
+}
+
 # This is the main for plugin.sh
 if is_service_enabled vitrage; then
     if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
@@ -361,6 +372,9 @@ if is_service_enabled vitrage; then
         modify_heat_global_index_policy_rule
         # Tidy base for vitrage
         init_vitrage
+        # add monasca-read-only-user role to vitrage user so
+        # vitrage user can read monasca alarms
+        add_monasca_rule_to_vitrage
         # Start the services
         start_vitrage
     fi

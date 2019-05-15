@@ -1,0 +1,20 @@
+---
+features:
+  - A new ``Monasca Datasource`` has been introduced to include Monasca alarms
+    in Vitrage Entity Graph. Monasca is Monitoring as a Service solution
+    offering centralized monitoring sink for metrics gathered by Monasca Agents
+    at many infrastructure levels. Moreover it provides alarm management API
+    that enables defining alarms based on collected metrics.
+
+    This change is the first stage of integration with Monasca. At this point,
+    Monasca entities are extracted using PULL approach, based on periodical
+    snapshot-query to Monasca Alarm API for the current list of alarm entities.
+    In the future, PUSH approach based on Monasca notifications will be
+    implemented.
+
+    Current implementation requires that the metrics associated with the given
+    alarm contain information about resource type and ID - required for
+    associating alarms with entities in Vitrage Entity Graph. This additional
+    information should be included in the form of metric dimensions, precisely
+    ``resource_type`` and ``resource_id``. Dimensions can be defined in Monasca
+    agent configuration.
