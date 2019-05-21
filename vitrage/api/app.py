@@ -106,6 +106,7 @@ def build_uwsgi_server(conf, uwsgi):
         "--threads", str(conf.api.workers),
         "--lazy-apps",
         "--chdir", "/",
+        "--buffer-size", "65535",
         "--wsgi-file", wsgi_file(),
         "--procname-prefix", "vitrage",
         "--pyargv", " ".join(sys.argv[1:]),
