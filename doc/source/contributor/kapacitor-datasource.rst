@@ -8,7 +8,7 @@ https://docs.influxdata.com/kapacitor/v1.5/working/alerts/
 Installation
 ------------
 
-Copy the 'https://github.com/openstack/vitrage/tree/master/vitrage/datasources/kapacitor/auxliary/kapacitor_vitrage.py' script into the Kapacitor servers.
+Copy the 'https://raw.githubusercontent.com/openstack/vitrage/master/vitrage/datasources/kapacitor/auxiliary/kapacitor_vitrage.py' script into the Kapacitor servers.
 
 .. code-block:: bash
 
@@ -35,10 +35,9 @@ Configuration
 
 Run command to define topic
 
-.. code-block:: bash
+.. code:: bash
 
-$ kapacitor define-topic-handler ./forward_to_vitrage.yaml
-
+    $ kapacitor define-topic-handler ./forward_to_vitrage.yaml
 
 2. Assign your Task to topic, in Tick script define that alert, add in "alert()" step:
 
@@ -59,7 +58,6 @@ Run command define your task:
 .. code::
 
    $ kapacitor define <task_name> -tick <tick_script>
-
 
 Vitrage configuration:
 
