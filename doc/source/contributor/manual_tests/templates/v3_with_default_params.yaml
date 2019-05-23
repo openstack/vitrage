@@ -1,0 +1,23 @@
+metadata:
+ version: 3
+ name: get_param(template_name)
+ description: execute mistral
+ type: standard
+parameters:
+ template_name:
+  description: the name of the template
+  default: v3_with_default_params
+ alarm_name:
+  default: alarm1
+entities:
+ alarm:
+  name: get_param(alarm_name)
+ host:
+  type: nova.host
+scenarios:
+ - condition: alarm [on] host
+   actions:
+     - execute_mistral:
+        workflow: workflow_1
+        input:
+         hostname: get_attr(host,name)

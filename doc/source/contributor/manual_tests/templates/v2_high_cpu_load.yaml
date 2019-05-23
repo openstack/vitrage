@@ -1,0 +1,75 @@
+metadata:
+ name: v2_high_cpu_load
+ version: 2
+ type: standard
+ description: High cpu load template
+definitions:
+ entities:
+  - entity:
+     category: ALARM
+     type: doctor
+     name: High CPU load
+     template_id: host_alarm
+  - entity:
+     category: ALARM
+     type: vitrage
+     name: Instance memory performance degraded
+     template_id: instance_alarm
+  - entity:
+     category: RESOURCE
+     type: nova.instance
+     template_id: instance
+  - entity:
+     category: RESOURCE
+     type: nova.host
+     template_id: host
+ relationships:
+  - relationship:
+     source: host_alarm
+     relationship_type: on
+     target: host
+     template_id : alarm_on_host
+  - relationship:
+     source: host
+     relationship_type: contains
+     target: instance
+     template_id : host_contains_instance
+  - relationship:
+     source: instance_alarm
+     relationship_type: on
+     target: instance
+     template_id : alarm_on_instance
+scenarios:
+ - scenario:
+    condition: alarm_on_host and host_contains_instance
+    actions:
+     - action:
+        action_type: raise_alarm
+        action_target:
+         target: instance
+        properties:
+         alarm_name: Instance memory performance degraded
+         severity: warning
+ - scenario:
+    condition: alarm_on_host and host_contains_instance and alarm_on_instance
+    actions:
+     - action:
+        action_type: add_causal_relationship
+        action_target:
+         source: host_alarm
+         target: instance_alarm
+     - action:
+        action_type: set_state
+        action_target:
+         target: instance
+        properties:
+         state: SUBOPTIMAL
+ - scenario:
+    condition: alarm_on_host
+    actions: 
+     - action: 
+        action_type: set_state
+        action_target:
+         target: host
+        properties:
+         state: SUBOPTIMAL

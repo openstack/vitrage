@@ -1,0 +1,23 @@
+metadata:
+ version: 2
+ type: equivalence
+ name: entity equivalence example
+equivalences:
+ - equivalence:
+    - entity:
+       category: ALARM
+       type: nagios
+       name: cpu_high
+    - entity:
+       category: ALARM
+       type: vitrage
+       name: cpu_high
+ - equivalence:
+    - entity:
+       category: ALARM
+       type: nagios
+       name: mem_low
+    - entity:
+       category: ALARM
+       type: vitrage
+       name: mem_low

@@ -1,0 +1,11 @@
+---
+version: '2.0'
+
+workflow1:
+  type: direct
+  input:
+    - farewell
+
+  tasks:
+    goodbye:
+      action: std.echo output="<% $.farewell %>, Tempest Test!"
