@@ -191,6 +191,18 @@ class TemplatesConnection(base.TemplatesConnection, BaseTableConn):
             )
         return query.all()
 
+    def query_with_status_not(self, name, status):
+        session = self._engine_facade.get_session()
+        query = session.query(models.Template)
+        query = query.filter(
+            and_
+            (
+                models.Template.status != status,
+                models.Template.name == name
+            )
+        )
+        return query.first()
+
     def delete(self, name=None, uuid=None):
         query = self.query_filter(
             models.Template,

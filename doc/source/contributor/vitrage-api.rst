@@ -892,10 +892,10 @@ Response Examples
 Template Show
 ^^^^^^^^^^^^^
 
-Shows the template body for given template ID
+Shows the template body for given template ID or Name
 
-GET /v1/template/[template_uuid]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GET /v1/template/[id]
+~~~~~~~~~~~~~~~~~~~~~
 
 Headers
 =======
@@ -907,7 +907,7 @@ Headers
 Path Parameters
 ===============
 
-- template uuid
+- template id or name
 
 Query Parameters
 ================
@@ -1126,7 +1126,7 @@ Headers
 Path Parameters
 ===============
 
-template uuid
+template id or name
 
 Query Parameters
 ================
