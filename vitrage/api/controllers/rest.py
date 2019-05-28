@@ -28,6 +28,10 @@ class RootRestController(rest.RestController):
 
         We can check the backend status
         """
+
+        if not pecan.request.check_backend:
+            return super(RootRestController, self)._route(args, request)
+
         try:
             client = pecan.request.client.prepare(timeout=5)
             backend_is_alive = client.call(pecan.request.context, 'is_alive')

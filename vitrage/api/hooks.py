@@ -46,9 +46,11 @@ class RPCHook(hooks.PecanHook):
         transport = messaging.get_rpc_transport(conf)
         target = oslo_messaging.Target(topic=conf.rpc_topic)
         self.client = vitrage_rpc.get_client(transport, target)
+        self.check_backend = conf.api.check_backend
 
     def on_route(self, state):
         state.request.client = self.client
+        state.request.check_backend = self.check_backend
 
 
 class TranslationHook(hooks.PecanHook):
