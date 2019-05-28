@@ -129,6 +129,8 @@ class NoAuthTest(FunctionalTest):
             data = self.get_json('/template/1234')
 
             self.assertEqual(1, request.storage.templates.query.call_count)
+            self.assertEqual(
+                1, request.storage.templates.query_with_status_not.call_count)
             self.assert_is_empty(data)
 
     def test_noauth_mode_validate_template(self):

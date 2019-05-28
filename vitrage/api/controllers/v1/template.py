@@ -12,10 +12,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
+
 import pecan
 from pytz import utc
 
 from oslo_log import log
+from oslo_utils.uuidutils import is_uuid_like
 from osprofiler import profiler
 from pecan.core import abort
 
@@ -27,7 +29,6 @@ from vitrage.common.exception import VitrageError
 LOG = log.getLogger(__name__)
 
 
-# noinspection PyBroadException
 @profiler.trace_cls("template controller",
                     info={}, hide_args=False, trace_private=False)
 class TemplateController(RootRestController):
@@ -48,7 +49,7 @@ class TemplateController(RootRestController):
             abort(404, 'Failed to get template list')
 
     @pecan.expose('json')
-    def get(self, template_uuid):
+    def get(self, _id):
 
         LOG.info('get template content')
 
@@ -58,23 +59,25 @@ class TemplateController(RootRestController):
                 {})
 
         try:
-            return self._show_template(template_uuid)
+            return self._show_template(_id)
         except Exception:
-            LOG.exception('Failed to show template %s.',
-                          template_uuid)
+            LOG.exception('Failed to show template %s.', _id)
             abort(404, 'Failed to show template.')
 
     @pecan.expose('json')
     def delete(self, **kwargs):
-        uuid = kwargs['uuid']
-        LOG.info("delete template. uuid: %s", uuid)
+        # for backward computability
+        values = kwargs['uuid'] if 'uuid'in kwargs else kwargs['id']
+        LOG.info("delete template. values: %s", values)
+        uuids = self._to_uuids(values)
+        LOG.info("delete template. uuids: %s", uuids)
 
         enforce("template delete",
                 pecan.request.headers,
                 pecan.request.enforcer,
                 {})
         try:
-            return self._delete(uuid)
+            return self._delete(uuids)
         except Exception:
             LOG.exception('Failed to delete template.')
             abort(404, 'Failed to delete template.')
@@ -126,14 +129,15 @@ class TemplateController(RootRestController):
                 if template.updated_at:
                     template.updated_at = utc.localize(template.updated_at)
             templates = [t for t in templates if t.status != TStatus.DELETED]
-            templates.sort(key=lambda template: template.created_at)
+            templates.sort(key=lambda templ: templ.created_at)
             return [cls._db_template_to_dict(t) for t in templates]
         except Exception:
             LOG.exception('Failed to get template list.')
             abort(404, 'Failed to get template list.')
 
     @staticmethod
-    def _show_template(uuid):
+    def _show_template(_id):
+        uuid = TemplateController._to_uuid(_id)
         try:
             templates = pecan.request.storage.templates.query(uuid=uuid)
             if not templates or templates[0].status == TStatus.DELETED:
@@ -184,13 +188,41 @@ class TemplateController(RootRestController):
         }
 
     @staticmethod
-    def _delete(uuid):
+    def _delete(uuids):
         try:
             results = pecan.request.client.call(
                 pecan.request.context,
                 'delete_template',
-                uuids=uuid)
+                uuids=uuids)
             return results
         except Exception:
             LOG.exception('Failed to delete template.')
             abort(404, 'Failed to delete template.')
+
+    def _to_uuids(self, values):
+        # if it is a single string
+        # make sure I don't iterate
+        # on the characters
+        if type(values) is not list:
+            values = [values]
+
+        return [self._to_uuid(val) for val in values]
+
+    @staticmethod
+    def _to_uuid(val):
+        if is_uuid(val):
+            return val
+        template = pecan.request.storage.templates.query_with_status_not(
+            status=TStatus.DELETED, name=val)
+        if template:
+            return template.uuid
+        return val
+
+
+def is_uuid(val):
+    # unwrap the name or id
+    # from the list if in a list
+    # [value] --> value
+    if type(val) is list:
+        val, = val
+    return is_uuid_like(val)
