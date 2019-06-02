@@ -45,7 +45,7 @@ from vitrage import messaging
 from vitrage import rpc as vitrage_rpc
 from vitrage import storage
 
-LOG = log.getLogger(__name__)
+LOG = None
 
 # Supported message types
 WAIT_FOR_WORKER_START = 'wait_for_worker_start'
@@ -163,8 +163,10 @@ class GraphWorkersManager(cotyledon.ServiceManager):
 
         So that new/deleted templates are added/removed
         """
-        LOG.info("Worker processes - starting...")
         self._submit_and_wait(self._all_queues, (WAIT_FOR_WORKER_START,))
+        global LOG
+        if not LOG:
+            LOG = log.getLogger(__name__)
         LOG.info("Worker processes - ready!")
 
     def submit_template_event(self, event):
@@ -232,6 +234,9 @@ class GraphCloneWorkerBase(coord.Service):
         raise NotImplementedError
 
     def run(self):
+        global LOG
+        if not LOG:
+            LOG = log.getLogger(__name__)
         super(GraphCloneWorkerBase, self).run()
         self._entity_graph.notifier._subscriptions = []  # Quick n dirty
         self._init_instance()
