@@ -76,8 +76,8 @@ class Scheduler(object):
             spacing = self.conf[d_name].changes_interval
 
             @periodics.periodic(spacing=spacing)
-            def get_changes_periodic():
-                self.driver_exec.get_changes(d_name)
+            def get_changes_periodic(driver_name=d_name):
+                self.driver_exec.get_changes(driver_name)
 
             self.periodic.add(get_changes_periodic)
             LOG.info("added get_changes_periodic %s (spacing=%s)",
