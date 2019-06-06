@@ -1071,6 +1071,7 @@ Query Parameters
 
 -  path (string, required) - the path to template file or directory
 -  type (string, optional) - template type (standard,definition,equivalence)
+-  overwrite (boolean, optional) - if template already exists will overwrite it
 
 Request Body
 ============

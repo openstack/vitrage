@@ -11,7 +11,10 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+from datetime import timedelta
 import json
+import time
 
 import pecan
 from pytz import utc
@@ -27,6 +30,8 @@ from vitrage.common.constants import TemplateStatus as TStatus
 from vitrage.common.exception import VitrageError
 
 LOG = log.getLogger(__name__)
+
+ONE_HOUR = int(timedelta(hours=1).total_seconds())
 
 
 @profiler.trace_cls("template controller",
@@ -93,6 +98,16 @@ class TemplateController(RootRestController):
                 {})
         template_type = kwargs['template_type']
         params = kwargs.get('params')
+        overwrite = kwargs.get('overwrite')
+
+        if overwrite:
+            names = [
+                template[1]['metadata']['name']
+                for template in templates
+            ]
+
+            uuids = self._to_uuids(names)
+            self._delete_templates_and_wait(uuids)
 
         try:
             return self._add(templates, template_type, params)
@@ -218,6 +233,21 @@ class TemplateController(RootRestController):
             return template.uuid
         return val
 
+    def _delete_templates_and_wait(self, uuids):
+        self._delete(uuids)
+
+        def check_deleted():
+            for _id in uuids:
+                try:
+                    self._show_template(_id)
+                except Exception:  # if deleted we get exception
+                    pass
+                else:
+                    return False
+            return True
+
+        return wait_for_action_to_end(ONE_HOUR, check_deleted)
+
 
 def is_uuid(val):
     # unwrap the name or id
@@ -226,3 +256,13 @@ def is_uuid(val):
     if type(val) is list:
         val, = val
     return is_uuid_like(val)
+
+
+def wait_for_action_to_end(timeout, func, **kwargs):
+    count = 0
+    while count < timeout:
+        if func(**kwargs):
+            return True
+        count += 1
+        time.sleep(1)
+    return False
