@@ -47,6 +47,7 @@ notification_driver = messagingv2
 [notifications]
 versioned_notifications_topics = versioned_notifications,vitrage_notifications
 notification_driver = messagingv2
+notification_format = both
 
 [[post-config|\$NEUTRON_CONF]]
 [DEFAULT]
