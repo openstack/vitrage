@@ -15,8 +15,10 @@
 import json
 from oslo_log import log
 from osprofiler import profiler
+
 from vitrage.common.constants import TemplateStatus as TStatus
 from vitrage.evaluator.template_db import template_repository as template_repo
+from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
 
 
 LOG = log.getLogger(__name__)
@@ -43,6 +45,18 @@ class TemplateApis(object):
                                                    template_type, params)
         results = [_to_result(r, p) for r, p in zip(results, paths)]
         return json.dumps({'results': results})
+
+    def template_versions(self, ctx):
+        versions = sorted(TemplateSchemaFactory.supported_versions())
+        # TODO(eyalb) at the moment all are supported
+        current = max(versions)
+        return [
+            {
+                'version': 'v%s' % version,
+                'status': 'SUPPORTED' if version < current else 'CURRENT'
+            }
+            for version in versions
+        ]
 
     def add_template(self, ctx, templates, template_type, params=None):
         """Signal the evaluator

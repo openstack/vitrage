@@ -34,9 +34,28 @@ LOG = log.getLogger(__name__)
 ONE_HOUR = int(timedelta(hours=1).total_seconds())
 
 
+class TemplateVersionsController(RootRestController):
+    @pecan.expose('json')
+    def index(self):
+        return self.get()
+
+    @pecan.expose('json')
+    def get(self):
+        LOG.info('get template versions')
+
+        try:
+            return pecan.request.client.call(pecan.request.context,
+                                             'template_versions')
+        except Exception:
+            LOG.exception('Failed to get template versions')
+            abort(404, 'Failed to get template versions')
+
+
 @profiler.trace_cls("template controller",
                     info={}, hide_args=False, trace_private=False)
 class TemplateController(RootRestController):
+
+    versions = TemplateVersionsController()
 
     @pecan.expose('json')
     def get_all(self):
