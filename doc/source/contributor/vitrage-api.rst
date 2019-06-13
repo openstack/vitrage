@@ -1930,3 +1930,75 @@ Response Examples
         "Name": "VitrageNotifierService worker(0)"
       }
     ]
+
+Template versions
+^^^^^^^^^^^^^^^^^
+
+Lists the vitrage template supported versions
+
+GET  /v1/template/versions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Headers
+=======
+
+-  X-Auth-Token (string, required) - Keystone auth token
+-  Accept (string) - application/json
+
+Path Parameters
+===============
+
+None.
+
+Query Parameters
+================
+
+None.
+
+Request Body
+============
+
+None.
+
+Request Examples
+================
+
+::
+
+    GET //v1/template/versions HTTP/1.1
+    Host: 135.248.19.18:8999
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+    Accept: application/json
+
+
+
+ResponseStatus code
+===================
+
+-  200 - OK
+-  404 - Not Found
+
+Response Body
+=============
+
+Returns a JSON object with a list of all template version supported.
+
+Response Examples
+=================
+
+::
+
+    [
+        {
+            "version": "v1",
+            "status": "SUPPORTED"
+        },
+        {
+            "version": "v2",
+            "status": "SUPPORTED"
+        },
+        {
+            "version": "v3",
+            "status": "CURRENT"
+        }
+    ]
