@@ -18,13 +18,14 @@ from oslo_log import log
 import pecan
 
 from pecan.core import abort
+from vitrage.api.controllers.rest import RootRestController
 from vitrage.api.policy import enforce
 
 LOG = log.getLogger(__name__)
 
 
 # noinspection PyBroadException
-class ServiceController(object):
+class ServiceController(RootRestController):
     @pecan.expose('json')
     def index(self):
         return self.get()

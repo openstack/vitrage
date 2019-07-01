@@ -17,6 +17,7 @@ from vitrage.common.policies import event
 from vitrage.common.policies import rca
 from vitrage.common.policies import resource
 from vitrage.common.policies import service
+from vitrage.common.policies import status
 from vitrage.common.policies import template
 from vitrage.common.policies import topology
 from vitrage.common.policies import webhook
@@ -32,4 +33,5 @@ def list_rules():
         resource.list_rules(),
         webhook.list_rules(),
         service.list_rules(),
+        status.list_rules(),
     )

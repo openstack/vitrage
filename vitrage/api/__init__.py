@@ -30,5 +30,5 @@ OPTS = [
                                                          'keycloak'},
                help='Authentication mode to use.'),
     cfg.BoolOpt('check_backend', default=True,
-                help='Check that that backend is ready before an api call')
+                help='Check that backend is ready before an api call')
 ]

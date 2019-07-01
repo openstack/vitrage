@@ -2002,3 +2002,69 @@ Response Examples
             "status": "CURRENT"
         }
     ]
+
+
+
+Status
+^^^^^^
+
+prints the status of vitrage
+
+GET  /v1/status
+~~~~~~~~~~~~~~~
+
+Headers
+=======
+
+-  X-Auth-Token (string, required) - Keystone auth token
+-  Accept (string) - application/json
+
+Path Parameters
+===============
+
+None.
+
+Query Parameters
+================
+
+None.
+
+Request Body
+============
+
+None.
+
+Request Examples
+================
+
+::
+
+    GET //v1/status HTTP/1.1
+    Host: 135.248.19.18:8999
+    X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+    Accept: application/json
+
+
+
+ResponseStatus code
+===================
+
+-  200 - OK
+-  503 - Service Unavailable vitrage-graph is not ready
+-  503 - Service Unavailable vitrage-graph is not available
+
+Response Body
+=============
+
+Returns a JSON object with ok status
+or 503 status code if not ok
+
+Response Examples
+=================
+
+::
+
+    {
+        "reason": "OK"
+    }
+
