@@ -25,7 +25,7 @@ class OperationalApis(object):
 
     def is_alive(self, ctx):
         try:
-            if self.graph and self.graph.ready:
+            if self.graph is not None and self.graph.ready:
                 return True
         except Exception:
             LOG.exception("is_alive check failed.")
