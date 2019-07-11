@@ -63,55 +63,54 @@ class KeycloakAuth(base.ConfigurableMiddleware):
             self._get_system_ca_file()
         self.user_info_endpoint_url = self._conf_get('user_info_endpoint_url',
                                                      KEYCLOAK_GROUP)
-        self.decoded = {}
 
     @property
     def reject_auth_headers(self):
         header_val = 'Keycloak uri=\'%s\'' % self.auth_url
         return [('WWW-Authenticate', header_val)]
 
-    @property
-    def roles(self):
-        return ','.join(self.decoded['realm_access']['roles']) \
-            if 'realm_access' in self.decoded else ''
+    @staticmethod
+    def roles(decoded):
+        return ','.join(decoded['realm_access']['roles']) \
+            if 'realm_access' in decoded else ''
 
-    @property
-    def realm_name(self):
+    @staticmethod
+    def realm_name(decoded):
         # Get user realm from parsed token
         # Format is "iss": "http://<host>:<port>/auth/realms/<realm_name>",
-        __, __, realm_name = self.decoded['iss'].strip().rpartition('/realms/')
+        __, __, realm_name = decoded['iss'].strip().rpartition('/realms/')
         return realm_name
 
     def process_request(self, req):
             self._authenticate(req)
 
     def _authenticate(self, req):
-        self.token = req.headers.get('X-Auth-Token')
-        if self.token:
-            self._decode()
+        decoded = {}
+        token = req.headers.get('X-Auth-Token')
+        if token:
+            decoded = self._decode(token)
         else:
             message = 'Auth token must be provided in "X-Auth-Token" header.'
             self._unauthorized(message)
 
-        self.call_keycloak()
+        self.call_keycloak(token, decoded)
 
-        self._set_req_headers(req)
+        self._set_req_headers(req, decoded)
 
-    def _decode(self):
+    def _decode(self, token):
         try:
-            self.decoded = jwt.decode(self.token, algorithms=['RS256'],
-                                      verify=False)
+            return jwt.decode(token, algorithms=['RS256'], verify=False)
         except jwt.DecodeError:
             message = "Token can't be decoded because of wrong format."
             self._unauthorized(message)
 
-    def call_keycloak(self):
+    def call_keycloak(self, token, decoded):
         if self.user_info_endpoint_url.startswith(('http://', 'https://')):
             endpoint = self.user_info_endpoint_url
         else:
             endpoint = ('%s' + self.user_info_endpoint_url) % \
-                       (self.auth_url, self.realm_name)
-        headers = {'Authorization': 'Bearer %s' % self.token}
+                       (self.auth_url, self.realm_name(decoded))
+        headers = {'Authorization': 'Bearer %s' % token}
         verify = None
         if urllib.parse.urlparse(endpoint).scheme == "https":
             verify = False if self.insecure else self.cafile
@@ -123,10 +122,10 @@ class KeycloakAuth(base.ConfigurableMiddleware):
         if not resp.ok:
             abort(resp.status_code, resp.reason)
 
-    def _set_req_headers(self, req):
+    def _set_req_headers(self, req, decoded):
         req.headers['X-Identity-Status'] = 'Confirmed'
-        req.headers['X-Roles'] = self.roles
-        req.headers["X-Project-Id"] = self.realm_name
+        req.headers['X-Roles'] = self.roles(decoded)
+        req.headers["X-Project-Id"] = self.realm_name(decoded)
 
     def _unauthorized(self, message):
         body = {'error': {
