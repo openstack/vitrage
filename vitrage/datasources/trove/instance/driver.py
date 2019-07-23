@@ -26,8 +26,8 @@ LOG = log.getLogger(__name__)
 
 class TroveInstanceDriver(TroveDriverBase):
 
-    def __init__(self, conf):
-        super(TroveInstanceDriver, self).__init__(conf)
+    def __init__(self):
+        super(TroveInstanceDriver, self).__init__()
         self._cached_entities = []
 
     def _get_vitrage_type(self):

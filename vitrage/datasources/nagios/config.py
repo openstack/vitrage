@@ -14,11 +14,13 @@
 
 import re
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import DatasourceOpts as DSOpts
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 NAGIOS_HOST = 'nagios_host'
 NAGIOS = 'nagios'
@@ -28,9 +30,9 @@ NAME = 'name'
 
 
 class NagiosConfig(object):
-    def __init__(self, conf):
+    def __init__(self):
         try:
-            nagios_config_file = conf.nagios[DSOpts.CONFIG_FILE]
+            nagios_config_file = CONF.nagios[DSOpts.CONFIG_FILE]
             nagios_config = file_utils.load_yaml_file(nagios_config_file)
             nagios = nagios_config[NAGIOS]      # nagios root in the yaml file
 

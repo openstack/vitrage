@@ -144,24 +144,21 @@ class DatasourceUpdateMethod(base.BaseTest):
                         ' data source'),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(DatasourceUpdateMethod, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.conf.register_opts(cls.NOVA_HOST_OPTS, group=NOVA_HOST_DATASOURCE)
-        cls.conf.register_opts(cls.NOVA_INSTANCE_OPTS,
-                               group=NOVA_INSTANCE_DATASOURCE)
-        cls.conf.register_opts(cls.NAGIOS_OPTS, group=NAGIOS_DATASOURCE)
-        cls.conf.register_opts(cls.ZABBIX_OPTS_NONE,
-                               group=ZABBIX_DATASOURCE_NONE)
-        cls.conf.register_opts(cls.ZABBIX_OPTS_PULL,
-                               group=ZABBIX_DATASOURCE_PULL)
-        cls.conf.register_opts(cls.ZABBIX_OPTS_PUSH,
-                               group=ZABBIX_DATASOURCE_PUSH)
-        cls.conf.register_opts(cls.ZABBIX_OPTS_PULL_NO_INTERVAL,
-                               group=ZABBIX_DATASOURCE_PULL_NO_INTERVAL)
+    def setUp(self):
+        super(DatasourceUpdateMethod, self).setUp()
+        self.conf_reregister_opts(self.DATASOURCES_OPTS, 'datasources')
+        self.conf_reregister_opts(self.NOVA_HOST_OPTS, NOVA_HOST_DATASOURCE)
+        self.conf_reregister_opts(self.NOVA_INSTANCE_OPTS,
+                                  NOVA_INSTANCE_DATASOURCE)
+        self.conf_reregister_opts(self.NAGIOS_OPTS, NAGIOS_DATASOURCE)
+        self.conf_reregister_opts(self.ZABBIX_OPTS_NONE,
+                                  ZABBIX_DATASOURCE_NONE)
+        self.conf_reregister_opts(self.ZABBIX_OPTS_PULL,
+                                  ZABBIX_DATASOURCE_PULL)
+        self.conf_reregister_opts(self.ZABBIX_OPTS_PUSH,
+                                  ZABBIX_DATASOURCE_PUSH)
+        self.conf_reregister_opts(self.ZABBIX_OPTS_PULL_NO_INTERVAL,
+                                  ZABBIX_DATASOURCE_PULL_NO_INTERVAL)
 
     def test_datasource_update_method_none(self):
         none_drivers = tuple(driver for driver in self.conf.datasources.types
@@ -172,15 +169,15 @@ class DatasourceUpdateMethod(base.BaseTest):
                                   ZABBIX_DATASOURCE_NONE))
 
     def test_datasource_update_method_push(self):
-        driver_names = ds_utils.get_push_drivers_names(self.conf)
-        push_drivers = ds_utils.get_drivers_by_name(self.conf, driver_names)
+        driver_names = ds_utils.get_push_drivers_names()
+        push_drivers = ds_utils.get_drivers_by_name(driver_names)
         self.assertSequenceEqual({utils.import_class(
             self.conf[NOVA_INSTANCE_DATASOURCE].driver), utils.import_class(
             self.conf[ZABBIX_DATASOURCE_PUSH].driver)},
             set(d.__class__ for d in push_drivers))
 
     def test_datasource_update_method_pull(self):
-        driver_names = ds_utils.get_pull_drivers_names(self.conf)
+        driver_names = ds_utils.get_pull_drivers_names()
         self.assertSequenceEqual(
             set([NAGIOS_DATASOURCE, ZABBIX_DATASOURCE_PULL]),
             set(driver_names))

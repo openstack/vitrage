@@ -54,9 +54,9 @@ class TestCinderVolumeTransformer(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=CINDER_VOLUME_DATASOURCE)
         cls.transformers[CINDER_VOLUME_DATASOURCE] = \
-            CinderVolumeTransformer(cls.transformers, cls.conf)
+            CinderVolumeTransformer(cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
+            InstanceTransformer(cls.transformers)
 
     def test_create_placeholder_vertex(self):
         LOG.debug('Cinder Volume transformer test: Create placeholder '

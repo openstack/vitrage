@@ -35,9 +35,6 @@ LOG = logging.getLogger(__name__)
 
 class DoctorTransformer(AlarmTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(DoctorTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         # The Doctor monitor does not support snapshot mode
         return None

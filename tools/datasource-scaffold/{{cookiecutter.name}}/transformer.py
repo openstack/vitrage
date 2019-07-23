@@ -28,8 +28,8 @@ LOG = logging.getLogger(__name__)
 
 class {{cookiecutter.name|capitalize}}Transformer(ResourceTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super({{cookiecutter.name|capitalize}}Transformer, self).__init__(transformers, conf)
+    def __init__(self, transformers:
+        super({{cookiecutter.name|capitalize}}Transformer, self).__init__(transformers)
 
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)

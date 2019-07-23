@@ -34,9 +34,6 @@ LOG = logging.getLogger(__name__)
 
 class KapacitorTransformer(AlarmTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(KapacitorTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)
 

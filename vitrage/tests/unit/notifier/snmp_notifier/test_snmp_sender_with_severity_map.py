@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from pysnmp.proto.rfc1902 import OctetString
 from testtools import matchers
 
@@ -25,35 +24,18 @@ from vitrage.tests.unit.notifier.snmp_notifier import common
 
 
 class SnmpNotifierTest(base.BaseTest):
-    simple_opts = [
-        cfg.StrOpt('notifier',
-                   default='vitrage.notifier.plugins.snmp.'
-                           'snmp_notifier.SnmpNotifier',
-                   required=True),
-        cfg.StrOpt('snmp_sender_class',
-                   default='vitrage.notifier.plugins.snmp.'
-                           'snmp_sender.SnmpSender',
-                   required=True),
-        cfg.StrOpt('alarm_oid_mapping',
-                   default=utils.get_resources_dir() +
-                   '/snmp_notifier/alarm_oid_mapping.yaml'),
-        cfg.StrOpt('consumers',
-                   default=utils.get_resources_dir() +
-                   '/snmp_notifier/dests.yaml'),
-        cfg.StrOpt('oid_tree',
-                   default=utils.get_resources_dir() +
-                   '/snmp_notifier/'
-                   'oid_tree_with_severity_mapping.yaml'),
-    ]
+    def setUp(self):
+        super(SnmpNotifierTest, self).setUp()
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(SnmpNotifierTest, cls).setUpClass()
-
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.simple_opts, group='snmp')
-        cls.snmp_sender = SnmpSender(cls.conf)
+        self.cfg_fixture.config(
+            group='snmp',
+            alarm_oid_mapping=utils.get_resources_dir() +
+            '/snmp_notifier/alarm_oid_mapping.yaml',
+            consumers=utils.get_resources_dir() + '/snmp_notifier/dests.yaml',
+            oid_tree=utils.get_resources_dir() +
+            '/snmp_notifier/oid_tree_with_severity_mapping.yaml'
+        )
+        self.snmp_sender = SnmpSender()
 
     def test_create_oids(self):
 

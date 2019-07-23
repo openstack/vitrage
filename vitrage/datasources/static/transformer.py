@@ -29,9 +29,6 @@ LOG = logging.getLogger(__name__)
 
 class StaticTransformer(ResourceTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(StaticTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)
 

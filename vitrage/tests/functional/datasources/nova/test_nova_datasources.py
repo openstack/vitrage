@@ -12,25 +12,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-
 from vitrage.tests.functional.datasources.base import \
     TestDataSourcesBase
 
 
 class TestNovaDatasources(TestDataSourcesBase):
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestNovaDatasources, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestNovaDatasources, self).setUp()
+        self.load_datasources()
 
     def test_nova_datasources(self):
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         self.assertEqual(self._num_total_expected_vertices(),
                          processor.entity_graph.num_vertices())

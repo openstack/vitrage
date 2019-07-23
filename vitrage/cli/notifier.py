@@ -15,15 +15,15 @@ import cotyledon
 import sys
 
 from vitrage.cli import VITRAGE_TITLE
+from vitrage.common import config
 from vitrage.notifier.service import VitrageNotifierService
-from vitrage import service
 
 
 def main():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
+    config.parse_config(sys.argv)
     sm = cotyledon.ServiceManager()
-    sm.add(VitrageNotifierService, args=(conf,))
+    sm.add(VitrageNotifierService)
     sm.run()
 
 

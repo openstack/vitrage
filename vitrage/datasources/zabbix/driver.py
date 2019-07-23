@@ -14,6 +14,7 @@
 
 from collections import namedtuple
 
+from oslo_config import cfg
 from oslo_log import log
 from oslo_utils import importutils as utils
 
@@ -29,6 +30,7 @@ from vitrage.datasources.zabbix.properties import ZabbixTriggerValue \
 from vitrage.datasources.zabbix import ZABBIX_DATASOURCE
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
@@ -36,30 +38,29 @@ class ZabbixDriver(AlarmDriverBase):
     ServiceKey = namedtuple('ServiceKey', ['hostname', 'triggerid'])
     conf_map = None
 
-    def __init__(self, conf):
+    def __init__(self):
         super(ZabbixDriver, self).__init__()
-        self.conf = conf
         if not ZabbixDriver.conf_map:
             ZabbixDriver.conf_map =\
-                ZabbixDriver._configuration_mapping(conf)
+                ZabbixDriver._configuration_mapping()
         self._client = None
 
     def zabbix_client_login(self):
-        if not self.conf.zabbix.user:
+        if not CONF.zabbix.user:
             LOG.warning('Zabbix user is not defined')
-        if not self.conf.zabbix.password:
+        if not CONF.zabbix.password:
             LOG.warning('Zabbix password is not defined')
-        if not self.conf.zabbix.url:
+        if not CONF.zabbix.url:
             LOG.warning('Zabbix url is not defined')
 
         try:
             if not self._client:
                 self._client = utils.import_object(
                     'pyzabbix.ZabbixAPI',
-                    self.conf.zabbix.url)
+                    CONF.zabbix.url)
             self._client.login(
-                self.conf.zabbix.user,
-                self.conf.zabbix.password)
+                CONF.zabbix.user,
+                CONF.zabbix.password)
         except Exception:
             LOG.exception('pyzabbix.ZabbixAPI error occurred.')
             self._client = None
@@ -154,9 +155,9 @@ class ZabbixDriver(AlarmDriverBase):
         return alarm[ZProps.VALUE]
 
     @staticmethod
-    def _configuration_mapping(conf):
+    def _configuration_mapping():
         try:
-            zabbix_config_file = conf.zabbix[DSOpts.CONFIG_FILE]
+            zabbix_config_file = CONF.zabbix[DSOpts.CONFIG_FILE]
             zabbix_config = file_utils.load_yaml_file(zabbix_config_file)
             zabbix_config_elements = zabbix_config[ZABBIX_DATASOURCE]
 

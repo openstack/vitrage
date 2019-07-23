@@ -27,9 +27,6 @@ from vitrage.utils import datetime as datetime_utils
 
 class NagiosTransformer(AlarmTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(NagiosTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)
 

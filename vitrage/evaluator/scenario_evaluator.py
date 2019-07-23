@@ -18,6 +18,7 @@ import copy
 import re
 import time
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import EdgeProperties as EProps
@@ -42,6 +43,7 @@ from vitrage import storage
 from vitrage.storage.sqlalchemy import models
 from vitrage.utils.datetime import utcnow
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 # Entry containing action info.
@@ -60,16 +62,14 @@ SOURCE = 'source'
 class ScenarioEvaluator(object):
 
     def __init__(self,
-                 conf,
                  e_graph,
                  scenario_repo,
                  actions_callback,
                  enabled=False):
-        self._conf = conf
         self._entity_graph = e_graph
-        self._db = storage.get_connection_from_config(self._conf)
+        self._db = storage.get_connection_from_config()
         self._scenario_repo = scenario_repo
-        self._action_executor = ActionExecutor(self._conf, actions_callback)
+        self._action_executor = ActionExecutor(actions_callback)
         self._entity_graph.subscribe(self.process_event)
         self.enabled = enabled
         self.connected_component_cache = defaultdict(dict)
@@ -314,7 +314,7 @@ class ScenarioEvaluator(object):
         if not actions:
             return []
 
-        active_actions = ActiveActionsTracker(self._conf, self._db, actions)
+        active_actions = ActiveActionsTracker(self._db, actions)
         for action_info in actions:
             if action_info.mode == ActionMode.DO:
                 active_actions.calc_do_action(action_info)
@@ -483,13 +483,13 @@ class ActiveActionsTracker(object):
     """
     action_tools = None
 
-    def __init__(self, conf, db, actions):
+    def __init__(self, db, actions):
         self.db = db
         self.data = defaultdict(set)
         self.actions_to_create = {}
         self.actions_to_remove = set()
         self.actions_to_perform = []  # use a list to keep the insertion order
-        self._init_action_tools(conf)
+        self._init_action_tools()
 
         # Query DB for all actions with same properties
         actions_keys = set([self._get_key(action) for action in actions])
@@ -499,10 +499,10 @@ class ActiveActionsTracker(object):
                        db_row.extra_info, db_row.action_type)].add(db_row)
 
     @classmethod
-    def _init_action_tools(cls, conf):
+    def _init_action_tools(cls):
         if cls.action_tools:
             return
-        info_mapper = DatasourceInfoMapper(conf)
+        info_mapper = DatasourceInfoMapper()
         alarms_score = info_mapper.get_datasource_priorities('vitrage')
         all_scores = info_mapper.get_datasource_priorities()
         cls.action_tools = {

@@ -11,6 +11,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+from oslo_config import cfg
 from oslo_log import log as logging
 
 from vitrage.common.constants import DatasourceProperties as DSProps
@@ -32,6 +34,7 @@ from vitrage.datasources import transformer_base as tbase
 from vitrage.datasources.transformer_base import extract_field_value
 import vitrage.graph.utils as graph_utils
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 
@@ -46,9 +49,6 @@ class InstanceTransformer(ResourceTransformerBase):
         'compute.instance.delete.end': GraphAction.DELETE_ENTITY,
         'instance.delete.end': GraphAction.DELETE_ENTITY,
     }
-
-    def __init__(self, transformers, conf):
-        super(InstanceTransformer, self).__init__(transformers, conf)
 
     def _create_snapshot_entity_vertex(self, entity_event):
         LOG.debug('got snapshot')
@@ -134,7 +134,7 @@ class InstanceTransformer(ResourceTransformerBase):
         """Return an object that extracts the field values from the event"""
         if tbase.is_update_event(event):
             return self.versioned_notifications_extractor if \
-                self.conf.use_nova_versioned_notifications is True else \
+                CONF.use_nova_versioned_notifications is True else \
                 self.legacy_notifications_extractor
         else:
             return self.snapshot_extractor

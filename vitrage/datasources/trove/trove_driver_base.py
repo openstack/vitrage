@@ -23,16 +23,15 @@ from vitrage import os_clients
 
 class TroveDriverBase(DriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(TroveDriverBase, self).__init__()
-        self.conf = conf
         self.__client = None
         self.__cached_entities = []
 
     @property
     def client(self):
         if not self.__client:
-            self.__client = os_clients.trove_client(self.conf)
+            self.__client = os_clients.trove_client()
         return self.__client
 
     def get_all(self, datasource_action):

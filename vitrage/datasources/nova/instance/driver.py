@@ -12,12 +12,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from vitrage.common.constants import DatasourceAction
 from vitrage.common.constants import DatasourceProperties as DSProps
 from vitrage.common.constants import GraphAction
 from vitrage.datasources.nova.instance import NOVA_INSTANCE_DATASOURCE
 from vitrage.datasources.nova.nova_driver_base import NovaDriverBase
 
+
+CONF = cfg.CONF
 
 # versioned notifications
 VERSIONED_NOTIFICATIONS = {
@@ -114,7 +117,7 @@ class InstanceDriver(NovaDriverBase):
             *self.properties_to_filter_out())
 
     def enrich_event(self, event, event_type):
-        use_versioned = self.conf.use_nova_versioned_notifications
+        use_versioned = CONF.use_nova_versioned_notifications
 
         # Send to the processor only events of the matching types. Nova may
         # send both versioned and legacy notifications, and we don't want to

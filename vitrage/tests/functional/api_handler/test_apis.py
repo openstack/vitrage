@@ -17,8 +17,6 @@ import threading
 
 from testtools import matchers
 
-from oslo_config import cfg
-
 from vitrage.api_handler.apis.alarm import AlarmApis
 from vitrage.api_handler.apis.rca import RcaApis
 from vitrage.api_handler.apis.resource import ResourceApis
@@ -49,17 +47,15 @@ from vitrage.utils.datetime import utcnow
 
 class TestApis(TestEntityGraphUnitBase, TestConfiguration):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestApis, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.add_db(cls.conf)
-        cls.api_lock = threading.RLock()
+    def setUp(self):
+        super(TestApis, self).setUp()
+        self.add_db()
+        self.api_lock = threading.RLock()
 
     def test_get_alarms_with_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = AlarmApis(graph, self.conf, self.api_lock, self._db)
+        apis = AlarmApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_1', 'is_admin': True}
 
         # Action
@@ -73,7 +69,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_alarms_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = AlarmApis(graph, self.conf, self.api_lock, self._db)
+        apis = AlarmApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -87,7 +83,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_alarm_counts_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = AlarmApis(graph, self.conf, self.api_lock, self._db)
+        apis = AlarmApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -104,7 +100,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_alarms_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = AlarmApis(graph, self.conf, self.api_lock, self._db)
+        apis = AlarmApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -118,7 +114,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_alarm_counts_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = AlarmApis(graph, self.conf, self.api_lock, self._db)
+        apis = AlarmApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -135,7 +131,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_rca_with_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = RcaApis(graph, self.conf, self.api_lock, self._db)
+        apis = RcaApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_1', 'is_admin': True}
 
         # Action
@@ -149,7 +145,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_rca_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = RcaApis(graph, self.conf, self.api_lock, self._db)
+        apis = RcaApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -165,7 +161,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_rca_with_not_admin_bla_project(self):
         # Setup
         graph = self._create_graph()
-        apis = RcaApis(graph, self.conf, self.api_lock, self._db)
+        apis = RcaApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -179,7 +175,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_rca_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = RcaApis(graph, self.conf, self.api_lock, self._db)
+        apis = RcaApis(graph, self.api_lock, self._db)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -193,7 +189,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_topology_with_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = TopologyApis(graph, None, self.api_lock)
+        apis = TopologyApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': True}
 
         # Action
@@ -215,7 +211,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_topology_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = TopologyApis(graph, None, self.api_lock)
+        apis = TopologyApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -237,7 +233,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_get_topology_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = TopologyApis(graph, None, self.api_lock)
+        apis = TopologyApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -256,7 +252,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': True}
 
         # Action
@@ -272,7 +268,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_admin_project_and_query(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': True}
 
         # Action
@@ -289,7 +285,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -305,7 +301,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_not_admin_project_and_no_existing_type(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -321,7 +317,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_not_admin_project_and_existing_type(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -337,7 +333,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_list_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -353,7 +349,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': True}
 
         # Action
@@ -372,7 +368,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_admin_project_and_query(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': True}
 
         # Action
@@ -389,7 +385,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_not_admin_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -405,7 +401,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_not_admin_project_and_no_existing_type(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -421,7 +417,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_not_admin_project_and_existing_type(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -437,7 +433,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_all_tenants(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -456,7 +452,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_count_with_all_tenants_and_group_by(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -475,7 +471,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_admin_and_no_project_resource(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': True}
 
         # Action
@@ -490,7 +486,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_not_admin_and_no_project_resource(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -502,7 +498,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_not_admin_and_resource_in_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': False}
 
         # Action
@@ -518,7 +514,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_not_admin_and_resource_in_other_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': False}
 
         # Action
@@ -530,7 +526,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_admin_and_resource_in_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_1', 'is_admin': True}
 
         # Action
@@ -546,7 +542,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
     def test_resource_show_with_admin_and_resource_in_other_project(self):
         # Setup
         graph = self._create_graph()
-        apis = ResourceApis(graph, None, self.api_lock)
+        apis = ResourceApis(graph, self.api_lock)
         ctx = {'tenant': 'project_2', 'is_admin': True}
 
         # Action

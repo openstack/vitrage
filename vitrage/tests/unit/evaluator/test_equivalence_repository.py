@@ -14,8 +14,6 @@
 
 import os
 
-from oslo_config import cfg
-
 from vitrage.common.constants import TemplateTypes
 from vitrage.common.exception import VitrageError
 from vitrage.evaluator.equivalence_repository import EquivalenceRepository
@@ -29,8 +27,7 @@ class TestEquivalenceRepository(base.BaseTest, TestConfiguration):
     # noinspection PyPep8Naming
     def setUp(self):
         super(TestEquivalenceRepository, self).setUp()
-        conf = cfg.ConfigOpts()
-        self.add_db(conf)
+        self.add_db()
         self.equivalence_repository = EquivalenceRepository()
 
     def test_duplicate_entities_in_equivalence(self):

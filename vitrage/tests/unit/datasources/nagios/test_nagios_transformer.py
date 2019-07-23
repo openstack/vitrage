@@ -56,7 +56,7 @@ class NagiosTransformerTest(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=NAGIOS_DATASOURCE)
         cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+            HostTransformer(cls.transformers)
 
     def test_create_entity_key(self):
         LOG.debug('Test get key from nova instance transformer')
@@ -65,7 +65,7 @@ class NagiosTransformerTest(base.BaseTest):
         spec_list = mock_sync.simple_nagios_alarm_generators(host_num=1,
                                                              events_num=1)
         nagios_alarms = mock_sync.generate_sequential_events_list(spec_list)
-        transformer = NagiosTransformer(self.transformers, self.conf)
+        transformer = NagiosTransformer(self.transformers)
 
         event = nagios_alarms[0]
         # Test action
@@ -90,7 +90,7 @@ class NagiosTransformerTest(base.BaseTest):
                                                              events_num=10)
         nagios_alarms = mock_sync.generate_sequential_events_list(spec_list)
 
-        transformer = NagiosTransformer(self.transformers, self.conf)
+        transformer = NagiosTransformer(self.transformers)
 
         for alarm in nagios_alarms:
 
@@ -186,7 +186,7 @@ class NagiosTransformerTest(base.BaseTest):
         edge = neighbor.edge
         self.assertEqual(EdgeLabel.ON, edge.label)
 
-        alarm_key = NagiosTransformer(self.transformers, self.conf).\
+        alarm_key = NagiosTransformer(self.transformers).\
             _create_entity_key(event)
         alarm_uuid = cur_alarm_uuid if cur_alarm_uuid else\
             TransformerBase.uuid_from_deprecated_vitrage_id(alarm_key)

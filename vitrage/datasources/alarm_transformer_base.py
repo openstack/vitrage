@@ -22,9 +22,6 @@ from vitrage.datasources import transformer_base as tbase
 
 class AlarmTransformerBase(tbase.TransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(AlarmTransformerBase, self).__init__(transformers, conf)
-
     def _ok_status(self, entity_event):
         pass
 

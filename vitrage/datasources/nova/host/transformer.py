@@ -33,9 +33,6 @@ LOG = logging.getLogger(__name__)
 
 class HostTransformer(ResourceTransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(HostTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event,
                                    entity_event.get(HostProps.HOST))

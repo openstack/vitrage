@@ -55,11 +55,11 @@ class TestKapacitorTransformer(BaseAlarmTransformerTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=KAPACITOR_DATASOURCE)
         cls.transformers[KAPACITOR_DATASOURCE] = \
-            KapacitorTransformer(cls.transformers, cls.conf)
+            KapacitorTransformer(cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
+            InstanceTransformer(cls.transformers)
         cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+            HostTransformer(cls.transformers)
 
     def test_create_entity_key(self):
         LOG.debug('Test get key from nova host transformer')
@@ -73,7 +73,7 @@ class TestKapacitorTransformer(BaseAlarmTransformerTest):
                        KProps.RESOURCE_NAME: resource_name}
 
         event = self._generate_event(update_vals)
-        transformer = KapacitorTransformer(self.transformers, self.conf)
+        transformer = KapacitorTransformer(self.transformers)
         self.assertIsNotNone(event)
 
         # Test action

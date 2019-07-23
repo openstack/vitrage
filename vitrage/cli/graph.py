@@ -16,10 +16,10 @@ from oslo_log import log
 import sys
 
 from vitrage.cli import VITRAGE_TITLE
+from vitrage.common import config
 from vitrage.common.utils import spawn
 from vitrage.entity_graph.graph_init import VitrageGraphInit
 from vitrage.entity_graph.workers import GraphWorkersManager
-from vitrage import service
 
 LOG = log.getLogger(__name__)
 
@@ -27,19 +27,19 @@ LOG = log.getLogger(__name__)
 def main():
     """Main method of vitrage-graph"""
 
-    conf = service.prepare_service()
     LOG.info(VITRAGE_TITLE)
-
-    workers = GraphWorkersManager(conf)
-    spawn(init, conf, workers)
+    config.parse_config(sys.argv)
+    workers = GraphWorkersManager()
+    spawn(init, workers)
     workers.run()
 
 
-def init(conf, workers):
+def init(workers):
     # Because fork duplicates the process memory.
     # We should only create master process resources after workers are forked.
     workers.wait_for_worker_start()
-    VitrageGraphInit(conf, workers).run()
+    VitrageGraphInit(workers).run()
+
 
 if __name__ == "__main__":
     sys.exit(main())

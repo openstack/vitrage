@@ -59,8 +59,12 @@ class ServiceTest(FunctionalTest):
         # NOTE(eyalb) we want to force coordinator to be initialized with a
         # custom name otherwise it will take the command line string as a name
         name = 'vitrage'
+
+        def mock_coordinator():
+            return Coordinator(name)
+
         with mock.patch('vitrage.coordination.coordination.Coordinator',
-                        new=lambda _: Coordinator(self.CONF, name)):
+                        new=mock_coordinator):
             self._use_zake_as_backend()
 
             data = self.get_json('/service/')
@@ -80,5 +84,6 @@ class ServiceTest(FunctionalTest):
 
     # noinspection PyAttributeOutsideInit
     def _use_zake_as_backend(self):
-        self.CONF.set_override('backend_url', 'zake://', 'coordination')
-        self.app = webtest.TestApp(app.load_app(self.CONF))
+        self.conf.set_override('backend_url', 'zake://', 'coordination')
+
+        self.app = webtest.TestApp(app.load_app())

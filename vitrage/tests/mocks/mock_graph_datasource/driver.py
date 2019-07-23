@@ -11,8 +11,9 @@
 # WARRANTIES OR  CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-from oslo_log import log
 
+from oslo_config import cfg
+from oslo_log import log
 
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.static.driver import StaticDriver
@@ -20,14 +21,15 @@ from vitrage.datasources.static import StaticFields
 from vitrage.tests.mocks.graph_generator import GraphGenerator
 from vitrage.tests.mocks.mock_graph_datasource import MOCK_DATASOURCE
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class MockDriver(StaticDriver):
 
-    def __init__(self, conf):
+    def __init__(self):
         super(StaticDriver, self).__init__()
-        mock_cfg = conf.mock_graph_datasource
+        mock_cfg = CONF.mock_graph_datasource
         e_graph = GraphGenerator(
             networks=mock_cfg.networks,
             zones_per_cluster=mock_cfg.zones_per_cluster,

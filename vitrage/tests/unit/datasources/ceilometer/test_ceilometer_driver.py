@@ -43,7 +43,7 @@ class CeilometerDriverTest(base.BaseTest):
 
     def test_event_alarm_notifications(self):
 
-        aodh_driver = MockCeilometerDriver(self.conf)
+        aodh_driver = MockCeilometerDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data
@@ -188,7 +188,7 @@ class CeilometerDriverTest(base.BaseTest):
         self.assertIsNone(entity)
 
     def test_gnocchi_threshold_alarm_notifications(self):
-        aodh_driver = MockCeilometerDriver(self.conf)
+        aodh_driver = MockCeilometerDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data

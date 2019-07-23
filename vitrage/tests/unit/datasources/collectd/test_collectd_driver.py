@@ -43,7 +43,7 @@ class TestCollectdDriver(base.BaseTest):
     # noinspection PyAttributeOutsideInit
     def setUp(self):
         super(TestCollectdDriver, self).setUp()
-        self.driver = CollectdDriver(self.conf)
+        self.driver = CollectdDriver()
 
     def test_enrich_event_with_alarm_up(self):
         now = datetime.now().isoformat()

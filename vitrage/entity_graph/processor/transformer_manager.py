@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_utils import importutils
 
@@ -26,29 +27,30 @@ from vitrage.evaluator.actions.evaluator_event_transformer \
     import VITRAGE_DATASOURCE
 from vitrage.utils import opt_exists
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 ENTITIES = 'entities'
 
 
 class TransformerManager(object):
 
-    def __init__(self, conf):
-        self.transformers = self.register_transformer_classes(conf)
+    def __init__(self):
+        self.transformers = self.register_transformer_classes()
 
     @staticmethod
-    def register_transformer_classes(conf):
+    def register_transformer_classes():
 
         transformers = {}
-        for datasource_type in conf.datasources.types:
+        for datasource_type in CONF.datasources.types:
             try:
                 transformers[datasource_type] = importutils.import_object(
-                    conf[datasource_type].transformer,
-                    transformers, conf)
-                if opt_exists(conf[datasource_type], ENTITIES):
-                    for entity in conf[datasource_type].entities:
+                    CONF[datasource_type].transformer,
+                    transformers)
+                if opt_exists(CONF[datasource_type], ENTITIES):
+                    for entity in CONF[datasource_type].entities:
                         transformers[entity] = importutils.import_object(
-                            conf[datasource_type].transformer,
-                            transformers, conf)
+                            CONF[datasource_type].transformer,
+                            transformers)
 
             except Exception:
                 LOG.exception('Failed to register transformer %s.',
@@ -56,11 +58,11 @@ class TransformerManager(object):
 
         transformers[VITRAGE_DATASOURCE] = importutils.import_object(
             "%s.%s" % (EvaluatorEventTransformer.__module__,
-                       EvaluatorEventTransformer.__name__), transformers, conf)
+                       EvaluatorEventTransformer.__name__), transformers)
 
         transformers[CONSISTENCY_DATASOURCE] = importutils.import_object(
             "%s.%s" % (ConsistencyTransformer.__module__,
-                       ConsistencyTransformer.__name__), transformers, conf)
+                       ConsistencyTransformer.__name__), transformers)
 
         return transformers
 

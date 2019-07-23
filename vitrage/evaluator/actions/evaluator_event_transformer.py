@@ -42,8 +42,8 @@ VITRAGE_DATASOURCE = 'vitrage'
 
 class EvaluatorEventTransformer(transformer_base.TransformerBase):
 
-    def __init__(self, transformers, conf):
-        super(EvaluatorEventTransformer, self).__init__(transformers, conf)
+    def __init__(self, transformers):
+        super(EvaluatorEventTransformer, self).__init__(transformers)
         self.actions = self._init_actions()
 
     def _create_snapshot_entity_vertex(self, entity_event):

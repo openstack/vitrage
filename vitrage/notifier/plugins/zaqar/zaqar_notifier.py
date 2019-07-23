@@ -11,22 +11,24 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations
 #  under the License.
+
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import NotifierEventTypes
 from vitrage.notifier.plugins.base import NotifierBase
 from vitrage import os_clients
 
-
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class ZaqarNotifier(NotifierBase):
 
-    def __init__(self, conf):
-        super(ZaqarNotifier, self).__init__(conf)
-        client = os_clients.zaqar_client(self.conf)
-        self._queue = client.queue(self.conf.zaqar.queue)
+    def __init__(self):
+        super(ZaqarNotifier, self).__init__()
+        client = os_clients.zaqar_client()
+        self._queue = client.queue(CONF.zaqar.queue)
 
     @staticmethod
     def get_notifier_name():

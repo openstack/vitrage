@@ -48,7 +48,7 @@ class TestCeilometerAlarmTransformer(CeilometerTransformerBaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=CEILOMETER_DATASOURCE)
         cls.transformers[CEILOMETER_DATASOURCE] = \
-            CeilometerTransformer(cls.transformers, cls.conf)
+            CeilometerTransformer(cls.transformers)
 
     def test_key_values_with_vitrage_alarm(self):
         LOG.debug('Ceilometer transformer test: '
@@ -130,7 +130,7 @@ class TestCeilometerAlarmPushTransformer(CeilometerTransformerBaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=CEILOMETER_DATASOURCE)
         cls.transformers[CEILOMETER_DATASOURCE] = \
-            CeilometerTransformer(cls.transformers, cls.conf)
+            CeilometerTransformer(cls.transformers)
 
     def test_update_transform(self):
         LOG.debug('Ceilometer update alarm transformer test:'

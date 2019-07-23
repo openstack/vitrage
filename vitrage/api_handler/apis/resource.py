@@ -31,9 +31,6 @@ LOG = log.getLogger(__name__)
                     info={}, hide_args=False, trace_private=False)
 class ResourceApis(base.EntityGraphApisBase):
 
-    def __init__(self, entity_graph, conf, api_lock):
-        super(ResourceApis, self).__init__(entity_graph, conf, api_lock)
-
     @timed_method(log_results=True)
     @base.lock_graph
     def get_resources(self, ctx, resource_type=None, all_tenants=False,

@@ -71,18 +71,15 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
                    ),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestScenarioEvaluator, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.EVALUATOR_OPTS, group='evaluator')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.add_db(cls.conf)
-        cls.add_templates(cls.conf.evaluator.templates_dir)
-        TestScenarioEvaluator.load_datasources(cls.conf)
-        cls.scenario_repository = ScenarioRepository(cls.conf)
+    def setUp(self):
+        super(TestScenarioEvaluator, self).setUp()
+        self.conf.register_opts(self.EVALUATOR_OPTS, group='evaluator')
+        templates_dir = utils.get_resources_dir() + \
+            '/templates/evaluator'
+        self.add_db()
+        self.add_templates(templates_dir)
+        self.load_datasources()
+        self.scenario_repository = ScenarioRepository()
 
     def test_deduced_state(self):
 
@@ -1348,7 +1345,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
         return host_v
 
     def _init_system(self):
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
         event_queue = queue.Queue()
 
         def actions_callback(event_type, data):
@@ -1361,8 +1358,7 @@ class TestScenarioEvaluator(TestFunctionalBase, TestConfiguration):
             """
             event_queue.put(data)
 
-        evaluator = ScenarioEvaluator(self.conf,
-                                      processor.entity_graph,
+        evaluator = ScenarioEvaluator(processor.entity_graph,
                                       self.scenario_repository,
                                       actions_callback,
                                       enabled=True)

@@ -58,9 +58,9 @@ class KubernetesTransformerTest(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=KUBERNETES_DATASOURCE)
         cls.transformers[KUBERNETES_DATASOURCE] = KubernetesTransformer(
-            cls.transformers, cls.conf)
+            cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
+            InstanceTransformer(cls.transformers)
 
     def test_snapshot_event_transform(self):
         LOG.debug('Test tactual transform action for '

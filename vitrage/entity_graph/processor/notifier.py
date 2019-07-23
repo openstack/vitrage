@@ -11,6 +11,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 
@@ -24,19 +25,21 @@ from vitrage.graph.driver.networkx_graph import edge_copy
 from vitrage.graph.driver.networkx_graph import vertex_copy
 from vitrage.messaging import get_transport
 
+CONF = cfg.CONF
+
 LOG = log.getLogger(__name__)
 
 
 class GraphNotifier(object):
     """Allows writing to message bus"""
-    def __init__(self, conf):
+    def __init__(self):
         self.oslo_notifier = None
-        topics = self._get_topics(conf)
+        topics = self._get_topics()
         if not topics:
             LOG.info('Graph Notifier is disabled')
             return
         self.oslo_notifier = oslo_messaging.Notifier(
-            get_transport(conf),
+            get_transport(),
             driver='messagingv2',
             publisher_id='vitrage.graph',
             topics=topics)
@@ -45,12 +48,12 @@ class GraphNotifier(object):
     def enabled(self):
         return self.oslo_notifier is not None
 
-    def _get_topics(self, conf):
+    def _get_topics(self):
         topics = []
 
         try:
-            notifier_topic = conf.entity_graph.notifier_topic
-            notifier_plugins = conf.notifiers
+            notifier_topic = CONF.entity_graph.notifier_topic
+            notifier_plugins = CONF.notifiers
             if notifier_topic and notifier_plugins:
                 topics.append(notifier_topic)
         except Exception:
@@ -58,8 +61,8 @@ class GraphNotifier(object):
 
         try:
             machine_learning_topic = \
-                conf.machine_learning.machine_learning_topic
-            machine_learning_plugins = conf.machine_learning.plugins
+                CONF.machine_learning.machine_learning_topic
+            machine_learning_plugins = CONF.machine_learning.plugins
             if machine_learning_topic and machine_learning_plugins:
                 topics.append(machine_learning_topic)
         except Exception:
@@ -117,11 +120,11 @@ class GraphNotifier(object):
 
 class PersistNotifier(object):
     """Allows writing to message bus"""
-    def __init__(self, conf):
+    def __init__(self):
         self.oslo_notifier = None
-        topics = [conf.persistency.persistor_topic]
+        topics = [CONF.persistency.persistor_topic]
         self.oslo_notifier = oslo_messaging.Notifier(
-            get_transport(conf),
+            get_transport(),
             driver='messagingv2',
             publisher_id='vitrage.graph',
             topics=topics)

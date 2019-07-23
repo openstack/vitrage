@@ -51,10 +51,10 @@ SOURCE = 'source'
 
 class ActionExecutor(object):
 
-    def __init__(self, conf, actions_callback):
+    def __init__(self, actions_callback):
 
         self.actions_callback = actions_callback
-        self.notifier = EvaluatorNotifier(conf)
+        self.notifier = EvaluatorNotifier()
         self.action_recipes = ActionExecutor._register_action_recipes()
 
         self.action_step_defs = {

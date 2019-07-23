@@ -50,7 +50,7 @@ class TroveClusterTransformerTest(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=TROVE_CLUSTER_DATASOURCE)
         cls.transformers[TROVE_CLUSTER_DATASOURCE] = \
-            TroveClusterTransformer(cls.transformers, cls.conf)
+            TroveClusterTransformer(cls.transformers)
 
     def test_create_placeholder_vertex(self):
         # Tests setup

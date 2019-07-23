@@ -20,16 +20,17 @@ import six
 import tenacity
 import tooz.coordination
 
+from oslo_config import cfg
 from oslo_log import log
 from oslo_utils import timeutils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class Coordinator(object):
-    def __init__(self, conf, my_id=None):
-        self.conf = conf
-        self.backend_url = self.conf.coordination.backend_url
+    def __init__(self, my_id=None):
+        self.backend_url = CONF.coordination.backend_url
         self.my_id = my_id or ' '.join(psutil.Process(os.getpid()).cmdline())
         self.coordinator = None
         if self.backend_url:

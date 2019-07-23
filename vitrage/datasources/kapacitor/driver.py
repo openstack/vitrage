@@ -32,12 +32,11 @@ class KapacitorDriver(AlarmDriverBase):
     ServiceKey = namedtuple('ServiceKey', ['hostname', 'alarmid'])
     conf_map = None
 
-    def __init__(self, conf):
+    def __init__(self):
         super(KapacitorDriver, self).__init__()
-        self.cfg = conf
 
         if not KapacitorDriver.conf_map:
-            self.conf_map = KapacitorConfig(conf)
+            self.conf_map = KapacitorConfig()
         self._client = None
 
     @staticmethod

@@ -67,16 +67,13 @@ class TestZabbixConfig(base.BaseTest):
                       ZabbixProps.RESOURCE_NAME: 'compute-1'},
     }
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestZabbixConfig, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=ZABBIX_DATASOURCE)
+    def setUp(self):
+        super(TestZabbixConfig, self).setUp()
+        self.conf_reregister_opts(self.OPTS, group=ZABBIX_DATASOURCE)
 
     def test_zabbix_configuration_loading(self):
         # Action
-        mappings = ZabbixDriver._configuration_mapping(self.conf)
+        mappings = ZabbixDriver._configuration_mapping()
 
         # Test assertions
         self.assertEqual(len(self.MAPPINGS), len(mappings))

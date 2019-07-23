@@ -16,13 +16,13 @@ import sys
 
 from vitrage.api import app
 from vitrage.cli import VITRAGE_TITLE
-from vitrage import service
+from vitrage.common import config
 
 
 def main():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
-    app.build_server(conf)
+    config.parse_config(sys.argv)
+    app.build_server()
 
 
 if __name__ == "__main__":

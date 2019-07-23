@@ -11,6 +11,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import importutils
@@ -19,16 +21,16 @@ from vitrage.coordination import service as coord
 from vitrage import messaging
 from vitrage.opts import register_opts
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class VitrageNotifierService(coord.Service):
 
-    def __init__(self, worker_id, conf):
-        super(VitrageNotifierService, self).__init__(worker_id, conf)
-        self.conf = conf
-        self.notifiers = self.get_notifier_plugins(conf)
-        self._init_listeners(self.conf)
+    def __init__(self, worker_id):
+        super(VitrageNotifierService, self).__init__(worker_id)
+        self.notifiers = self.get_notifier_plugins()
+        self._init_listeners()
 
     def run(self):
         super(VitrageNotifierService, self).run()
@@ -51,31 +53,30 @@ class VitrageNotifierService(coord.Service):
         LOG.info("Vitrage Notifier Service - Stopped!")
 
     @staticmethod
-    def get_notifier_plugins(conf):
+    def get_notifier_plugins():
         notifiers = []
-        conf_notifier_names = conf.notifiers
+        conf_notifier_names = CONF.notifiers
         if not conf_notifier_names:
             LOG.info('There are no notifier plugins in configuration')
             return []
         for notifier_name in conf_notifier_names:
-            register_opts(conf, notifier_name, conf.notifiers_path)
+            register_opts(notifier_name, CONF.notifiers_path)
             LOG.info('Notifier plugin %s started', notifier_name)
             notifiers.append(importutils.import_object(
-                conf[notifier_name].notifier,
-                conf))
+                CONF[notifier_name].notifier))
         return notifiers
 
-    def _init_listeners(self, conf):
+    def _init_listeners(self):
         self.listeners = []
-        transport = messaging.get_transport(conf)
+        transport = messaging.get_transport()
 
         self._init_notifier(transport=transport,
-                            topic=conf.entity_graph.notifier_topic,
+                            topic=CONF.entity_graph.notifier_topic,
                             endpoint=VitrageDefaultEventEndpoint(
                                 self.notifiers))
 
         topic_prefix = \
-            conf.evaluator_actions.evaluator_notification_topic_prefix
+            CONF.evaluator_actions.evaluator_notification_topic_prefix
 
         for notifier in self.notifiers:
             if notifier.use_private_topic():

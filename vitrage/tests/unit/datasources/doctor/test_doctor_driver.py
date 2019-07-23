@@ -39,7 +39,7 @@ class DoctorDriverTest(base.BaseTest):
 
     def test_enrich_event(self):
         # Test setup
-        driver = DoctorDriver(self.conf)
+        driver = DoctorDriver()
         event_type = DoctorProps.HOST_DOWN
 
         time1 = datetime.now().isoformat()

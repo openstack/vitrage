@@ -15,6 +15,8 @@
 import logging
 import os
 
+from oslo_config import cfg
+from oslo_config import fixture as config_fixture
 from oslo_utils import timeutils
 # noinspection PyPackageRequirements
 from oslotest import base
@@ -23,12 +25,39 @@ import sys
 from testtools import matchers
 from testtools.matchers import HasLength
 
+from vitrage.common import config
 
+CONF = cfg.CONF
 IsEmpty = lambda: HasLength(0)
 
 
 class BaseTest(base.BaseTestCase):
     """Test case base class for all unit tests."""
+
+    def conf_reregister_opts(self, opts, group=None):
+        self.conf.reset()
+        if group in self.conf:
+            for opt in opts:
+                self.conf.unregister_opt(opt, group=group)
+        self.conf.register_opts(opts, group=group)
+
+        def unregister_opts():
+            self.conf.reset()
+            for opt in opts:
+                self.conf.unregister_opt(opt, group=group)
+
+        self.addCleanup(unregister_opts)
+
+    def setUp(self):
+        super(BaseTest, self).setUp()
+        self.cfg_fixture = self.useFixture(
+            config_fixture.Config(CONF))
+        config.parse_config([])
+        logging.disable(logging.CRITICAL)
+        self.conf = self.cfg_fixture.conf
+
+    def config(self, **kw):
+        self.cfg_fixture.config(**kw)
 
     def assert_list_equal(self, l1, l2, message=None):
         if tuple(sys.version_info)[0:2] < (2, 7):
@@ -108,7 +137,3 @@ class BaseTest(base.BaseTestCase):
             return os.path.join(root, project_file)
         else:
             return root
-
-    def setUp(self):
-        logging.disable(logging.CRITICAL)
-        super(BaseTest, self).setUp()

@@ -22,9 +22,8 @@ from vitrage.tests.unit.entity_graph.processor import base
 
 class TestEntityGraphManager(base.TestBaseProcessor):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestEntityGraphManager, cls).setUpClass()
+    def setUp(self):
+        super(TestEntityGraphManager, self).setUp()
 
     def test_delete_placeholder_vertex(self):
         entity_graph = NXGraph("Entity Graph")

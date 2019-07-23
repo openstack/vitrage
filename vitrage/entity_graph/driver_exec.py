@@ -15,6 +15,7 @@ from collections import defaultdict
 import threading
 import time
 
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 
@@ -22,18 +23,18 @@ from vitrage.common.constants import DatasourceAction
 from vitrage.datasources import utils
 from vitrage import messaging
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class DriverExec(object):
 
-    def __init__(self, conf, process_output_func, persist):
-        self.conf = conf
+    def __init__(self, process_output_func, persist):
         self.process_output_func = process_output_func
         self.persist = persist
 
     def snapshot_get_all(self, action=DatasourceAction.INIT_SNAPSHOT):
-        driver_names = self.conf.datasources.types
+        driver_names = CONF.datasources.types
         LOG.info('get_all starting for %s', driver_names)
         t1 = time.time()
         events_count = 0
@@ -46,7 +47,7 @@ class DriverExec(object):
     def get_all(self, driver_name, action):
         try:
             LOCK_BY_DRIVER.acquire(driver_name)
-            driver = utils.get_drivers_by_name(self.conf, [driver_name])[0]
+            driver = utils.get_drivers_by_name([driver_name])[0]
             LOG.info("run driver get_all: %s", driver_name)
             events = driver.get_all(action)
             count = self.process_output_func(events)
@@ -65,7 +66,7 @@ class DriverExec(object):
                      driver_name)
             return 0
         try:
-            driver = utils.get_drivers_by_name(self.conf, [driver_name])[0]
+            driver = utils.get_drivers_by_name([driver_name])[0]
             LOG.info("run driver get_changes: %s", driver_name)
             events = driver.get_changes(DatasourceAction.UPDATE)
             count = self.process_output_func(events)
@@ -81,23 +82,22 @@ class DriverExec(object):
 
 class DriversNotificationEndpoint(object):
 
-    def __init__(self, conf, processor_func):
-        self._conf = conf
+    def __init__(self, processor_func):
         self._processor_func = processor_func
         self._enrich_event_methods = defaultdict(list)
 
     def init(self):
-        driver_names = utils.get_push_drivers_names(self._conf)
-        push_drivers = utils.get_drivers_by_name(self._conf, driver_names)
+        driver_names = utils.get_push_drivers_names()
+        push_drivers = utils.get_drivers_by_name(driver_names)
         for driver in push_drivers:
             for event in driver.get_event_types():
                 self._enrich_event_methods[event].append(driver.enrich_event)
         return self
 
     def get_listener(self):
-        topics = self._conf.datasources.notification_topics
-        exchange = self._conf.datasources.notification_exchange
-        transport = messaging.get_transport(self._conf)
+        topics = CONF.datasources.notification_topics
+        exchange = CONF.datasources.notification_exchange
+        transport = messaging.get_transport()
         targets = [oslo_messaging.Target(exchange=exchange, topic=topic)
                    for topic in topics]
 

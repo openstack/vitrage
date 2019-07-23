@@ -31,11 +31,10 @@ LOG = log.getLogger(__name__)
 
 class Processor(processor.ProcessorBase):
 
-    def __init__(self, conf, e_graph=None):
+    def __init__(self, e_graph=None):
         super(Processor, self).__init__()
-        self.conf = conf
-        self.transformer_manager = TransformerManager(self.conf)
-        self.info_mapper = DatasourceInfoMapper(self.conf)
+        self.transformer_manager = TransformerManager()
+        self.info_mapper = DatasourceInfoMapper()
         self._initialize_events_actions()
         self.entity_graph = e_graph
 

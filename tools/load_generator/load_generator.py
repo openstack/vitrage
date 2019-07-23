@@ -17,14 +17,17 @@ import sys
 import cotyledon
 from futurist import periodics
 from futurist import ThreadPoolExecutor
+
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 from tools.load_generator.notification_info import *  # noqa
 
+from vitrage.common import config
 from vitrage.messaging import get_transport
-from vitrage import service
 
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 EXISTING_COMPUTES_NUM = 64
@@ -62,12 +65,12 @@ to avoid Vitrage consistency deleting the created resources.
 
 
 class StressNotificationsService(cotyledon.Service):
-    def __init__(self, worker_id, conf):
+    def __init__(self, worker_id):
         super(StressNotificationsService, self).__init__(worker_id)
         self.oslo_notifier = None
-        topics = conf.datasources.notification_topics
+        topics = CONF.datasources.notification_topics
         self.oslo_notifier = oslo_messaging.Notifier(
-            get_transport(conf),
+            get_transport(),
             driver='messagingv2',
             publisher_id='vitrage.stress',
             topics=topics)
@@ -141,9 +144,9 @@ def create_vm(instance_num, compute_num):
 
 
 def main():
-    conf = service.prepare_service()
+    config.parse_config(sys.argv)
     sm = cotyledon.ServiceManager()
-    sm.add(StressNotificationsService, args=(conf,))
+    sm.add(StressNotificationsService)
     sm.run()
 
 

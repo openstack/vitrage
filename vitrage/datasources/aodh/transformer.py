@@ -38,9 +38,6 @@ class AodhTransformer(AlarmTransformerBase):
         AodhEventType.DELETION: GraphAction.DELETE_ENTITY,
     }
 
-    def __init__(self, transformers, conf):
-        super(AodhTransformer, self).__init__(transformers, conf)
-
     def _create_snapshot_entity_vertex(self, entity_event):
         if _is_vitrage_alarm(entity_event):
             return self._create_merge_alarm_vertex(entity_event)

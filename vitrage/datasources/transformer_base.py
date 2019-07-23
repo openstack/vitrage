@@ -17,6 +17,7 @@ import abc
 from collections import namedtuple
 import six
 
+from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_utils import uuidutils
 
@@ -35,6 +36,7 @@ import vitrage.graph.utils as graph_utils
 from vitrage.utils import datetime as datetime_utils
 from vitrage.utils import opt_exists
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 EntityWrapper = \
@@ -109,8 +111,7 @@ class TransformerBase(object):
 
     key_to_uuid_cache = {}
 
-    def __init__(self, transformers, conf):
-        self.conf = conf
+    def __init__(self, transformers):
         self.transformers = transformers
 
     def transform(self, entity_event):
@@ -138,11 +139,11 @@ class TransformerBase(object):
 
     def _create_entity_vertex(self, entity_event):
         if is_update_event(entity_event) and \
-                opt_exists(self.conf, self.get_vitrage_type()) and \
-                opt_exists(self.conf[self.get_vitrage_type()],
+                opt_exists(CONF, self.get_vitrage_type()) and \
+                opt_exists(CONF[self.get_vitrage_type()],
                            DSOpts.UPDATE_METHOD):
             update_method = \
-                self.conf[self.get_vitrage_type()].update_method.lower()
+                CONF[self.get_vitrage_type()].update_method.lower()
             if update_method == UpdateMethod.PUSH:
                 vertex = self._create_update_entity_vertex(entity_event)
                 return self.update_uuid_in_vertex(vertex)

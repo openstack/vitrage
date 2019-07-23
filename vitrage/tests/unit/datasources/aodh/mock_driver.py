@@ -20,8 +20,5 @@ class MockAodhDriver(AodhDriver):
 
     """
 
-    def __init__(self, conf):
-        super(MockAodhDriver, self).__init__(conf)
-
     def _cache_all_alarms(self):
         pass

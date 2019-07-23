@@ -20,8 +20,5 @@ class MockCeilometerDriver(CeilometerDriver):
 
     """
 
-    def __init__(self, conf):
-        super(MockCeilometerDriver, self).__init__(conf)
-
     def _cache_all_alarms(self):
         pass

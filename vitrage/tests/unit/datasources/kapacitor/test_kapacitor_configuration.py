@@ -42,12 +42,9 @@ class TestKapacitorConfig(base.BaseTest):
                         + '/kapacitor/kapacitor_conf.yaml'),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestKapacitorConfig, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=KAPACITOR_DATASOURCE)
+    def setUp(self):
+        super(TestKapacitorConfig, self).setUp()
+        self.conf_reregister_opts(self.OPTS, group=KAPACITOR_DATASOURCE)
 
     def test_get_vitrage_resource(self):
         """Test the resource returned after processing a list of mappings
@@ -55,7 +52,7 @@ class TestKapacitorConfig(base.BaseTest):
         :return:
         """
         # Action
-        kapacitor_conf = KapacitorConfig(self.conf)
+        kapacitor_conf = KapacitorConfig()
 
         # Test assertions
         mapped_resource = kapacitor_conf.get_vitrage_resource(None)

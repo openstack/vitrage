@@ -11,6 +11,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from oslo_config import cfg
 from oslo_log import log as logging
 
 from vitrage.common.constants import DatasourceProperties as DSProps
@@ -32,13 +33,11 @@ from vitrage.datasources.kubernetes.properties import \
     KubernetesProperties as kubProp
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = logging.getLogger(__name__)
 
 
 class KubernetesTransformer(ResourceTransformerBase):
-    def __init__(self, transformers, conf):
-        super(KubernetesTransformer, self).__init__(transformers, conf)
-        self.conf = conf
 
     def _create_vertex(self, entity_event):
         metadata = {
@@ -84,7 +83,7 @@ class KubernetesTransformer(ResourceTransformerBase):
         return KUBERNETES_DATASOURCE
 
     def _get_cluster_name(self):
-        kubeconf = file_utils.load_yaml_file(self.conf.kubernetes.config_file)
+        kubeconf = file_utils.load_yaml_file(CONF.kubernetes.config_file)
         if not kubeconf:
             return None
         contexts = kubeconf['contexts']

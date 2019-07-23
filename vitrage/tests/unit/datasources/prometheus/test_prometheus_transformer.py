@@ -46,18 +46,16 @@ class PrometheusTransformerTest(BaseAlarmTransformerTest):
                    default=UpdateMethod.PUSH),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        cls.transformers = {}
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=PROMETHEUS_DATASOURCE)
-        cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
-        cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
-        cls.transformers[PROMETHEUS_DATASOURCE] = \
-            PrometheusTransformer(cls.transformers, cls.conf)
+    def setUp(self):
+        super(PrometheusTransformerTest, self).setUp()
+        self.transformers = {}
+        self.conf_reregister_opts(self.OPTS, group=PROMETHEUS_DATASOURCE)
+        self.transformers[NOVA_HOST_DATASOURCE] = \
+            HostTransformer(self.transformers)
+        self.transformers[NOVA_INSTANCE_DATASOURCE] = \
+            InstanceTransformer(self.transformers)
+        self.transformers[PROMETHEUS_DATASOURCE] = \
+            PrometheusTransformer(self.transformers)
 
     def test_create_update_entity_vertex(self):
         # Test setup

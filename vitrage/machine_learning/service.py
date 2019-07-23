@@ -12,7 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging as oslo_m
 from oslo_utils import importutils
@@ -21,18 +21,18 @@ from vitrage.coordination import service as coord
 from vitrage import messaging
 from vitrage.opts import register_opts
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class MachineLearningService(coord.Service):
 
-    def __init__(self, worker_id, conf):
-        super(MachineLearningService, self).__init__(worker_id, conf)
-        self.conf = conf
-        self.machine_learning_plugins = self.get_machine_learning_plugins(conf)
-        transport = messaging.get_transport(conf)
+    def __init__(self, worker_id):
+        super(MachineLearningService, self).__init__(worker_id)
+        self.machine_learning_plugins = self.get_machine_learning_plugins()
+        transport = messaging.get_transport()
         target = \
-            oslo_m.Target(topic=conf.machine_learning.machine_learning_topic)
+            oslo_m.Target(topic=CONF.machine_learning.machine_learning_topic)
         self.listener = messaging.get_notification_listener(
             transport, [target],
             [VitrageEventEndpoint(self.machine_learning_plugins)])
@@ -55,21 +55,21 @@ class MachineLearningService(coord.Service):
         LOG.info("Vitrage Machine Learning Service - Stopped!")
 
     @staticmethod
-    def get_machine_learning_plugins(conf):
+    def get_machine_learning_plugins():
         machine_learning_plugins = []
         machine_learning_plugins_names = \
-            conf.machine_learning.plugins
+            CONF.machine_learning.plugins
         if not machine_learning_plugins_names:
             LOG.info('There are no Machine Learning plugins in configuration')
             return []
         for machine_learning_plugin_name in machine_learning_plugins_names:
-            register_opts(conf, machine_learning_plugin_name,
-                          conf.machine_learning.plugins_path)
+            register_opts(machine_learning_plugin_name,
+                          CONF.machine_learning.plugins_path)
             LOG.info('Machine Learning plugin %s started',
                      machine_learning_plugin_name)
             machine_learning_plugins.append(importutils.import_object(
-                conf[machine_learning_plugin_name].plugin_path,
-                conf))
+                CONF[machine_learning_plugin_name].plugin_path,
+                CONF))
         return machine_learning_plugins
 
 

@@ -19,8 +19,7 @@ LOG = log.getLogger(__name__)
 
 class OperationalApis(object):
 
-    def __init__(self, conf, graph):
-        self.conf = conf
+    def __init__(self, graph):
         self.graph = graph
 
     def is_alive(self, ctx):

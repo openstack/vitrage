@@ -43,7 +43,7 @@ class TestConsistencyTransformer(base.BaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=CONSISTENCY_DATASOURCE)
         cls.transformers[CONSISTENCY_DATASOURCE] = \
-            ConsistencyTransformer(cls.transformers, cls.conf)
+            ConsistencyTransformer(cls.transformers)
         cls.actions = [GraphAction.DELETE_ENTITY,
                        GraphAction.REMOVE_DELETED_ENTITY]
 

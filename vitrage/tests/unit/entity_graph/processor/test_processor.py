@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from testtools import matchers
 
 from vitrage.common.constants import DatasourceAction as DSAction
@@ -40,18 +39,13 @@ class TestProcessor(TestEntityGraphUnitBase):
     NUM_EDGES_AFTER_DELETION = 0
 
     # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestProcessor, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.conf.register_opts(cls.OS_CLIENTS_OPTS)
-        cls.load_datasources(cls.conf)
+    def setUp(self):
+        super(TestProcessor, self).setUp()
+        self.load_datasources()
 
     def test_process_event(self):
         # check create instance event
-        processor = self.create_processor_and_graph(self.conf)
+        processor = self.create_processor_and_graph()
         event = self._create_event(spec_type=self.INSTANCE_SPEC,
                                    datasource_action=DSAction.INIT_SNAPSHOT)
         processor.process_event(event)

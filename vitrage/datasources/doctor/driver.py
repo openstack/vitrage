@@ -32,9 +32,8 @@ LOG = log.getLogger(__name__)
 class DoctorDriver(AlarmDriverBase):
     AlarmKey = namedtuple('AlarmKey', ['alarm_name', 'hostname'])
 
-    def __init__(self, conf):
+    def __init__(self):
         super(DoctorDriver, self).__init__()
-        self.conf = conf
         self._client = None
 
     def _vitrage_type(self):

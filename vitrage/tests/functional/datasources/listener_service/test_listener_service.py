@@ -35,10 +35,6 @@ class MyTestDriver(DriverBase):
 
 class TestListenerService(base.BaseTest):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestListenerService, cls).setUpClass()
-
     def _add_event_to_actual_events(self, events):
         self.actual_events.extend(events)
 
@@ -62,7 +58,6 @@ class TestListenerService(base.BaseTest):
         my_test_driver = MyTestDriver()
         enrich_callbacks_by_events = {"mock": [my_test_driver.enrich_event]}
         endpoint = DriversNotificationEndpoint(
-            None,
             self._add_event_to_actual_events)
         endpoint._enrich_event_methods = enrich_callbacks_by_events
 

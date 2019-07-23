@@ -41,18 +41,13 @@ class TestCollectdTransformer(BaseAlarmTransformerTest):
                    default=UpdateMethod.PUSH),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestCollectdTransformer, cls).setUpClass()
-        cls.transformers = {}
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=COLLECTD_DATASOURCE)
-        cls.conf.register_opts(cls.OPTS, group=NOVA_HOST_DATASOURCE)
-        cls.transformers[COLLECTD_DATASOURCE] = \
-            CollectdTransformer(cls.transformers, cls.conf)
-        cls.transformers[NOVA_HOST_DATASOURCE] = \
-            HostTransformer(cls.transformers, cls.conf)
+    def setUp(self):
+        super(TestCollectdTransformer, self).setUp()
+        self.transformers = {}
+        self.transformers[COLLECTD_DATASOURCE] = \
+            CollectdTransformer(self.transformers)
+        self.transformers[NOVA_HOST_DATASOURCE] = \
+            HostTransformer(self.transformers)
 
     def test_create_update_entity_vertex(self):
         # Test setup

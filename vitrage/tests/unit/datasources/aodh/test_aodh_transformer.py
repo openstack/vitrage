@@ -45,7 +45,7 @@ class TestAodhAlarmTransformer(AodhTransformerBaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=AODH_DATASOURCE)
         cls.transformers[AODH_DATASOURCE] = \
-            AodhTransformer(cls.transformers, cls.conf)
+            AodhTransformer(cls.transformers)
 
     def test_key_values_with_vitrage_alarm(self):
         LOG.debug('Aodh transformer test: get key values(vitrage_alarm)')
@@ -126,7 +126,7 @@ class TestAodhAlarmPushTransformer(AodhTransformerBaseTest):
         cls.conf = cfg.ConfigOpts()
         cls.conf.register_opts(cls.OPTS, group=AODH_DATASOURCE)
         cls.transformers[AODH_DATASOURCE] = \
-            AodhTransformer(cls.transformers, cls.conf)
+            AodhTransformer(cls.transformers)
 
     def test_update_transform(self):
         LOG.debug('Aodh update alarm transformer test:'

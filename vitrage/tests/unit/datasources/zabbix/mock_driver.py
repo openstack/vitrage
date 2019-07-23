@@ -30,8 +30,8 @@ class MockZabbixDriver(ZabbixDriver):
     def enrich_event(self, event, event_type):
         pass
 
-    def __init__(self, conf):
-        super(MockZabbixDriver, self).__init__(conf)
+    def __init__(self):
+        super(MockZabbixDriver, self).__init__()
         self.alarm_datas = None
 
     def set_alarm_datas(self, alarm_datas):

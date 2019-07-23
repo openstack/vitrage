@@ -42,7 +42,7 @@ class AodhDriverTest(base.BaseTest):
 
     def test_event_alarm_notifications(self):
 
-        aodh_driver = MockAodhDriver(self.conf)
+        aodh_driver = MockAodhDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data
@@ -183,7 +183,7 @@ class AodhDriverTest(base.BaseTest):
         self.assertIsNone(entity)
 
     def test_gnocchi_threshold_alarm_notifications(self):
-        aodh_driver = MockAodhDriver(self.conf)
+        aodh_driver = MockAodhDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data
@@ -314,7 +314,7 @@ class AodhDriverTest(base.BaseTest):
         self.assertIsNone(entity)
 
     def test_gnocchi_aggregation_by_metrics_alarm_notifications(self):
-        aodh_driver = MockAodhDriver(self.conf)
+        aodh_driver = MockAodhDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data
@@ -448,7 +448,7 @@ class AodhDriverTest(base.BaseTest):
         self.assertIsNone(entity)
 
     def test_gnocchi_aggregation_by_resource_alarm_notifications(self):
-        aodh_driver = MockAodhDriver(self.conf)
+        aodh_driver = MockAodhDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data
@@ -583,7 +583,7 @@ class AodhDriverTest(base.BaseTest):
         self.assertIsNone(entity)
 
     def test_composite_alarm_notifications(self):
-        aodh_driver = MockAodhDriver(self.conf)
+        aodh_driver = MockAodhDriver()
 
         # 1. alarm creation with 'ok' state
         # prepare data

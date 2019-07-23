@@ -18,13 +18,12 @@ from vitrage import os_clients
 
 
 class NeutronBase(DriverBase):
-    def __init__(self, conf):
+    def __init__(self):
         super(NeutronBase, self).__init__()
         self._client = None
-        self.conf = conf
 
     @property
     def client(self):
         if not self._client:
-            self._client = os_clients.neutron_client(self.conf)
+            self._client = os_clients.neutron_client()
         return self._client

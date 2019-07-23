@@ -16,6 +16,7 @@ import socket
 
 from collections import namedtuple
 from ipaddress import ip_address
+from oslo_config import cfg
 from oslo_log import log
 import requests
 import six
@@ -46,6 +47,7 @@ from vitrage.datasources.prometheus.properties \
 from vitrage import os_clients
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 PROMETHEUS_EVENT_TYPE = 'prometheus.alarm'
@@ -132,17 +134,16 @@ class PrometheusDriver(AlarmDriverBase):
                                        PCFProps.RESOURCE])
     conf_map = {}
 
-    def __init__(self, conf):
+    def __init__(self):
         super(PrometheusDriver, self).__init__()
-        self.conf = conf
         self._client = None
         self._nova_client = None
-        self.conf_map = self._configuration_mapping(conf)
+        self.conf_map = self._configuration_mapping()
 
     @property
     def nova_client(self):
         if not self._nova_client:
-            self._nova_client = os_clients.nova_client(self.conf)
+            self._nova_client = os_clients.nova_client()
         return self._nova_client
 
     def _vitrage_type(self):
@@ -167,8 +168,8 @@ class PrometheusDriver(AlarmDriverBase):
             old_alarm.get(PAlertProps.STATUS)
 
     def _get_all_alarms(self):
-        alertmanager_url = self.conf.prometheus.alertmanager_url
-        receiver = self.conf.prometheus.receiver
+        alertmanager_url = CONF.prometheus.alertmanager_url
+        receiver = CONF.prometheus.receiver
         if not alertmanager_url:
             LOG.warning('Alertmanager url is not defined')
             return []
@@ -209,8 +210,8 @@ class PrometheusDriver(AlarmDriverBase):
         return []
 
     @staticmethod
-    def _configuration_mapping(conf):
-        prometheus_config_file = conf.prometheus[DSOpts.CONFIG_FILE]
+    def _configuration_mapping():
+        prometheus_config_file = CONF.prometheus[DSOpts.CONFIG_FILE]
         try:
             prometheus_config = \
                 file_utils.load_yaml_file(prometheus_config_file)

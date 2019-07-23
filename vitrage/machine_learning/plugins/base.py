@@ -19,9 +19,6 @@ import six
 @six.add_metaclass(abc.ABCMeta)
 class MachineLearningBase(object):
 
-    def __init__(self, conf):
-        self.conf = conf
-
     @abc.abstractmethod
     def process_event(self, data, event_type):
         pass

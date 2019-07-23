@@ -35,6 +35,9 @@ from vitrage.tests.mocks import utils
 from vitrage.utils.datetime import utcnow
 
 
+CONF = cfg.CONF
+
+
 class TestEntityGraphUnitBase(base.BaseTest):
 
     PROCESSOR_OPTS = [
@@ -73,16 +76,20 @@ class TestEntityGraphUnitBase(base.BaseTest):
     NUM_HOSTS = 4
     NUM_INSTANCES = 16
 
-    @staticmethod
-    def load_datasources(conf):
-        for datasource in conf.datasources.types:
-            register_opts(conf, datasource, conf.datasources.path)
+    def setUp(self):
+        super(TestEntityGraphUnitBase, self).setUp()
+        self.conf_reregister_opts(self.DATASOURCES_OPTS, 'datasources')
+        self.conf_reregister_opts(self.PROCESSOR_OPTS, 'entity_graph')
 
-    def _create_processor_with_graph(self, conf, processor=None):
+    def load_datasources(self):
+        for datasource in CONF.datasources.types:
+            register_opts(datasource, CONF.datasources.path)
+
+    def _create_processor_with_graph(self, processor=None):
         events = self._create_mock_events()
 
         if not processor:
-            processor = self.create_processor_and_graph(conf)
+            processor = self.create_processor_and_graph()
 
         for event in events:
             processor.process_event(event)
@@ -124,7 +131,7 @@ class TestEntityGraphUnitBase(base.BaseTest):
 
         # add instance entity with host
         if processor is None:
-            processor = self.create_processor_and_graph(self.conf)
+            processor = self.create_processor_and_graph()
 
         vertex, neighbors, event_type = processor.transformer_manager\
             .transform(event)
@@ -133,9 +140,9 @@ class TestEntityGraphUnitBase(base.BaseTest):
         return vertex, neighbors, processor
 
     @staticmethod
-    def create_processor_and_graph(conf):
+    def create_processor_and_graph():
         e_graph = NXGraph("Entity Graph")
-        return proc.Processor(conf, e_graph=e_graph)
+        return proc.Processor(e_graph=e_graph)
 
     @staticmethod
     def _create_event(spec_type=None,

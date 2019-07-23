@@ -14,6 +14,7 @@
 
 from datetime import timedelta
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import DatasourceAction
@@ -30,18 +31,17 @@ from vitrage.evaluator.actions.evaluator_event_transformer \
 from vitrage.messaging import VitrageNotifier
 from vitrage.utils.datetime import utcnow
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class ConsistencyEnforcer(object):
 
     def __init__(self,
-                 conf,
                  entity_graph,
                  actions_callback=None):
-        self.conf = conf
         self.actions_callback = actions_callback or VitrageNotifier(
-            conf, 'vitrage_consistency', [EVALUATOR_TOPIC]).notify
+            'vitrage_consistency', [EVALUATOR_TOPIC]).notify
         self.graph = entity_graph
         self._init_datasources_to_mark_deleted()
 
@@ -73,7 +73,7 @@ class ConsistencyEnforcer(object):
 
     def _find_outdated_entities_to_mark_as_deleted(self):
         vitrage_sample_tstmp = str(utcnow() - timedelta(
-            seconds=2 * self.conf.datasources.snapshots_interval))
+            seconds=2 * CONF.datasources.snapshots_interval))
         query = {
             'and': [
                 {'!=': {VProps.VITRAGE_TYPE: VITRAGE_DATASOURCE}},
@@ -87,7 +87,7 @@ class ConsistencyEnforcer(object):
 
     def _find_old_deleted_entities(self):
         vitrage_sample_tstmp = str(utcnow() - timedelta(
-            seconds=self.conf.consistency.min_time_to_delete))
+            seconds=CONF.consistency.min_time_to_delete))
         query = {
             'and': [
                 {'==': {VProps.VITRAGE_IS_DELETED: True}},
@@ -140,8 +140,8 @@ class ConsistencyEnforcer(object):
     def _init_datasources_to_mark_deleted(self):
         self.datasources_to_mark_deleted = []
 
-        for driver_name in self.conf.datasources.types:
-            driver_class = utils.get_driver_class(self.conf, driver_name)
+        for driver_name in CONF.datasources.types:
+            driver_class = utils.get_driver_class(driver_name)
             if driver_class.should_delete_outdated_entities():
                 self.datasources_to_mark_deleted.append(driver_name)
 

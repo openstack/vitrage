@@ -55,9 +55,9 @@ class BaseNovaInstanceTransformerTest(base.BaseTest):
         cls.conf.register_opts(cls.OPTS, group=NOVA_INSTANCE_DATASOURCE)
         cls.conf.register_opts(cls._get_default_group_opts())
         cls.transformers[NOVA_HOST_DATASOURCE] = HostTransformer(
-            cls.transformers, cls.conf)
+            cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
-            InstanceTransformer(cls.transformers, cls.conf)
+            InstanceTransformer(cls.transformers)
 
     def _test_create_placeholder_vertex(self):
         LOG.debug('Test create placeholder vertex')

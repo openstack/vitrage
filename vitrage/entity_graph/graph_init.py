@@ -14,6 +14,7 @@
 import threading
 import time
 
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 
@@ -33,24 +34,23 @@ from vitrage.graph.driver.networkx_graph import NXGraph
 from vitrage import messaging
 from vitrage import storage
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class VitrageGraphInit(object):
-    def __init__(self, conf, workers):
-        self.conf = conf
-        self.graph = get_graph_driver(conf)('Entity Graph')
-        self.db = db_connection = storage.get_connection_from_config(conf)
+    def __init__(self, workers):
+        self.graph = get_graph_driver()('Entity Graph')
+        self.db = db_connection = storage.get_connection_from_config()
         self.workers = workers
-        self.events_coordination = EventsCoordination(conf, self.process_event)
-        self.persist = GraphPersistency(conf, db_connection, self.graph)
+        self.events_coordination = EventsCoordination(self.process_event)
+        self.persist = GraphPersistency(db_connection, self.graph)
         self.driver_exec = driver_exec.DriverExec(
-            self.conf,
             self.events_coordination.handle_multiple_low_priority,
             self.persist)
-        self.scheduler = Scheduler(conf, self.graph, self.driver_exec,
+        self.scheduler = Scheduler(self.graph, self.driver_exec,
                                    self.persist)
-        self.processor = Processor(conf, self.graph)
+        self.processor = Processor(self.graph)
 
     def run(self):
         LOG.info('Init Started')
@@ -114,7 +114,7 @@ class VitrageGraphInit(object):
 
     def _add_graph_subscriptions(self):
         self.graph.subscribe(self.workers.submit_graph_update)
-        vitrage_notifier = GraphNotifier(self.conf)
+        vitrage_notifier = GraphNotifier()
         if vitrage_notifier.enabled:
             self.graph.subscribe(vitrage_notifier.notify_when_applicable)
             LOG.info('Subscribed vitrage notifier to graph changes')
@@ -122,14 +122,13 @@ class VitrageGraphInit(object):
                              finalization=True)
 
     def subscribe_presist_notifier(self):
-        self.graph.subscribe(PersistNotifier(self.conf).notify_when_applicable)
+        self.graph.subscribe(PersistNotifier().notify_when_applicable)
 
 PRIORITY_DELAY = 0.05
 
 
 class EventsCoordination(object):
-    def __init__(self, conf, do_work_func):
-        self._conf = conf
+    def __init__(self, do_work_func):
         self._lock = threading.Lock()
         self._high_event_finish_time = 0
 
@@ -146,7 +145,6 @@ class EventsCoordination(object):
 
     def start(self):
         self._low_pri_listener = driver_exec.DriversNotificationEndpoint(
-            self._conf,
             self.handle_multiple_low_priority).init().get_listener()
         self._high_pri_listener = self._init_listener(
             EVALUATOR_TOPIC,
@@ -191,7 +189,7 @@ class EventsCoordination(object):
         if not topic:
             return
         return messaging.get_notification_listener(
-            transport=messaging.get_transport(self._conf),
+            transport=messaging.get_transport(),
             targets=[oslo_messaging.Target(topic=topic)],
             endpoints=[PushNotificationsEndpoint(callback)])
 

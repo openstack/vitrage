@@ -11,11 +11,12 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging as oslo_msg
 
-# from oslo_messaging import serializer as oslo_serializer
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 DEFAULT_URL = "__default__"
@@ -28,11 +29,11 @@ def setup():
     oslo_msg.set_transport_defaults('vitrage')
 
 
-def get_rpc_transport(conf, url=None, optional=False, cache=True):
-    return get_transport(conf, url, optional, cache, rpc=True)
+def get_rpc_transport(url=None, optional=False, cache=True):
+    return get_transport(url, optional, cache, rpc=True)
 
 
-def get_transport(conf, url=None, optional=False, cache=True, rpc=False):
+def get_transport(url=None, optional=False, cache=True, rpc=False):
     """Initialise the oslo_messaging layer."""
     global TRANSPORTS, DEFAULT_URL
     cache_key = url or DEFAULT_URL + '_rpc' if rpc else ''
@@ -40,9 +41,9 @@ def get_transport(conf, url=None, optional=False, cache=True, rpc=False):
     if not transport or not cache:
         try:
             if rpc:
-                transport = oslo_msg.get_rpc_transport(conf, url)
+                transport = oslo_msg.get_rpc_transport(CONF, url)
             else:
-                transport = oslo_msg.get_notification_transport(conf, url)
+                transport = oslo_msg.get_notification_transport(CONF, url)
         except oslo_msg.InvalidTransportURL as e:
             if not optional or e.url:
                 # NOTE(sileht): oslo_messaging is configured but unloadable
@@ -65,8 +66,8 @@ def get_notification_listener(transport, targets, endpoints,
 
 class VitrageNotifier(object):
     """Allows writing to message bus"""
-    def __init__(self, conf, publisher_id, topics):
-        transport = get_transport(conf)
+    def __init__(self, publisher_id, topics):
+        transport = get_transport()
         self.notifier = oslo_msg.Notifier(
             transport,
             driver='messagingv2',

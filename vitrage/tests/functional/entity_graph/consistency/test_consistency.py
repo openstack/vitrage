@@ -56,21 +56,16 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
                    ),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestConsistencyFunctional, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.CONSISTENCY_OPTS, group='consistency')
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.EVALUATOR_OPTS, group='evaluator')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.add_db(cls.conf)
-        cls.load_datasources(cls.conf)
-        cls.graph = NXGraph("Entity Graph")
-        cls.processor = Processor(cls.conf, cls.graph)
+    def setUp(self):
+        super(TestConsistencyFunctional, self).setUp()
+        self.conf_reregister_opts(self.CONSISTENCY_OPTS, 'consistency')
+        self.conf_reregister_opts(self.EVALUATOR_OPTS, 'evaluator')
+        self.add_db()
+        self.load_datasources()
+        self.graph = NXGraph("Entity Graph")
+        self.processor = Processor(self.graph)
 
-        cls.event_queue = queue.Queue()
+        self.event_queue = queue.Queue()
 
         def actions_callback(event_type, data):
             """Mock notify method
@@ -80,16 +75,14 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
             :param event_type: is currently always the same and is ignored
             :param data:
             """
-            cls.event_queue.put(data)
+            self.event_queue.put(data)
 
-        scenario_repo = ScenarioRepository(cls.conf)
-        cls.evaluator = ScenarioEvaluator(cls.conf,
-                                          cls.processor.entity_graph,
-                                          scenario_repo,
-                                          actions_callback)
-        cls.consistency_enforcer = ConsistencyEnforcer(
-            cls.conf,
-            cls.processor.entity_graph,
+        scenario_repo = ScenarioRepository()
+        self.evaluator = ScenarioEvaluator(self.processor.entity_graph,
+                                           scenario_repo,
+                                           actions_callback)
+        self.consistency_enforcer = ConsistencyEnforcer(
+            self.processor.entity_graph,
             actions_callback)
 
     def test_periodic_process(self):
@@ -206,7 +199,7 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
                         matchers.HasLength(num_marked_deleted))
 
     def _periodic_process_setup_stage(self, consistency_interval):
-        self._create_processor_with_graph(self.conf, processor=self.processor)
+        self._create_processor_with_graph(processor=self.processor)
         current_time = utcnow()
 
         # set all vertices to be have timestamp that consistency won't get

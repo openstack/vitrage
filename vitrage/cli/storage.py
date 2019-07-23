@@ -12,21 +12,23 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import sys
+
 from vitrage.cli import VITRAGE_TITLE
-from vitrage import service
+from vitrage.common import config
 from vitrage import storage
 
 
 def dbsync():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
-    storage.get_connection_from_config(conf).upgrade()
+    config.parse_config(sys.argv)
+    storage.get_connection_from_config().upgrade()
 
 
 def purge_data():
     print(VITRAGE_TITLE)
-    conf = service.prepare_service()
-    db = storage.get_connection_from_config(conf)
+    config.parse_config(sys.argv)
+    db = storage.get_connection_from_config()
     db.active_actions.delete()
     db.events.delete()
     db.graph_snapshots.delete()

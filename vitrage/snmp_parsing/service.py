@@ -14,6 +14,7 @@
 
 from datetime import datetime
 
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
 from oslo_utils import uuidutils
@@ -32,18 +33,18 @@ from vitrage.messaging import get_transport
 from vitrage.snmp_parsing.properties import SnmpEventProperties as SEProps
 from vitrage.utils.file import load_yaml_file
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class SnmpParsingService(coord.Service):
     RUN_FOREVER = 1
 
-    def __init__(self, worker_id, conf):
-        super(SnmpParsingService, self).__init__(worker_id, conf)
-        self.conf = conf
-        self.listening_port = conf.snmp_parsing.snmp_listening_port
+    def __init__(self, worker_id):
+        super(SnmpParsingService, self).__init__(worker_id)
+        self.listening_port = CONF.snmp_parsing.snmp_listening_port
         self.oid_mapping = \
-            load_yaml_file(self.conf.snmp_parsing.oid_mapping)
+            load_yaml_file(CONF.snmp_parsing.oid_mapping)
         self._init_oslo_notifier()
 
     def run(self):
@@ -120,7 +121,7 @@ class SnmpParsingService(coord.Service):
         try:
             self.publisher = 'vitrage-snmp-parsing'
             self.oslo_notifier = oslo_messaging.Notifier(
-                get_transport(self.conf),
+                get_transport(),
                 driver='messagingv2',
                 publisher_id=self.publisher,
                 topics=['vitrage_notifications'])

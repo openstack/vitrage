@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import DatasourceAction
@@ -24,17 +25,17 @@ from vitrage.datasources.collectd.properties\
     import CollectdProperties as CProps
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class CollectdDriver(AlarmDriverBase):
     conf_map = None
 
-    def __init__(self, conf):
+    def __init__(self):
         super(CollectdDriver, self).__init__()
-        self.conf = conf
         if not CollectdDriver.conf_map:
-            mapper = CollectdDriver._configuration_mapping(conf)
+            mapper = CollectdDriver._configuration_mapping()
             if mapper:
                 CollectdDriver.conf_map = CollectdMapper(mapper)
 
@@ -59,9 +60,9 @@ class CollectdDriver(AlarmDriverBase):
             and alarm[CProps.RESOURCE_NAME] is not None
 
     @staticmethod
-    def _configuration_mapping(conf):
+    def _configuration_mapping():
         try:
-            collectd_config_file = conf.collectd[DSOpts.CONFIG_FILE]
+            collectd_config_file = CONF.collectd[DSOpts.CONFIG_FILE]
             collectd_config = file_utils.load_yaml_file(collectd_config_file)
             collectd_config_elements = collectd_config[COLLECTD_DATASOURCE]
 

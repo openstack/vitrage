@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
 from six.moves import queue
 
 from vitrage.common.constants import DatasourceAction
@@ -48,17 +47,12 @@ from vitrage.tests.functional.test_configuration import TestConfiguration
 
 class TestActionExecutor(TestFunctionalBase, TestConfiguration):
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestActionExecutor, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.PROCESSOR_OPTS, group='entity_graph')
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.add_db(cls.conf)
+    def setUp(self):
+        super(TestActionExecutor, self).setUp()
+        self.add_db()
 
-        for vitrage_type in cls.conf.datasources.types:
-            register_opts(cls.conf, vitrage_type, cls.conf.datasources.path)
+        for datasource_name in self.conf.datasources.types:
+            register_opts(datasource_name, self.conf.datasources.path)
 
     def _init_executer(self):
         event_queue = queue.Queue()
@@ -66,12 +60,12 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
         def actions_callback(event_type, data):
             event_queue.put(data)
 
-        return event_queue, ActionExecutor(self.conf, actions_callback)
+        return event_queue, ActionExecutor(actions_callback)
 
     def test_execute_set_state(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_HOST_DATASOURCE}
         host_vertices = processor.entity_graph.get_vertices(
@@ -123,7 +117,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
     def test_execute_mark_instance_down(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_INSTANCE_DATASOURCE}
         instance_vertices = processor.entity_graph.get_vertices(
@@ -161,7 +155,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
     def test_execute_mark_down(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_HOST_DATASOURCE}
         host_vertices = processor.entity_graph.get_vertices(
@@ -199,7 +193,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
     def test_execute_add_edge(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_HOST_DATASOURCE}
         host_vertices = processor.entity_graph.get_vertices(
@@ -248,7 +242,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
     def test_execute_add_vertex(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_HOST_DATASOURCE}
         host_vertices = processor.entity_graph.get_vertices(
@@ -307,7 +301,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
     def test_execute_add_and_remove_vertex(self):
 
         # Test Setup
-        processor = self._create_processor_with_graph(self.conf)
+        processor = self._create_processor_with_graph()
 
         vertex_attrs = {VProps.VITRAGE_TYPE: NOVA_HOST_DATASOURCE}
         host_vertices = processor.entity_graph.get_vertices(

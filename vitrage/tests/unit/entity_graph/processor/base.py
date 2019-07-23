@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslo_config import cfg
-
 from vitrage.common.constants import VertexProperties as VProps
 from vitrage.entity_graph.processor import transformer_manager
 from vitrage.graph import driver as graph
@@ -22,14 +20,10 @@ from vitrage.tests.unit.entity_graph.base import TestEntityGraphUnitBase
 
 class TestBaseProcessor(TestEntityGraphUnitBase):
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestBaseProcessor, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.DATASOURCES_OPTS, group='datasources')
-        cls.load_datasources(cls.conf)
-        cls.transform = transformer_manager.TransformerManager(cls.conf)
+    def setUp(self):
+        super(TestBaseProcessor, self).setUp()
+        self.load_datasources()
+        self.transform = transformer_manager.TransformerManager()
 
     @staticmethod
     def _update_vertex_to_graph(entity_graph,

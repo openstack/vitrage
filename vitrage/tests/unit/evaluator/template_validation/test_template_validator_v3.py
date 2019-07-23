@@ -13,7 +13,6 @@
 # under the License.
 
 import json
-from oslo_config import cfg
 
 from vitrage.api_handler.apis.template import TemplateApis
 from vitrage.evaluator.actions.recipes import execute_mistral
@@ -26,12 +25,10 @@ from vitrage.utils import file as file_utils
 
 class TemplateValidatorV3Test(base.BaseTest, TestConfiguration):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TemplateValidatorV3Test, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.add_db(cls.conf)
-        cls.template_apis = TemplateApis(db=cls._db)
+    def setUp(self):
+        super(TemplateValidatorV3Test, self).setUp()
+        self.add_db()
+        self.template_apis = TemplateApis(db=self._db)
 
     def _test_validation(self, file=None, content=None, expected_code=0):
         if file and not content:

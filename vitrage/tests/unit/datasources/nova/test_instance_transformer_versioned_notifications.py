@@ -31,11 +31,6 @@ class NovaInstanceTransformerVersionedNotifTest(
                     default=True),
     ]
 
-    # noinspection PyAttributeOutsideInit,PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(NovaInstanceTransformerVersionedNotifTest, cls).setUpClass()
-
     def test_update_event_transform(self):
         LOG.debug('Test tactual transform action for update events')
 

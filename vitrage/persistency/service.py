@@ -20,6 +20,7 @@ from concurrent.futures import ThreadPoolExecutor
 import dateutil.parser
 from futurist import periodics
 
+from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging as oslo_m
 from oslo_utils import timeutils
@@ -35,21 +36,21 @@ from vitrage import messaging
 from vitrage.storage.sqlalchemy import models
 from vitrage.utils.datetime import utcnow
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class PersistorService(coord.Service):
-    def __init__(self, worker_id, conf, db_connection):
-        super(PersistorService, self).__init__(worker_id, conf)
-        self.conf = conf
+    def __init__(self, worker_id, db_connection):
+        super(PersistorService, self).__init__(worker_id)
         self.db_connection = db_connection
-        transport = messaging.get_transport(conf)
+        transport = messaging.get_transport()
         target = \
-            oslo_m.Target(topic=conf.persistency.persistor_topic)
+            oslo_m.Target(topic=CONF.persistency.persistor_topic)
         self.listener = messaging.get_notification_listener(
             transport, [target],
             [VitragePersistorEndpoint(self.db_connection)])
-        self.scheduler = Scheduler(conf, db_connection)
+        self.scheduler = Scheduler(db_connection)
 
     def run(self):
         super(PersistorService, self).run()
@@ -165,8 +166,7 @@ class VitragePersistorEndpoint(object):
 
 class Scheduler(object):
 
-    def __init__(self, conf, db):
-        self.conf = conf
+    def __init__(self, db):
         self.db = db
         self.periodic = None
 
@@ -202,7 +202,7 @@ class Scheduler(object):
         def expirer_periodic():
             expire_by = \
                 utcnow(with_timezone=False) - \
-                timedelta(days=self.conf.persistency.alarm_history_ttl)
+                timedelta(days=CONF.persistency.alarm_history_ttl)
             try:
                 self.db.alarms.delete_expired(expire_by)
             except Exception:

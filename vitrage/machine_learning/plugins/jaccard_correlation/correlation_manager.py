@@ -15,6 +15,7 @@
 import os
 import time
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.machine_learning.plugins.jaccard_correlation.\
@@ -23,17 +24,18 @@ from vitrage.machine_learning.plugins.jaccard_correlation.\
     correlation_collection import CorrelationPriorities as CPriorities
 
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 
 
 class CorrelationManager(object):
 
-    def __init__(self, conf):
-        self.high_corr_score = conf.jaccard_correlation.high_corr_score
-        self.med_corr_score = conf.jaccard_correlation.med_corr_score
+    def __init__(self):
+        self.high_corr_score = CONF.jaccard_correlation.high_corr_score
+        self.med_corr_score = CONF.jaccard_correlation.med_corr_score
         self.correlation_threshold = \
-            conf.jaccard_correlation.correlation_threshold
-        self.output_folder = conf.jaccard_correlation.output_folder
+            CONF.jaccard_correlation.correlation_threshold
+        self.output_folder = CONF.jaccard_correlation.output_folder
         self.last_written_file = ""
         self.correlation_table = CCollection(self.high_corr_score,
                                              self.med_corr_score)

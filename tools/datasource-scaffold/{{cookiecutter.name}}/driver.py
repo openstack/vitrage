@@ -22,9 +22,8 @@ LOG = log.getLogger(__name__)
 
 class {{cookiecutter.name|capitalize}}Driver(DriverBase):
 
-    def __init__(self, conf):
+    def __init__(self):
         super({{cookiecutter.name|capitalize}}Driver, self).__init__()
-        self.cfg = conf
 
     @staticmethod
     def get_event_types():

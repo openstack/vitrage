@@ -46,17 +46,10 @@ class TestKapacitorDriver(base.BaseTest):
                    + '/kapacitor/kapacitor_conf.yaml'),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(TestKapacitorDriver, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=KAPACITOR_DATASOURCE)
-
-    # noinspection PyAttributeOutsideInit
     def setUp(self):
         super(TestKapacitorDriver, self).setUp()
-        self.driver = KapacitorDriver(self.conf)
+        self.conf_reregister_opts(self.OPTS, group=KAPACITOR_DATASOURCE)
+        self.driver = KapacitorDriver()
 
     def test_enrich_event(self):
         # Test event on host

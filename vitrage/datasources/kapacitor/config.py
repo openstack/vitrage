@@ -14,11 +14,13 @@
 
 import re
 
+from oslo_config import cfg
 from oslo_log import log
 
 from vitrage.common.constants import DatasourceOpts as DSOpts
 from vitrage.utils import file as file_utils
 
+CONF = cfg.CONF
 LOG = log.getLogger(__name__)
 KAPACITOR_HOST = 'kapacitor_host'
 KAPACITOR = 'kapacitor'
@@ -30,9 +32,9 @@ VITRAGE_RESOURCE = 'vitrage_resource'
 
 
 class KapacitorConfig(object):
-    def __init__(self, conf):
+    def __init__(self):
         try:
-            kapacitor_config_file = conf.kapacitor[DSOpts.CONFIG_FILE]
+            kapacitor_config_file = CONF.kapacitor[DSOpts.CONFIG_FILE]
             kapacitor_config = file_utils.load_yaml_file(kapacitor_config_file)
             kapacitor = kapacitor_config[KAPACITOR]
 

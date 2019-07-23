@@ -29,8 +29,8 @@ class ConsistencyTransformer(ResourceTransformerBase):
         GraphAction.REMOVE_DELETED_ENTITY: GraphAction.REMOVE_DELETED_ENTITY
     }
 
-    def __init__(self, transformers, conf):
-        super(ConsistencyTransformer, self).__init__(transformers, conf)
+    def __init__(self, transformers):
+        super(ConsistencyTransformer, self).__init__(transformers)
 
     def _create_snapshot_entity_vertex(self, entity_event):
         return self._create_vertex(entity_event)

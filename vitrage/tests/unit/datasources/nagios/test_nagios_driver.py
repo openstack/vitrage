@@ -40,12 +40,9 @@ class NagiosDriverTest(NagiosBaseTest):
                    ),
     ]
 
-    # noinspection PyPep8Naming
-    @classmethod
-    def setUpClass(cls):
-        super(NagiosDriverTest, cls).setUpClass()
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=NAGIOS_DATASOURCE)
+    def setUp(self):
+        super(NagiosDriverTest, self).setUp()
+        self.conf_reregister_opts(self.OPTS, NAGIOS_DATASOURCE)
 
     def test_get_all(self):
         """Check get_all functionality.
@@ -55,7 +52,7 @@ class NagiosDriverTest(NagiosBaseTest):
         """
 
         # Setup
-        nagios_driver = MockNagiosDriver(self.conf)
+        nagios_driver = MockNagiosDriver()
 
         # Action
         service_data1 = {NagiosProps.RESOURCE_NAME: 'compute-0',
@@ -166,7 +163,7 @@ class NagiosDriverTest(NagiosBaseTest):
         """
 
         # Setup
-        nagios_driver = MockNagiosDriver(self.conf)
+        nagios_driver = MockNagiosDriver()
 
         # Action
         service_data1 = {NagiosProps.RESOURCE_NAME: 'compute-0',
@@ -291,7 +288,7 @@ class NagiosDriverTest(NagiosBaseTest):
         """Check get_changes and get_all functionalities """
 
         # Setup
-        nagios_driver = MockNagiosDriver(self.conf)
+        nagios_driver = MockNagiosDriver()
 
         # Action
         service_data1 = {NagiosProps.RESOURCE_NAME: 'compute-0',
@@ -448,7 +445,7 @@ class NagiosDriverTest(NagiosBaseTest):
         """Check get_all and get_changes with a deleted service"""
 
         # Setup
-        nagios_driver = MockNagiosDriver(self.conf)
+        nagios_driver = MockNagiosDriver()
 
         # Action
         service_data1 = {NagiosProps.RESOURCE_NAME: 'compute-0',

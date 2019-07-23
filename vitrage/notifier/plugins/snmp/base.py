@@ -20,9 +20,6 @@ import six
 class SnmpSenderBase(object):
     """Abstract Vitrage snmp trap sender"""
 
-    def __init__(self, conf):
-        self.conf = conf
-
     @abc.abstractmethod
     def send_snmp(self, alarm_data):
         pass
