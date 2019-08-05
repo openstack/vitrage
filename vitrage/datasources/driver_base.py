@@ -69,6 +69,7 @@ class DriverBase(object):
             cls._add_entity_type(entity, entity_type)
             cls._add_datasource_action(entity, datasource_action)
             cls._add_sampling_time(entity)
+            entity[VProps.VITRAGE_DATASOURCE_NAME] = cls._datasource_name
             yield entity
 
     @staticmethod

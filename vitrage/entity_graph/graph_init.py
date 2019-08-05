@@ -47,7 +47,7 @@ class VitrageGraphInit(object):
         self.persist = GraphPersistency(db_connection, self.graph)
         self.driver_exec = driver_exec.DriverExec(
             self.events_coordination.handle_multiple_low_priority,
-            self.persist)
+            self.persist, self.graph)
         self.scheduler = Scheduler(self.graph, self.driver_exec,
                                    self.persist)
         self.processor = Processor(self.graph)
@@ -181,6 +181,8 @@ class EventsCoordination(object):
 
     def handle_multiple_low_priority(self, events):
         index = 0
+        if events is None:
+            events = []
         for index, e in enumerate(events):
             self._do_low_priority_work(e)
         return index
