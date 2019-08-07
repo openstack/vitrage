@@ -448,10 +448,10 @@ class TestGraph(GraphTestBase):
         self.final_result = None
 
     def _assert_none_or_equals(self, exp, act, msg):
-            if exp:
-                self.assertEqual(exp, act, msg)
-            else:
-                self.assertIsNone(act, msg)
+        if exp:
+            self.assertEqual(exp, act, msg)
+        else:
+            self.assertIsNone(act, msg)
 
     # noinspection PyAttributeOutsideInit
     def test_graph_callbacks(self):
@@ -560,7 +560,7 @@ class TestFilter(base.BaseTest):
 
         attr_filter = {
             "vitrage_category": "ALARM",
-            "rawtext.regex": "Interface ([_a-zA-Z0-9'\-]+) down on {"
+            "rawtext.regex": r"Interface ([_a-zA-Z0-9'\-]+) down on {"
                              "HOST.NAME}",
             "host": "some_host_kukoo"
         }
@@ -578,7 +578,7 @@ class TestFilter(base.BaseTest):
 
         attr_filter = {
             "vitrage_category": "ALARM",
-            "rawtext.RegEx": "Interface ([_a-zA-Z0-9'\-]+) down on {"
+            "rawtext.RegEx": r"Interface ([_a-zA-Z0-9'\-]+) down on {"
                              "HOST.NAME}",
             "host": "some_host_kukoo"
         }

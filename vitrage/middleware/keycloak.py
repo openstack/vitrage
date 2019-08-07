@@ -82,7 +82,7 @@ class KeycloakAuth(base.ConfigurableMiddleware):
         return realm_name
 
     def process_request(self, req):
-            self._authenticate(req)
+        self._authenticate(req)
 
     def _authenticate(self, req):
         decoded = {}

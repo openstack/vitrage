@@ -43,8 +43,8 @@ class TransformerManagerTest(base.BaseTest):
         self.manager = TransformerManager()
 
     def test_transformer_registration_nagios(self):
-            self.assertIsInstance(self.manager.get_transformer
-                                  (NAGIOS_DATASOURCE), NagiosTransformer)
+        self.assertIsInstance(self.manager.get_transformer
+                              (NAGIOS_DATASOURCE), NagiosTransformer)
 
     def test_transformer_registration_nova_host(self):
         self.assertIsInstance(self.manager.get_transformer

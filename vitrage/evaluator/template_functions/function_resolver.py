@@ -68,7 +68,7 @@ def is_function(str):
     A function has the format: func_name(params)
     Search for a regex with open and close parenthesis
     """
-    return re.match('.*\(.*\)', str)
+    return re.match(r'.*\(.*\)', str)
 
 
 def _is_wanted_function(str, func_name):
@@ -77,4 +77,4 @@ def _is_wanted_function(str, func_name):
     A function has the format: func_name(params)
     Search for a regex with open and close parenthesis
     """
-    return re.match(func_name + '\(.*\)', str)
+    return re.match(func_name + r'\(.*\)', str)

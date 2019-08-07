@@ -181,7 +181,7 @@ class CeilometerDriver(AlarmDriverBase):
     def _convert_alarm(cls, alarm):
         alarm_type = alarm.type
         if alarm_type == CeilProps.EVENT and \
-            _is_vitrage_alarm(alarm.event_rule):
+                _is_vitrage_alarm(alarm.event_rule):
             return cls._convert_vitrage_alarm(alarm)
         elif alarm_type == CeilProps.EVENT:
             return cls._convert_event_alarm(alarm)

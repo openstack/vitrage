@@ -40,8 +40,8 @@ NEXT = 'next'
 WITH_VALS = 'with_values'
 SEVERITY = 'SEVERITY'
 ALARM_OID = 'ALARM_OID'
-IP_PAT = re.compile('\d+\.\d+\.\d+\.\d+')
-PORT_PAT = re.compile('\d+')
+IP_PAT = re.compile(r'\d+\.\d+\.\d+\.\d+')
+PORT_PAT = re.compile(r'\d+')
 
 
 class SnmpSender(SnmpSenderBase):

@@ -124,6 +124,7 @@ class VitrageGraphInit(object):
     def subscribe_presist_notifier(self):
         self.graph.subscribe(PersistNotifier().notify_when_applicable)
 
+
 PRIORITY_DELAY = 0.05
 
 

@@ -132,7 +132,7 @@ def _validate_not_condition_relationships_recursive(dnf_result):
     if isinstance(dnf_result, Not):
         for arg in dnf_result.args:
             if isinstance(arg, Symbol) and not str(arg).startswith(RELATION):
-                    raise ValidationError(86, arg)
+                raise ValidationError(86, arg)
             else:
                 _validate_not_condition_relationships_recursive(arg)
         return
@@ -143,5 +143,5 @@ def _validate_not_condition_relationships_recursive(dnf_result):
 
 
 def _validate_positive_term_in_condition(dnf_condition):
-        if not dnf.is_condition_include_positive_clause(dnf_condition):
-            raise ValidationError(134)
+    if not dnf.is_condition_include_positive_clause(dnf_condition):
+        raise ValidationError(134)

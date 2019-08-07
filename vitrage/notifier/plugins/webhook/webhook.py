@@ -146,7 +146,7 @@ class Webhook(NotifierBase):
                 if value is None:
                     return False
                 elif filter.match(value) is None:
-                        return False
+                    return False
         return True
 
     def _filter_fields(self, data):

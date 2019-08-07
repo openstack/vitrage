@@ -21,6 +21,7 @@ class ActionType(object):
     MARK_DOWN = 'mark_down'
     EXECUTE_MISTRAL = 'execute_mistral'
 
+
 action_types = [ActionType.SET_STATE,
                 ActionType.RAISE_ALARM,
                 ActionType.ADD_CAUSAL_RELATIONSHIP,
