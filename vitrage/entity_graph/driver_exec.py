@@ -18,8 +18,14 @@ import time
 from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
+from vitrage.utils.datetime import format_utcnow
 
 from vitrage.common.constants import DatasourceAction
+from vitrage.common.constants import DatasourceProperties as DSProps
+from vitrage.common.constants import GraphAction
+from vitrage.common.constants import VertexProperties as VProps
+
+from vitrage.datasources.consistency import CONSISTENCY_DATASOURCE
 from vitrage.datasources import utils
 from vitrage import messaging
 
@@ -29,7 +35,8 @@ LOG = log.getLogger(__name__)
 
 class DriverExec(object):
 
-    def __init__(self, process_output_func, persist):
+    def __init__(self, process_output_func, persist, graph):
+        self.graph = graph
         self.process_output_func = process_output_func
         self.persist = persist
 
@@ -49,10 +56,21 @@ class DriverExec(object):
             LOCK_BY_DRIVER.acquire(driver_name)
             driver = utils.get_drivers_by_name([driver_name])[0]
             LOG.info("run driver get_all: %s", driver_name)
+            now = format_utcnow()
             events = driver.get_all(action)
             count = self.process_output_func(events)
             LOG.info("run driver get_all: %s done (%s events)",
                      driver_name, count)
+
+            if driver.should_delete_outdated_entities():
+                vertices_to_delete = \
+                    self._find_vertices_to_delete(driver_name, now)
+                if vertices_to_delete:
+                    delete_events = self._to_events(vertices_to_delete)
+                    count_deleted = self.process_output_func(delete_events)
+                    LOG.info("run driver delete outdated vertices: %s done "
+                             "(%s events)", driver_name, count_deleted)
+                    count += count_deleted
             return count
         except Exception:
             LOG.exception("run driver get_all: %s Failed", driver_name)
@@ -78,6 +96,34 @@ class DriverExec(object):
         finally:
             LOCK_BY_DRIVER.release(driver_name)
         return 0
+
+    @staticmethod
+    def _to_events(vertices):
+        return (
+            {
+                DSProps.ENTITY_TYPE: CONSISTENCY_DATASOURCE,
+                DSProps.DATASOURCE_ACTION: DatasourceAction.UPDATE,
+                DSProps.SAMPLE_DATE: format_utcnow(),
+                DSProps.EVENT_TYPE: GraphAction.DELETE_ENTITY,
+                VProps.VITRAGE_ID: vertex[VProps.VITRAGE_ID],
+                VProps.ID: vertex.get(VProps.ID, None),
+                VProps.VITRAGE_TYPE: vertex[VProps.VITRAGE_TYPE],
+                VProps.VITRAGE_CATEGORY: vertex[VProps.VITRAGE_CATEGORY],
+                VProps.IS_REAL_VITRAGE_ID: True
+            }
+            for vertex in vertices
+        )
+
+    def _find_vertices_to_delete(self, driver_name, now):
+        query = {
+            'and': [
+                {'==': {VProps.VITRAGE_DATASOURCE_NAME: driver_name}},
+                {'<': {VProps.VITRAGE_SAMPLE_TIMESTAMP: now}},
+                {'==': {VProps.VITRAGE_IS_DELETED: False}},
+            ]
+        }
+
+        return self.graph.get_vertices(query_dict=query)
 
 
 class DriversNotificationEndpoint(object):
