@@ -148,7 +148,7 @@ class ActionExecutor(object):
         event[DSProps.DATASOURCE_ACTION] = AType.UPDATE
         event[DSProps.ENTITY_TYPE] = VITRAGE_DATASOURCE
         event[VProps.UPDATE_TIMESTAMP] = str(datetime_utils.utcnow(False))
-        event[VProps.VITRAGE_SAMPLE_TIMESTAMP] = str(datetime_utils.utcnow())
+        event[VProps.VITRAGE_SAMPLE_TIMESTAMP] = datetime_utils.format_utcnow()
 
     @staticmethod
     def _register_action_recipes():
