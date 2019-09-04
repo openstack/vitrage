@@ -56,10 +56,6 @@ class Connection(object):
         return None
 
     @abc.abstractmethod
-    def upgrade(self, nocreate=False):
-        raise NotImplementedError('upgrade is not implemented')
-
-    @abc.abstractmethod
     def disconnect(self):
         raise NotImplementedError('disconnect is not implemented')
 
