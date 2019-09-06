@@ -27,4 +27,4 @@ Project Resources
 * Source: https://opendev.org/openstack/vitrage
 * StoryBoard: https://storyboard.openstack.org/#!/project/openstack/vitrage
 * Release notes: https://docs.openstack.org/releasenotes/vitrage
-
+* Design specifications: https://specs.openstack.org/openstack/vitrage-specs/
