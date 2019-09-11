@@ -14,15 +14,48 @@
 
 import sys
 
+from oslo_config import cfg
+
 from vitrage.cli import VITRAGE_TITLE
 from vitrage.common import config
 from vitrage import storage
+from vitrage.storage.sqlalchemy import migration
+
+CONF = cfg.CONF
+CLI_OPTS = [
+    cfg.StrOpt('revision',
+               default='head',
+               help='Migration version')
+]
+REVISION_OPTS = [
+    cfg.StrOpt('message',
+               help='Text that will be used for migration title'),
+    cfg.BoolOpt('autogenerate',
+                default=False,
+                help='Generates diff based on current database state')
+]
+
+
+def stamp():
+    print(VITRAGE_TITLE)
+    CONF.register_cli_opts(CLI_OPTS)
+    config.parse_config(sys.argv)
+
+    migration.stamp(CONF.revision)
+
+
+def revision():
+    print(VITRAGE_TITLE)
+    CONF.register_cli_opts(REVISION_OPTS)
+    config.parse_config(sys.argv)
+    migration.revision(CONF.message, CONF.autogenerate)
 
 
 def dbsync():
     print(VITRAGE_TITLE)
+    CONF.register_cli_opts(CLI_OPTS)
     config.parse_config(sys.argv)
-    storage.get_connection_from_config().upgrade()
+    migration.upgrade(CONF.revision)
 
 
 def purge_data():

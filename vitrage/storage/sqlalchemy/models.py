@@ -110,7 +110,7 @@ class Event(Base):
             )
 
 
-class ActiveAction(Base, models.TimestampMixin):
+class ActiveAction(Base):
     __tablename__ = 'active_actions'
     __table_args__ = (
         # Index 'ix_active_action' on fields:
@@ -170,7 +170,7 @@ class GraphSnapshot(Base):
             )
 
 
-class Template(Base, models.TimestampMixin):
+class Template(Base):
     __tablename__ = 'templates'
 
     uuid = Column("id", String(64), primary_key=True, nullable=False)
@@ -210,6 +210,7 @@ class Webhooks(Base):
             "<Webhook(" \
             "id='%s', " \
             "created_at='%s', " \
+            "updated_at='%s', " \
             "project_id='%s', " \
             "is_admin_webhook='%s', " \
             "url='%s', " \
@@ -218,6 +219,7 @@ class Webhooks(Base):
             (
                 self.id,
                 self.created_at,
+                self.updated_at,
                 self.project_id,
                 self.is_admin_webhook,
                 self.url,
