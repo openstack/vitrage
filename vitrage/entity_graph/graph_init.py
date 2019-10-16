@@ -184,7 +184,7 @@ class EventsCoordination(object):
         index = 0
         if events is None:
             events = []
-        for index, e in enumerate(events):
+        for index, e in enumerate(events, 1):
             self._do_low_priority_work(e)
         return index
 
