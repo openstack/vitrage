@@ -106,32 +106,6 @@ class Connection(base.Connection):
             return str(url)
         return url
 
-    def upgrade(self, nocreate=False):
-        engine = self._engine_facade.get_engine()
-        engine.connect()
-
-        # As the following tables were changed in Rocky, they are removed and
-        # created. This is fine for an upgrade from Queens, since data in these
-        # was anyway deleted in each restart.
-        # starting From Rocky, data in these tables should not be removed.
-
-        models.Base.metadata.drop_all(
-            engine, tables=[
-                models.ActiveAction.__table__,
-                models.Event.__table__,
-                models.GraphSnapshot.__table__])
-
-        models.Base.metadata.create_all(
-            engine, tables=[models.ActiveAction.__table__,
-                            models.Template.__table__,
-                            models.Webhooks.__table__,
-                            models.Event.__table__,
-                            models.GraphSnapshot.__table__,
-                            models.Alarm.__table__,
-                            models.Edge.__table__,
-                            models.Change.__table__])
-        # TODO(idan_hefetz) upgrade logic is missing
-
     def disconnect(self):
         self._engine_facade.get_engine().dispose()
 

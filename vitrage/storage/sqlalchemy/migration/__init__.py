@@ -1,0 +1,91 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os
+
+from alembic import command as alembic_command
+from alembic import config as alembic_config
+from alembic import migration as alembic_migrations
+from oslo_config import cfg
+from oslo_db import exception as db_exc
+from oslo_db.sqlalchemy import enginefacade
+
+from vitrage.storage.sqlalchemy import models
+
+
+CONF = cfg.CONF
+
+
+def _alembic_config():
+    path = os.path.join(os.path.dirname(__file__), 'alembic.ini')
+    config = alembic_config.Config(path)
+    return config
+
+
+def create_schema(config=None, engine=None):
+    """Create database schema from models description.
+
+    Can be used for initial installation instead of upgrade('head').
+    """
+    if engine is None:
+        engine = enginefacade.writer.get_engine()
+
+    # NOTE(viktors): If we will use metadata.create_all() for non empty db
+    #                schema, it will only add the new tables, but leave
+    #                existing as is. So we should avoid of this situation.
+    if version(engine=engine) is not None:
+        raise db_exc.DBMigrationError("DB schema is already under version"
+                                      " control. Use upgrade() instead")
+
+    models.Base.metadata.create_all(engine)
+    stamp('head', config=config)
+
+
+def revision(message=None, autogenerate=False, config=None):
+    """Creates template for migration.
+
+    :param message: Text that will be used for migration title
+    :type message: string
+    :param autogenerate: If True - generates diff based on current database
+                         state
+    :type autogenerate: bool
+    """
+    config = config or _alembic_config()
+    return alembic_command.revision(config, message=message,
+                                    autogenerate=autogenerate)
+
+
+def stamp(revision, config=None):
+    """Stamps database with provided revision.
+
+    Don't run any migrations.
+    :param revision: Should match one from repository or head - to stamp
+                     database with most recent revision
+    :type revision: string
+    """
+    config = config or _alembic_config()
+    return alembic_command.stamp(config, revision=revision)
+
+
+def upgrade(revision):
+    config = _alembic_config()
+
+    alembic_command.upgrade(config, revision)
+
+
+def version(config=None, engine=None):
+    if engine is None:
+        engine = enginefacade.writer.get_engine()
+    with engine.connect() as conn:
+        context = alembic_migrations.MigrationContext.configure(conn)
+        return context.get_current_revision()
