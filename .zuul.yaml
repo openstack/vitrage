@@ -2,15 +2,11 @@
     templates:
       - check-requirements
       - openstack-lower-constraints-jobs
-      - openstack-python-jobs
       - openstack-python3-ussuri-jobs
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
     check:
       jobs:
-        - vitrage-dsvm-api-py27
-        - vitrage-dsvm-datasources-py27
-        - vitrage-dsvm-mock-py27
         - vitrage-dsvm-api-py3
         - vitrage-dsvm-datasources-py3
         - vitrage-dsvm-mock-py3
@@ -18,53 +14,15 @@
     gate:
       queue: vitrage
       jobs:
-        - vitrage-dsvm-api-py27
-        - vitrage-dsvm-datasources-py27
         - vitrage-dsvm-api-py3
         - vitrage-dsvm-datasources-py3
         - grenade-vitrage
-
-- job:
-    name: vitrage-dsvm-api-py27
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-api-py27/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-api-py27/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
-      - openstack/aodh
-      - openstack/mistral
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
 
 - job:
     name: vitrage-dsvm-api-py3
     parent: legacy-dsvm-base
     run: playbooks/legacy/vitrage-dsvm-api-py3/run.yaml
     post-run: playbooks/legacy/vitrage-dsvm-api-py3/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
-      - openstack/aodh
-      - openstack/mistral
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-
-- job:
-    name: vitrage-dsvm-datasources-py27
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-datasources-py27/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-datasources-py27/post.yaml
     timeout: 7800
     required-projects:
       - openstack/devstack-gate
@@ -88,23 +46,6 @@
       - openstack/devstack-gate
       - openstack/aodh
       - openstack/mistral
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-
-- job:
-    name: vitrage-dsvm-mock-py27
-    parent: legacy-dsvm-base
-    voting: false
-    run: playbooks/legacy/vitrage-dsvm-mock-py27/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-mock-py27/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
       - openstack/python-vitrageclient
       - openstack/vitrage
       - openstack/vitrage-tempest-plugin
