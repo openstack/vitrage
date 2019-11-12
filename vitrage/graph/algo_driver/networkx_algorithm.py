@@ -49,7 +49,7 @@ class NXAlgorithm(GraphAlgorithm):
                              edge_query_dict=None):
         graph = self._create_new_graph('graph')
 
-        root_data = self.graph._g.node[root_id]
+        root_data = self.graph._g.nodes[root_id]
 
         match_func = create_predicate(query_dict) if query_dict else None
         edge_match_func = create_predicate(edge_query_dict) \

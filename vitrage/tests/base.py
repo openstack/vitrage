@@ -104,9 +104,9 @@ class BaseTest(base.BaseTestCase):
         This relies on assert_dict_equal when comparing the nodes and the
         edges of each graph.
         """
-        g1_nodes = g1._g.node
+        g1_nodes = g1._g.nodes
         g1_edges = g1._g.adj
-        g2_nodes = g2._g.node
+        g2_nodes = g2._g.nodes
         g2_edges = g2._g.adj
         self.assertEqual(g1.num_vertices(), g2.num_vertices(),
                          "Two graphs have different amount of nodes")

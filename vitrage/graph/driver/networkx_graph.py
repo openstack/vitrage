@@ -112,7 +112,7 @@ class NXGraph(Graph):
 
         :rtype: Vertex
         """
-        properties = self._g.node.get(v_id, None)
+        properties = self._g.nodes.get(v_id, None)
         if properties is not None:
             return vertex_copy(v_id, properties)
         LOG.debug("get_vertex item not found. v_id=%s", v_id)
@@ -184,18 +184,18 @@ class NXGraph(Graph):
         :param overwrite: whether to overwrite existing properties
         :type overwrite: Boolean
         """
-        orig_prop = self._g.node.get(v.vertex_id, None)
+        orig_prop = self._g.nodes.get(v.vertex_id, None)
         if not orig_prop:
             self._add_vertex(v)
             return
 
         merged_props = \
             self._merged_properties(orig_prop, v.properties, overwrite)
-        self._g.node[v.vertex_id].update(merged_props)
+        self._g.nodes[v.vertex_id].update(merged_props)
 
         for prop, value in v.properties.items():
             if value is None:
-                del self._g.node[v.vertex_id][prop]
+                del self._g.nodes[v.vertex_id][prop]
 
     @Notifier.update_notify
     def update_edge(self, e):
@@ -318,7 +318,7 @@ class NXGraph(Graph):
 
         for source_id, target_id, label, data in edges_filtered1:
             node_id_to_test = source_id if target_id == v_id else target_id
-            node_data = self._g.node[node_id_to_test]
+            node_data = self._g.nodes[node_id_to_test]
             if not vertex_predicate or vertex_predicate(node_data):
                 edges_filtered2.append((source_id, target_id, label, data))
                 nodes.append((node_id_to_test, node_data))
@@ -341,8 +341,8 @@ class NXGraph(Graph):
 
         for index, node in enumerate(node_link_data['nodes']):
             vitrage_id_to_index[node[VProps.VITRAGE_ID]] = index
-            if VProps.ID in self._g.node[node[VProps.ID]]:
-                node[VProps.ID] = self._g.node[node[VProps.ID]][VProps.ID]
+            if VProps.ID in self._g.nodes[node[VProps.ID]]:
+                node[VProps.ID] = self._g.nodes[node[VProps.ID]][VProps.ID]
                 node[VProps.GRAPH_INDEX] = index
 
         vers = nx.__version__
