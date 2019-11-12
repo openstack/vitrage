@@ -93,7 +93,8 @@ class MigrationCheckersMixin(object):
 
 class TestMigrationsMySQL(MigrationCheckersMixin,
                           WalkWersionsMixin,
-                          test_fixtures.OpportunisticDBTestMixin):
+                          test_fixtures.OpportunisticDBTestMixin,
+                          test_base.BaseTestCase):
     FIXTURE = test_fixtures.MySQLOpportunisticFixture
 
 

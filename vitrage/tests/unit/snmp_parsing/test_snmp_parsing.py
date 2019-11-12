@@ -22,6 +22,7 @@ from pysnmp.proto.rfc1902 import TimeTicks
 
 from vitrage.snmp_parsing.service import SnmpParsingService
 from vitrage.tests import base
+from vitrage.tests.mocks import utils
 
 
 BINDS_REPORTED = [
@@ -112,8 +113,8 @@ class TestSnmpParsing(base.BaseTest):
         super(TestSnmpParsing, self).setUp()
         self.cfg_fixture.config(
             group='snmp_parsing',
-            oid_mapping='vitrage/tests/resources/snmp_parsing/'
-                        'snmp_parsing_conf.yaml')
+            oid_mapping=utils.get_resources_dir() +
+            '/snmp_parsing/snmp_parsing_conf.yaml')
 
     def test_convert_binds_to_dict(self):
         parsing_service = SnmpParsingService(1)

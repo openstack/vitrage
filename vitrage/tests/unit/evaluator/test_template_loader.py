@@ -74,7 +74,7 @@ class TemplateLoaderTest(base.BaseTest):
 
         # Assertions
         for definition in definitions[TFields.ENTITIES]:
-            for key, value in definition['entity'].items():
+            for key, value in list(definition['entity'].items()):
                 new_key = PropsConverter.PROPS_CONVERSION[key] \
                     if key in PropsConverter.PROPS_CONVERSION else key
                 del definition['entity'][key]
@@ -173,7 +173,7 @@ class TemplateLoaderTest(base.BaseTest):
 
         # Assertions
         for definition in definitions[TFields.ENTITIES]:
-            for key, value in definition['entity'].items():
+            for key, value in list(definition['entity'].items()):
                 new_key = PropsConverter.PROPS_CONVERSION[key] \
                     if key in PropsConverter.PROPS_CONVERSION else key
                 del definition['entity'][key]

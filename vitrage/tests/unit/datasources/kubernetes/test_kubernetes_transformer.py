@@ -34,6 +34,7 @@ from vitrage.datasources import transformer_base as tbase
 from vitrage.datasources.transformer_base import TransformerBase
 from vitrage.tests import base
 from vitrage.tests.mocks import mock_driver as mock_sync
+from vitrage.tests.mocks import utils
 
 LOG = logging.getLogger(__name__)
 
@@ -46,8 +47,8 @@ class KubernetesTransformerTest(base.BaseTest):
         cfg.StrOpt(DSOpts.UPDATE_METHOD,
                    default=UpdateMethod.PULL),
         cfg.StrOpt(DSOpts.CONFIG_FILE,
-                   default='/opt/stack/vitrage/vitrage/tests/resources/'
-                           'kubernetes/kubernetes_config.yaml'),
+                   default=utils.get_resources_dir() +
+                   '/kubernetes/kubernetes_config.yaml'),
     ]
 
     # noinspection PyAttributeOutsideInit,PyPep8Naming
@@ -55,12 +56,14 @@ class KubernetesTransformerTest(base.BaseTest):
     def setUpClass(cls):
         super(KubernetesTransformerTest, cls).setUpClass()
         cls.transformers = {}
-        cls.conf = cfg.ConfigOpts()
-        cls.conf.register_opts(cls.OPTS, group=KUBERNETES_DATASOURCE)
         cls.transformers[KUBERNETES_DATASOURCE] = KubernetesTransformer(
             cls.transformers)
         cls.transformers[NOVA_INSTANCE_DATASOURCE] = \
             InstanceTransformer(cls.transformers)
+
+    def setUp(self):
+        super(KubernetesTransformerTest, self).setUp()
+        self.conf_reregister_opts(self.OPTS, group=KUBERNETES_DATASOURCE)
 
     def test_snapshot_event_transform(self):
         LOG.debug('Test tactual transform action for '
