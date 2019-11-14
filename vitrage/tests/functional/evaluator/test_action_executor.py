@@ -354,7 +354,7 @@ class TestActionExecutor(TestFunctionalBase, TestConfiguration):
                 NProps.STATUS_INFO: 'test test test',
                 DSProp.DATASOURCE_ACTION: DatasourceAction.SNAPSHOT,
                 DSProp.ENTITY_TYPE: NAGIOS_DATASOURCE,
-                DSProp.SAMPLE_DATE: '2016-02-07 15:26:04'}
+                DSProp.SAMPLE_DATE: '2016-02-07T15:26:04Z'}
 
     @staticmethod
     def _get_vitrage_add_vertex_event(target_vertex, alarm_name, severity):

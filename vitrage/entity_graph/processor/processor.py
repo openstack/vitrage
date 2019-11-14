@@ -219,12 +219,17 @@ class Processor(processor.ProcessorBase):
         for (vertex, edge) in neighbors:
             graph_vertex = self.entity_graph.get_vertex(vertex.vertex_id)
             if not graph_vertex or not PUtils.is_deleted(graph_vertex):
-                LOG.debug("Updates vertex: %s", vertex)
-                self._calculate_vitrage_aggregated_values(vertex, action)
-                PUtils.update_entity_graph_vertex(self.entity_graph,
-                                                  graph_vertex,
-                                                  vertex)
-
+                if graph_vertex and not PUtils.is_newer_vertex(graph_vertex,
+                                                               vertex):
+                    LOG.warning("Neighbor update event arrived later than "
+                                "expected - graph_vertex: %s --- "
+                                "updated_vertex: %s", graph_vertex, vertex)
+                else:
+                    LOG.debug("Updates vertex: %s", vertex)
+                    self._calculate_vitrage_aggregated_values(vertex, action)
+                    PUtils.update_entity_graph_vertex(self.entity_graph,
+                                                      graph_vertex,
+                                                      vertex)
                 if edge not in valid_edges:
                     LOG.debug("Updates edge: %s", edge)
                     self.entity_graph.update_edge(edge)
