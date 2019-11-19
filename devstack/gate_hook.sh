@@ -21,12 +21,12 @@ export DEVSTACK_GATE_TEMPEST_NOTESTS=1
 export KEEP_LOCALRC=1
 
 
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin heat https://git.openstack.org/openstack/heat'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin ceilometer https://git.openstack.org/openstack/ceilometer'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin aodh https://git.openstack.org/openstack/aodh'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin mistral https://git.openstack.org/openstack/mistral'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage https://git.openstack.org/openstack/vitrage'
-DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage-tempest-plugin https://git.openstack.org/openstack/vitrage-tempest-plugin'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin heat https://opendev.org/openstack/heat'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin ceilometer https://opendev.org/openstack/ceilometer'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin aodh https://opendev.org/openstack/aodh'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin mistral https://opendev.org/openstack/mistral'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage https://opendev.org/openstack/vitrage'
+DEVSTACK_LOCAL_CONFIG+=$'\nenable_plugin vitrage-tempest-plugin https://opendev.org/openstack/vitrage-tempest-plugin'
 
 # enable them for gate testing they are disabled by default
 DEVSTACK_LOCAL_CONFIG+=$'\nVITRAGE_USE_STATIC=1'

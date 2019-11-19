@@ -6,7 +6,7 @@ Enabling Vitrage in DevStack
 
 .. code:: bash
 
-    git clone https://git.openstack.org/openstack-dev/devstack.git
+    git clone https://opendev.org/openstack-dev/devstack.git
     cd devstack
 
 2. Add this repo as an external repository in ``local.conf`` file:
@@ -14,7 +14,7 @@ Enabling Vitrage in DevStack
 .. code:: bash
 
     [[local|localrc]]
-    enable_plugin vitrage https://git.openstack.org/openstack/vitrage
+    enable_plugin vitrage https://opendev.org/openstack/vitrage
 
 3. Add this to add notification from nova to vitrage
 

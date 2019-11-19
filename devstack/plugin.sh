@@ -4,7 +4,7 @@
 # looks like
 #
 # [[local|localrc]]
-# enable_plugin vitrage https://git.openstack.org/openstack/vitrage
+# enable_plugin vitrage https://opendev.org/openstack/vitrage
 #
 # By default all vitrage services are started (see
 # devstack/settings).
