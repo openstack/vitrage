@@ -1,19 +1,13 @@
-========================
-Team and repository tags
-========================
+=================
+OpenStack Vitrage
+=================
 
 .. image:: https://governance.openstack.org/tc/badges/vitrage.svg
     :target: https://governance.openstack.org/tc/reference/tags/index.html
 
 .. Change things from this point on
 
-=======
-Vitrage
-=======
-
-The OpenStack RCA Service
-
-Vitrage is the OpenStack RCA (Root Cause Analysis) Service for organizing, analyzing and expanding OpenStack alarms & events, yielding insights regarding the root cause of problems and deducing the existence of problems before they are directly detected.
+OpenStack Vitrage is the OpenStack RCA (Root Cause Analysis) Service for organizing, analyzing and expanding OpenStack alarms & events, yielding insights regarding the root cause of problems and deducing the existence of problems before they are directly detected.
 
 Enabling Vitrage in DevStack
 ----------------------------
