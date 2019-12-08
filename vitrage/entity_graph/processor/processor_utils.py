@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from dateutil import parser
-
 from oslo_log import log
 
 from vitrage.common.constants import EdgeProperties as EProps
@@ -30,14 +28,12 @@ def is_newer_vertex(prev_vertex, new_vertex):
     prev_timestamp = prev_vertex.get(VProps.VITRAGE_SAMPLE_TIMESTAMP)
     if not prev_timestamp:
         return True
-    prev_time = parser.parse(prev_timestamp)
 
     new_timestamp = new_vertex.get(VProps.VITRAGE_SAMPLE_TIMESTAMP)
     if not new_timestamp:
         return True
-    new_time = parser.parse(new_timestamp)
 
-    return prev_time <= new_time
+    return prev_timestamp <= new_timestamp
 
 
 def is_deleted(item):

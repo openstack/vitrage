@@ -25,10 +25,8 @@ from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.consistency import CONSISTENCY_DATASOURCE
 from vitrage.datasources import OPENSTACK_CLUSTER
 from vitrage.datasources import utils
-from vitrage.entity_graph import EVALUATOR_TOPIC
 from vitrage.evaluator.actions.evaluator_event_transformer \
     import VITRAGE_DATASOURCE
-from vitrage.messaging import VitrageNotifier
 from vitrage.utils.datetime import utcnow
 
 CONF = cfg.CONF
@@ -40,8 +38,7 @@ class ConsistencyEnforcer(object):
     def __init__(self,
                  entity_graph,
                  actions_callback=None):
-        self.actions_callback = actions_callback or VitrageNotifier(
-            'vitrage_consistency', [EVALUATOR_TOPIC]).notify
+        self.process_events = actions_callback
         self.graph = entity_graph
         self._init_datasources_to_mark_deleted()
 
@@ -56,8 +53,9 @@ class ConsistencyEnforcer(object):
                          len(old_deleted_entities))
                 LOG.debug('Consistency entities to remove: %s',
                           old_deleted_entities)
-            self._push_events_to_queue(old_deleted_entities,
-                                       GraphAction.REMOVE_DELETED_ENTITY)
+            events = self._to_events(old_deleted_entities,
+                                     GraphAction.REMOVE_DELETED_ENTITY)
+            self.process_events(events)
 
             stale_entities = self._find_outdated_entities_to_mark_as_deleted()
             if stale_entities:
@@ -65,8 +63,9 @@ class ConsistencyEnforcer(object):
                          len(stale_entities))
                 LOG.debug('Consistency entities to mark deleted: %s',
                           stale_entities)
-            self._push_events_to_queue(stale_entities,
-                                       GraphAction.DELETE_ENTITY)
+            events = self._to_events(stale_entities,
+                                     GraphAction.DELETE_ENTITY)
+            self.process_events(events)
             LOG.info('Periodic consistency check done.')
         except Exception:
             LOG.exception('Error in deleting vertices from entity_graph.')
@@ -99,8 +98,7 @@ class ConsistencyEnforcer(object):
 
         return self._filter_vertices_to_be_deleted(vertices)
 
-    def _push_events_to_queue(self, vertices, action):
-        events = []
+    def _to_events(self, vertices, action):
         for vertex in vertices:
             event = {
                 DSProps.ENTITY_TYPE: CONSISTENCY_DATASOURCE,
@@ -113,8 +111,7 @@ class ConsistencyEnforcer(object):
                 VProps.VITRAGE_CATEGORY: vertex[VProps.VITRAGE_CATEGORY],
                 VProps.IS_REAL_VITRAGE_ID: True
             }
-            events.append(event)
-        self.actions_callback('consistency', events)
+            yield event
 
     @staticmethod
     def _filter_vertices_to_be_deleted(vertices):

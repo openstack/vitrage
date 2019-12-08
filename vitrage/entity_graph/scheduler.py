@@ -21,8 +21,6 @@ from vitrage.datasources import utils
 from vitrage.common.constants import DatasourceAction
 from vitrage.common.utils import spawn
 
-from vitrage.entity_graph.consistency.consistency_enforcer import\
-    ConsistencyEnforcer
 
 CONF = cfg.CONF
 LOG = log.getLogger(__name__)
@@ -30,12 +28,12 @@ LOG = log.getLogger(__name__)
 
 class Scheduler(object):
 
-    def __init__(self, graph, driver_exec, persist):
+    def __init__(self, graph, driver_exec, persist, consistency_enforcer):
         super(Scheduler, self).__init__()
         self.graph = graph
         self.driver_exec = driver_exec
         self.persist = persist
-        self.consistency = ConsistencyEnforcer(graph)
+        self.consistency = consistency_enforcer
         self.periodic = None
 
     def start_periodic_tasks(self, immediate_get_all):

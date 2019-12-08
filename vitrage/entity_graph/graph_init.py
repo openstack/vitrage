@@ -24,6 +24,8 @@ from vitrage.datasources.transformer_base import TransformerBase
 from vitrage.entity_graph import driver_exec
 from vitrage.entity_graph import get_graph_driver
 
+from vitrage.entity_graph.consistency.consistency_enforcer import \
+    ConsistencyEnforcer
 from vitrage.entity_graph import EVALUATOR_TOPIC
 from vitrage.entity_graph.graph_persistency import GraphPersistency
 from vitrage.entity_graph.processor.notifier import GraphNotifier
@@ -48,8 +50,14 @@ class VitrageGraphInit(object):
         self.driver_exec = driver_exec.DriverExec(
             self.events_coordination.handle_multiple_low_priority,
             self.persist, self.graph)
-        self.scheduler = Scheduler(self.graph, self.driver_exec,
-                                   self.persist)
+        consistency = ConsistencyEnforcer(
+            self.graph,
+            self.events_coordination.handle_multiple_high_priority)
+        self.scheduler = Scheduler(self.graph,
+                                   self.driver_exec,
+                                   self.persist,
+                                   consistency)
+
         self.processor = Processor(self.graph)
 
     def run(self):
@@ -187,6 +195,10 @@ class EventsCoordination(object):
         for index, e in enumerate(events, 1):
             self._do_low_priority_work(e)
         return index
+
+    def handle_multiple_high_priority(self, events):
+        for e in events:
+            self._do_high_priority_work(e)
 
     def _init_listener(self, topic, callback):
         if not topic:

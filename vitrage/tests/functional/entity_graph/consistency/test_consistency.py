@@ -77,13 +77,17 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
             """
             self.event_queue.put(data)
 
+        def actions_callback_consistency(data):
+            for e in data:
+                self.event_queue.put(e)
+
         scenario_repo = ScenarioRepository()
         self.evaluator = ScenarioEvaluator(self.processor.entity_graph,
                                            scenario_repo,
                                            actions_callback)
         self.consistency_enforcer = ConsistencyEnforcer(
             self.processor.entity_graph,
-            actions_callback)
+            actions_callback_consistency)
 
     def test_periodic_process(self):
         # Setup
