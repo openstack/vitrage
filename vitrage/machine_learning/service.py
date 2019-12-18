@@ -68,8 +68,7 @@ class MachineLearningService(coord.Service):
             LOG.info('Machine Learning plugin %s started',
                      machine_learning_plugin_name)
             machine_learning_plugins.append(importutils.import_object(
-                CONF[machine_learning_plugin_name].plugin_path,
-                CONF))
+                CONF[machine_learning_plugin_name].plugin_path))
         return machine_learning_plugins
 
 
