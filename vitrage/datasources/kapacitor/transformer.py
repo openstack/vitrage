@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from datetime import datetime
 
 from oslo_log import log as logging
 
@@ -61,11 +60,13 @@ class KapacitorTransformer(AlarmTransformerBase):
         return KAPACITOR_DATASOURCE
 
     def _create_vertex(self, entity_event):
-        update_timestamp = str(datetime.strptime(
-            entity_event[KProps.TIME], tbase.TIMESTAMP_FORMAT))
+        update_timestamp = entity_event[KProps.TIME]
 
         vitrage_sample_timestamp = entity_event[DSProps.SAMPLE_DATE]
 
+        update_timestamp = \
+            self._format_update_timestamp(update_timestamp,
+                                          vitrage_sample_timestamp)
         metadata = {
             VProps.NAME: entity_event[KProps.MESSAGE],
             VProps.SEVERITY: entity_event[KProps.PRIORITY],
