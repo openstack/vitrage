@@ -44,8 +44,8 @@ Alarm:
 
 LOG_FILE = '/var/log/kapacitor/kapacitor_vitrage.log'
 LOG_MAX_SIZE = 10000000
-LOG_FORMAT = '%(asctime)s.%(msecs).03d %(name)s[%(process)d] %(threadName)s %' \
-             '(levelname)s - %(message)s'
+LOG_FORMAT = '%(asctime)s.%(msecs).03d %(name)s[%(process)d] ' \
+             '%(threadName)s %(levelname)s - %(message)s'
 LOG_DATE_FMT = '%Y.%m.%d %H:%M:%S'
 KAPACITOR_EVENT_TYPE = 'kapacitor.alarm'
 

@@ -22,16 +22,37 @@ from testtools import matchers
 
 from vitrage.common.constants import EdgeLabel
 from vitrage.common.constants import EdgeProperties as EProps
+from vitrage.common.constants import EntityCategory
+from vitrage.common.constants import VertexProperties as VProps
 from vitrage.datasources.heat.stack import HEAT_STACK_DATASOURCE
 from vitrage.datasources.neutron.network import NEUTRON_NETWORK_DATASOURCE
+from vitrage.datasources import NOVA_HOST_DATASOURCE
+from vitrage.datasources import NOVA_INSTANCE_DATASOURCE
+from vitrage.datasources import OPENSTACK_CLUSTER
+from vitrage.datasources.transformer_base import CLUSTER_ID
 from vitrage.graph.algo_driver.algorithm import Mapping
 from vitrage.graph.algo_driver.sub_graph_matching import \
     NEG_CONDITION
 from vitrage.graph.algo_driver.sub_graph_matching import subgraph_matching
 from vitrage.graph.driver.elements import Edge
 from vitrage.graph.driver.graph import Direction
+from vitrage.graph.driver.networkx_graph import NXGraph
+from vitrage.graph import utils as graph_utils
 from vitrage.tests.base import IsEmpty
-from vitrage.tests.unit.graph.base import *  # noqa
+from vitrage.tests.unit.graph.base import ALARM
+from vitrage.tests.unit.graph.base import ALARM_ON_HOST
+from vitrage.tests.unit.graph.base import ALARM_ON_VM
+from vitrage.tests.unit.graph.base import e_node_to_switch
+from vitrage.tests.unit.graph.base import ELabel
+from vitrage.tests.unit.graph.base import ENTITY_GRAPH_ALARMS_PER_HOST
+from vitrage.tests.unit.graph.base import ENTITY_GRAPH_ALARMS_PER_VM
+from vitrage.tests.unit.graph.base import ENTITY_GRAPH_HOSTS_PER_CLUSTER
+from vitrage.tests.unit.graph.base import ENTITY_GRAPH_TESTS_PER_HOST
+from vitrage.tests.unit.graph.base import ENTITY_GRAPH_VMS_PER_HOST
+from vitrage.tests.unit.graph.base import GraphTestBase
+from vitrage.tests.unit.graph.base import RESOURCE
+from vitrage.tests.unit.graph.base import v_node
+from vitrage.tests.unit.graph.base import v_switch
 
 ROOT_ID = EntityCategory.RESOURCE + ':' + OPENSTACK_CLUSTER + ':' + CLUSTER_ID
 

@@ -21,7 +21,10 @@ from futurist import ThreadPoolExecutor
 from oslo_config import cfg
 from oslo_log import log
 import oslo_messaging
-from tools.load_generator.notification_info import *  # noqa
+from tools.load_generator.notification_info import COMPUTE_INSTANCE_CREATE_END
+from tools.load_generator.notification_info import PORT_CREATE_END
+from tools.load_generator.notification_info import VOLUME_ATTACH_END
+from tools.load_generator.notification_info import VOLUME_CREATE_END
 
 from vitrage.common import config
 from vitrage.messaging import get_transport

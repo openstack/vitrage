@@ -18,14 +18,34 @@ test_vitrage graph
 
 Tests for `vitrage` graph driver
 """
+
+from oslo_log import log as logging
+
 from testtools import matchers
 
 from vitrage.common.constants import EdgeProperties as EProps
+from vitrage.common.constants import EntityCategory
+from vitrage.common.constants import VertexProperties as VProps
+from vitrage.datasources import NOVA_HOST_DATASOURCE
+from vitrage.datasources import NOVA_INSTANCE_DATASOURCE
+from vitrage.datasources import OPENSTACK_CLUSTER
 from vitrage.graph import Direction
 from vitrage.graph.filter import check_filter
 from vitrage.graph import utils
+
+from vitrage.tests import base
 from vitrage.tests.base import IsEmpty
-from vitrage.tests.unit.graph.base import *  # noqa
+from vitrage.tests.unit.graph.base import ALARM
+from vitrage.tests.unit.graph.base import ALARM_ON_HOST
+from vitrage.tests.unit.graph.base import ALARM_ON_VM
+from vitrage.tests.unit.graph.base import e_node_to_host
+from vitrage.tests.unit.graph.base import GraphTestBase
+from vitrage.tests.unit.graph.base import NXGraph
+from vitrage.tests.unit.graph.base import RESOURCE
+from vitrage.tests.unit.graph.base import v_alarm
+from vitrage.tests.unit.graph.base import v_host
+from vitrage.tests.unit.graph.base import v_instance
+from vitrage.tests.unit.graph.base import v_node
 
 LOG = logging.getLogger(__name__)
 

@@ -14,8 +14,8 @@
 
 from vitrage.evaluator.actions.base import ActionType
 from vitrage.evaluator.template_fields import TemplateFields
-from vitrage.evaluator.template_validation.content.v1.mark_down_validator import \
-    MarkDownValidator
+from vitrage.evaluator.template_validation.content.v1.mark_down_validator \
+    import MarkDownValidator
 from vitrage.tests.unit.evaluator.template_validation.content.base import \
     ActionValidatorTest
 

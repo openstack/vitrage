@@ -48,8 +48,8 @@ Message:
 
 LOG_FILE = '/var/log/zabbix/zabbix_vitrage.log'
 LOG_MAX_SIZE = 10000000
-LOG_FORMAT = '%(asctime)s.%(msecs).03d %(name)s[%(process)d] %(threadName)s %' \
-             '(levelname)s - %(message)s'
+LOG_FORMAT = '%(asctime)s.%(msecs).03d %(name)s[%(process)d]' \
+             ' %(threadName)s %(levelname)s - %(message)s'
 LOG_DATE_FMT = '%Y.%m.%d %H:%M:%S'
 ZABBIX_EVENT_TYPE = 'zabbix.alarm'
 

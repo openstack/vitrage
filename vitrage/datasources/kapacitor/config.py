@@ -85,8 +85,8 @@ class KapacitorHostMapping(object):
         """
 
         if kapacitor_host and self.kapacitor_host_regexp.match(kapacitor_host):
-            resource_name = \
-                kapacitor_host if self.resource_name == self.KAPACITOR_HOST_NAME \
+            resource_name = kapacitor_host\
+                if self.resource_name == self.KAPACITOR_HOST_NAME \
                 else self.resource_name
             return self.resource_type, resource_name
         else:

@@ -66,7 +66,7 @@ class DatasourceInfoMapper(object):
                 vitrage_type not in CONF.datasources.types:
             value_properties = \
                 self.category_normalizer[vitrage_category].value_properties()
-            vitrage_operational_value, vitrage_aggregated_value, value_priority = \
+            vitrage_oper_value, vitrage_aggregated_value, value_priority = \
                 self._find_operational_value_and_priority(new_vertex,
                                                           graph_vertex,
                                                           value_properties[0],
@@ -80,14 +80,14 @@ class DatasourceInfoMapper(object):
                                                               property_,
                                                               vitrage_type)
                 if t_value_priority > value_priority:
-                    vitrage_operational_value = t_operational_value
+                    vitrage_oper_value = t_operational_value
                     vitrage_aggregated_value = t_aggregated_value
                     value_priority = t_value_priority
 
             self.category_normalizer[vitrage_category].set_aggregated_value(
                 new_vertex, vitrage_aggregated_value)
             self.category_normalizer[vitrage_category].set_operational_value(
-                new_vertex, vitrage_operational_value)
+                new_vertex, vitrage_oper_value)
         else:
             self.category_normalizer[vitrage_category].set_aggregated_value(
                 new_vertex, self.UNDEFINED_DATASOURCE)

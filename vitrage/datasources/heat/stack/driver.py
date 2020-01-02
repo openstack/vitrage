@@ -114,7 +114,7 @@ class HeatStackDriver(DriverBase):
         return ['manager', '_info']
 
     def _retrieve_stack_resources(self, stack, stack_id):
-                                                    # guess 10 is enough
+        # guess 10 is enough
         resources = self.client.resources.list(stack_id, nested_depth=10)
         stack['resources'] = [resource.to_dict() for resource in resources
                               if resource.to_dict()['resource_type'] in

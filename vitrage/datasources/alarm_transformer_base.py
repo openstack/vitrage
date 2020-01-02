@@ -35,10 +35,11 @@ class AlarmTransformerBase(tbase.TransformerBase):
 
         if datasource_action in \
             (DatasourceAction.UPDATE, DatasourceAction.SNAPSHOT):
-            return GraphAction.DELETE_ENTITY if self._ok_status(entity_event) else \
+            return GraphAction.DELETE_ENTITY \
+                if self._ok_status(entity_event) else \
                 self.GRAPH_ACTION_MAPPING.get(
-                entity_event.get(DSProps.EVENT_TYPE, None),
-                GraphAction.UPDATE_ENTITY)
+                    entity_event.get(DSProps.EVENT_TYPE, None),
+                    GraphAction.UPDATE_ENTITY)
 
         if DatasourceAction.INIT_SNAPSHOT == datasource_action:
             return GraphAction.CREATE_ENTITY
