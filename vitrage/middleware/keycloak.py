@@ -11,11 +11,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import json
 import jwt
 import os
 import requests
 
+from cachetools import cached
+from cachetools import LRUCache
+from jwt.algorithms import RSAAlgorithm
 from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_middleware import base
@@ -46,6 +49,16 @@ KEYCLOAK_OPTS = [
         default='/realms/%s/protocol/openid-connect/userinfo',
         help='Endpoint against which authorization will be performed'
     ),
+    cfg.StrOpt(
+        'public_cert_url',
+        default="/realms/%s/protocol/openid-connect/certs",
+        help="URL to get the public key for particular realm"
+        ),
+    cfg.StrOpt(
+        'keycloak_iss',
+        help="keycloak issuer(iss) url "
+             "Example: https://ip_add:port/auth/realms/%s"
+    )
 ]
 
 
@@ -63,6 +76,9 @@ class KeycloakAuth(base.ConfigurableMiddleware):
             self._get_system_ca_file()
         self.user_info_endpoint_url = self._conf_get('user_info_endpoint_url',
                                                      KEYCLOAK_GROUP)
+        self.public_cert_url = self._conf_get('public_cert_url',
+                                              KEYCLOAK_GROUP)
+        self.keycloak_iss = self._conf_get('keycloak_iss', KEYCLOAK_GROUP)
 
     @property
     def reject_auth_headers(self):
@@ -93,7 +109,7 @@ class KeycloakAuth(base.ConfigurableMiddleware):
             message = 'Auth token must be provided in "X-Auth-Token" header.'
             self._unauthorized(message)
 
-        self.call_keycloak(token, decoded)
+        self.call_keycloak(token, decoded, decoded.get('aud'))
 
         self._set_req_headers(req, decoded)
 
@@ -104,23 +120,37 @@ class KeycloakAuth(base.ConfigurableMiddleware):
             message = "Token can't be decoded because of wrong format."
             self._unauthorized(message)
 
-    def call_keycloak(self, token, decoded):
+    def call_keycloak(self, token, decoded, audience):
         if self.user_info_endpoint_url.startswith(('http://', 'https://')):
             endpoint = self.user_info_endpoint_url
+            self.send_request_to_auth_server(endpoint, token)
         else:
-            endpoint = ('%s' + self.user_info_endpoint_url) % \
-                       (self.auth_url, self.realm_name(decoded))
-        headers = {'Authorization': 'Bearer %s' % token}
+            public_key = self.get_public_key(self.realm_name(decoded))
+            try:
+                if self.keycloak_iss:
+                    self.keycloak_iss = self.keycloak_iss % \
+                        self.realm_name(decoded)
+                jwt.decode(token, public_key, audience=audience,
+                           issuer=self.keycloak_iss, algorithms=['RS256'],
+                           verify=True)
+            except Exception:
+                message = 'Token validation failure'
+                self._unauthorized(message)
+
+    def send_request_to_auth_server(self, endpoint, token=None):
+        headers = {}
+        if token:
+            headers = {'Authorization': 'Bearer %s' % token}
         verify = None
         if urllib.parse.urlparse(endpoint).scheme == "https":
             verify = False if self.insecure else self.cafile
-        cert = (self.certfile, self.keyfile) if self.certfile and self.keyfile \
-            else None
+        cert = (self.certfile, self.keyfile) \
+            if self.certfile and self.keyfile else None
         resp = requests.get(endpoint, headers=headers,
                             verify=verify, cert=cert)
-
         if not resp.ok:
             abort(resp.status_code, resp.reason)
+        return resp.json()
 
     def _set_req_headers(self, req, decoded):
         req.headers['X-Identity-Status'] = 'Confirmed'
@@ -156,6 +186,14 @@ class KeycloakAuth(base.ConfigurableMiddleware):
                 LOG.debug("Using ca file %s", ca)
                 return ca
         LOG.warning("System ca file could not be found.")
+
+    @cached(LRUCache(maxsize=32))
+    def get_public_key(self, realm_name):
+        keycloak_key_url = self.auth_url + self.public_cert_url % realm_name
+        response_json = self.send_request_to_auth_server(keycloak_key_url)
+        public_key = RSAAlgorithm.from_jwk(
+            json.dumps(response_json["keys"][0]))
+        return public_key
 
 
 filter_factory = KeycloakAuth.factory

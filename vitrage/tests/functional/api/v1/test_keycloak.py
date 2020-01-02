@@ -16,6 +16,7 @@
 
 from datetime import datetime
 # noinspection PyPackageRequirements
+import json
 import mock
 import requests_mock
 from vitrage.middleware.keycloak import KeycloakAuth
@@ -25,6 +26,7 @@ from webtest import TestRequest
 
 TOKEN = {
     "iss": "http://127.0.0.1/auth/realms/my_realm",
+    "aud": "openstack",
     "realm_access": {
         "roles": ["role1", "role2"]
     }
@@ -35,18 +37,24 @@ HEADERS = {
     'X-Project-Id': 'my_realm'
 }
 
-OPENID_CONNECT_USERINFO = 'http://127.0.0.1:9080/auth/realms/my_realm/' \
-                          'protocol/openid-connect/userinfo'
 
-USER_CLAIMS = {
-    "sub": "248289761001",
-    "name": "Jane Doe",
-    "given_name": "Jane",
-    "family_name": "Doe",
-    "preferred_username": "j.doe",
-    "email": "janedoe@example.com",
-    "picture": "http://example.com/janedoe/me.jpg"
-}
+CERT_URL = 'http://127.0.0.1:9080/auth/realms/my_realm/' \
+           'protocol/openid-connect/certs'
+
+PUBLIC_KEY = json.loads("""
+        {
+            "keys": [
+                {
+                    "kid": "FJ86GcF3jTbNLOco4NvZkUCIUmfYCqoqtOQeMfbhNlE",
+                    "kty": "RSA",
+                    "alg": "RS256",
+                    "use": "sig",
+                    "n": "q1awrk7QK24Gmcy9Yb4dMbS-ZnO6",
+                    "e": "AQAB"
+                }
+            ]
+        }
+        """)
 
 EVENT_DETAILS = {
     'hostname': 'host123',
@@ -82,7 +90,7 @@ class KeycloakTest(FunctionalTest):
     def test_header_parsing(self, _, req_mock):
 
         # Imitate success response from KeyCloak.
-        req_mock.get(OPENID_CONNECT_USERINFO)
+        req_mock.get(CERT_URL, json=PUBLIC_KEY)
 
         req = self._build_request()
         auth = KeycloakAuth(mock.Mock(), self.conf)
@@ -122,7 +130,7 @@ class KeycloakTest(FunctionalTest):
     def test_in_keycloak_mode_auth_success(self, _, req_mock):
 
         # Imitate success response from KeyCloak.
-        req_mock.get(OPENID_CONNECT_USERINFO, json=USER_CLAIMS)
+        req_mock.get(CERT_URL, json=PUBLIC_KEY)
 
         with mock.patch('pecan.request') as request:
             resp = self.post_json('/event/',
