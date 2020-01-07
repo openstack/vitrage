@@ -11,12 +11,14 @@
         - vitrage-dsvm-datasources-py3
         - vitrage-dsvm-mock-py3
         - grenade-vitrage
+        - vitrage-dsvm-api-ipv6-only
     gate:
       queue: vitrage
       jobs:
         - vitrage-dsvm-api-py3
         - vitrage-dsvm-datasources-py3
         - grenade-vitrage
+        - vitrage-dsvm-api-ipv6-only
 
 - job:
     name: vitrage-dsvm-api-py3
@@ -35,6 +37,13 @@
       - ^.*\.rst$
       - ^doc/.*$
       - ^releasenotes/.*$
+
+- job:
+    name: vitrage-dsvm-api-ipv6-only
+    parent: vitrage-dsvm-api-py3
+    run: playbooks/legacy/vitrage-dsvm-api-py3/run-ipv6.yaml
+    required-projects:
+      - openstack/tempest
 
 - job:
     name: vitrage-dsvm-datasources-py3

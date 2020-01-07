@@ -240,7 +240,7 @@ function configure_vitrage {
     if [[ ! -z "$VITRAGE_COORDINATION_URL" ]]; then
         iniset $VITRAGE_CONF coordination backend_url "$VITRAGE_COORDINATION_URL"
     elif is_service_enabled etcd3; then
-        iniset $VITRAGE_CONF coordination backend_url "etcd3://${SERVICE_HOST}:$ETCD_PORT"
+        iniset $VITRAGE_CONF coordination backend_url "etcd3+http://${SERVICE_HOST}:$ETCD_PORT"
     fi
 }
 

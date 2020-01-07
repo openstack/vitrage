@@ -1,0 +1,77 @@
+- hosts: all
+  name: Vitrage IPv6 legacy jobs
+  tasks:
+
+    - name: Ensure legacy workspace directory
+      file:
+        path: '{{ ansible_user_dir }}/workspace'
+        state: directory
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          cat > clonemap.yaml << EOF
+          clonemap:
+            - name: openstack/devstack-gate
+              dest: devstack-gate
+          EOF
+          /usr/zuul-env/bin/zuul-cloner -m clonemap.yaml --cache-dir /opt/git \
+              https://opendev.org \
+              openstack/devstack-gate
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          export PYTHONUNBUFFERED=true
+          export PROJECTS="openstack/python-vitrageclient $PROJECTS"
+          export PROJECTS="openstack/aodh $PROJECTS"
+          export PROJECTS="openstack/mistral $PROJECTS"
+          export PROJECTS="openstack/vitrage $PROJECTS"
+          export PROJECTS="openstack/vitrage-tempest-plugin $PROJECTS"
+
+          export DEVSTACK_GATE_USE_PYTHON3=True
+          export DEVSTACK_LOCAL_CONFIG+=$'\n'"SERVICE_IP_VERSION=6"
+          export DEVSTACK_LOCAL_CONFIG+=$'\n'"SERVICE_HOST=''"
+          # temporary workaround with IPv6-based host name until we'll figure out how to pass
+          # IPv6 address to gRPC client
+          #export DEVSTACK_LOCAL_CONFIG+=$'\n'"VITRAGE_COORDINATION_URL=etcd3://localhost:2379"
+
+          function pre_test_hook {
+              source $BASE/new/vitrage-tempest-plugin/devstack/pre_test_hook.sh
+          }
+          export -f pre_test_hook
+
+          function gate_hook {
+              source $BASE/new/vitrage/devstack/gate_hook.sh
+          }
+          export -f gate_hook
+
+          function post_test_hook {
+              cd $BASE/new/tempest/tools
+              ./verify-ipv6-only-deployments.sh
+
+              if [[ "$TEMPEST_VERSION" != "master" ]]; then
+                 # use vitrage-tempest-plugin $TEMPEST_VERSION
+                 # which is defined in the devstackgaterc file
+
+                 cd $BASE/new/vitrage-tempest-plugin/
+                 git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
+              fi
+
+              source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'api'
+
+          }
+          export -f post_test_hook
+
+          export DEVSTACK_GATE_SETTINGS=/opt/stack/new/vitrage/devstack/devstackgaterc
+
+          cp devstack-gate/devstack-vm-gate-wrap.sh ./safe-devstack-vm-gate-wrap.sh
+          ./safe-devstack-vm-gate-wrap.sh
+        executable: /bin/bash
+        chdir: '{{ ansible_user_dir }}/workspace'
+      environment: '{{ zuul | zuul_legacy_vars }}'
