@@ -27,7 +27,7 @@ LOG = log.getLogger(__name__)
 def main():
     """Main method of vitrage-graph"""
 
-    LOG.info(VITRAGE_TITLE)
+    print(VITRAGE_TITLE)
     config.parse_config(sys.argv)
     workers = GraphWorkersManager()
     spawn(init, workers)
