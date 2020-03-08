@@ -60,8 +60,7 @@ def get_notification_listener(transport, targets, endpoints,
                               allow_requeue=False):
     """Return a configured oslo_messaging notification listener."""
     return oslo_msg.get_notification_listener(
-        transport, targets, endpoints, executor='blocking',
-        allow_requeue=allow_requeue)
+        transport, targets, endpoints, allow_requeue=allow_requeue)
 
 
 class VitrageNotifier(object):

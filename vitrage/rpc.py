@@ -97,6 +97,5 @@ def get_server(target, endpoints, transport, serializer=None):
     return messaging.get_rpc_server(transport,
                                     target,
                                     endpoints,
-                                    executor='blocking',
                                     serializer=serializer,
                                     access_policy=access_policy)

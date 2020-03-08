@@ -242,6 +242,8 @@ function configure_vitrage {
     elif is_service_enabled etcd3; then
         iniset $VITRAGE_CONF coordination backend_url "etcd3+http://${SERVICE_HOST}:$ETCD_PORT"
     fi
+
+    iniset $VITRAGE_CONF DEFAULT "executor_thread_pool_size" 1
 }
 
 # init_vitrage() - Initialize etc.
