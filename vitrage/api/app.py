@@ -95,8 +95,11 @@ def wsgi_file():
 
 def build_uwsgi_server(uwsgi):
 
+    major = str(sys.version_info.major)
+    minor = str(sys.version_info.minor)
+    plugin = ''.join(('python', major, minor))
     args = [
-        "--if-not-plugin", "python", "--plugin", "python", "--endif",
+        "--if-not-plugin", "python", "--plugin", plugin, "--endif",
         "--http-socket", "%s:%d" % (CONF.api.host, CONF.api.port),
         "--master",
         "--enable-threads",
