@@ -83,9 +83,9 @@ def delete_trust_id(trust_id, auth_plugin):
 
 
 OPTS = [
-    cfg.StrOpt('region-name',
+    cfg.StrOpt('region_name',
                default=os.environ.get('OS_REGION_NAME'),
-               deprecated_name="os-region-name",
+               deprecated_name="region-name",
                help='Region name to use for OpenStack service endpoints.'),
     cfg.StrOpt('interface',
                default=os.environ.get(
