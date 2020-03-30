@@ -45,11 +45,15 @@ def get_connection_from_config(conf):
 
     @tenacity.retry(
         wait=tenacity.wait_fixed(conf.database.retry_interval),
-        stop=tenacity.stop_after_attempt(retries if retries >= 0 else 5),
+        stop=tenacity.stop_after_attempt(retries),
+        after=tenacity.after_log(LOG, log.WARN),
         reraise=True)
     def _get_connection():
         """Return an open connection to the database."""
-        return mgr.driver(conf, url)
+        conn = mgr.driver(conf, url)
+        session = conn._engine_facade.get_session()
+        session.execute('SELECT 1;')
+        return conn
 
     return _get_connection()
 
