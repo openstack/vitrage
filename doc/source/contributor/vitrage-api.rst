@@ -215,152 +215,121 @@ Response Examples
 
 ::
 
- {
-  "directed": true,
-  "graph": {},
-  "nodes": [
-    {
-      "vitrage_id": "96f6a30a-51eb-4e71-ae4a-0703b21ffa98",
-      "name": "openstack.cluster",
-      "graph_index": 0,
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "OK",
-      "state": "available",
-      "vitrage_type": "openstack.cluster",
-      "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
-      "vitrage_aggregated_state": "AVAILABLE",
-      "vitrage_is_placeholder": false,
-      "id": "OpenStack Cluster",
-      "is_real_vitrage_id": true,
-      "vitrage_is_deleted": false
-    },
-    {
-      "vitrage_id": "12b11320-a6de-4ce5-892f-78fb1fa6bfef",
-      "name": "nova",
-      "update_timestamp": "2018-06-11 08:43:33.757864+00:00",
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "OK",
-      "state": "available",
-      "vitrage_type": "nova.zone",
-      "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
-      "graph_index": 1,
-      "vitrage_aggregated_state": "AVAILABLE",
-      "vitrage_is_placeholder": false,
-      "id": "nova",
-      "is_real_vitrage_id": true,
-      "vitrage_is_deleted": false
-    },
-    {
-      "vitrage_id": "c90cc1dd-409c-4354-92f8-79b993e584c0",
-      "vitrage_is_deleted": false,
-      "graph_index": 2,
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "N/A",
-      "vitrage_type": "nova.instance",
-      "vitrage_sample_timestamp": "2018-06-11 08:33:33.457974+00:00",
-      "vitrage_aggregated_state": null,
-      "vitrage_is_placeholder": true,
-      "id": "ce173654-c70d-4514-a3e9-1f9dd5c09dd8",
-      "is_real_vitrage_id": true
-    },
-    {
-      "vitrage_id": "94060508-5fea-4927-9a53-2b66864ab883",
-      "vitrage_is_deleted": false,
-      "graph_index": 3,
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "N/A",
-      "vitrage_type": "nova.instance",
-      "vitrage_sample_timestamp": "2018-06-11 08:33:33.457992+00:00",
-      "vitrage_aggregated_state": null,
-      "vitrage_is_placeholder": true,
-      "id": "3af9a215-e109-476a-aa55-6868990684e4",
-      "is_real_vitrage_id": true
-    },
-    {
-      "vitrage_id": "ae0886d8-ee90-41df-a80a-006fdb80105b",
-      "graph_index": 4,
-      "name": "vm-4",
-      "update_timestamp": "2018-06-11 08:43:34.421455+00:00",
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "OK",
-      "state": "ACTIVE",
-      "vitrage_type": "nova.instance",
-      "vitrage_sample_timestamp": "2018-06-11 08:43:34.421455+00:00",
-      "host_id": "devstack-rocky-8",
-      "vitrage_aggregated_state": "ACTIVE",
-      "vitrage_is_placeholder": false,
-      "project_id": "aa792cde038b41858a0f1bcf8f9b092d",
-      "id": "1233e48c-62ee-470e-8d4a-adff30211b5d",
-      "is_real_vitrage_id": true,
-      "vitrage_is_deleted": false
-    },
-    {
-      "vitrage_id": "4d197913-0687-4300-afb7-7fd331d35cff",
-      "graph_index": 5,
-      "name": "vm-3",
-      "update_timestamp": "2018-06-11 08:43:34.421490+00:00",
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "OK",
-      "state": "ACTIVE",
-      "vitrage_type": "nova.instance",
-      "vitrage_sample_timestamp": "2018-06-11 08:47:24.137324+00:00",
-      "host_id": "devstack-rocky-8",
-      "vitrage_aggregated_state": "ACTIVE",
-      "vitrage_is_placeholder": false,
-      "project_id": "aa792cde038b41858a0f1bcf8f9b092d",
-      "id": "12cc6d3e-f801-4422-b2a0-43cedacb4eb5",
-      "is_real_vitrage_id": true,
-      "vitrage_is_deleted": false
-    },
-    {
-      "vitrage_id": "5f9893b8-c622-4cb8-912d-534980f4e4f9",
-      "name": "devstack-rocky-8",
-      "update_timestamp": "2018-06-11 08:43:33.518059+00:00",
-      "vitrage_category": "RESOURCE",
-      "vitrage_operational_state": "OK",
-      "state": "available",
-      "vitrage_type": "nova.host",
-      "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
-      "graph_index": 6,
-      "vitrage_aggregated_state": "AVAILABLE",
-      "vitrage_is_placeholder": false,
-      "id": "devstack-rocky-8",
-      "is_real_vitrage_id": true,
-      "vitrage_is_deleted": false
+     {
+       "vitrage_id": "96f6a30a-51eb-4e71-ae4a-0703b21ffa98",
+       "name": "openstack.cluster",
+       "graph_index": 0,
+       "vitrage_category": "RESOURCE",
+       "vitrage_operational_state": "OK",
+       "state": "available",
+       "vitrage_type": "openstack.cluster",
+       "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
+       "vitrage_aggregated_state": "AVAILABLE",
+       "vitrage_is_placeholder": false,
+       "id": "OpenStack Cluster",
+       "is_real_vitrage_id": true,
+       "vitrage_is_deleted": false,
+       "children": [
+        {
+          "vitrage_id": "12b11320-a6de-4ce5-892f-78fb1fa6bfef",
+          "name": "nova",
+          "update_timestamp": "2018-06-11 08:43:33.757864+00:00",
+          "vitrage_category": "RESOURCE",
+          "vitrage_operational_state": "OK",
+          "state": "available",
+          "vitrage_type": "nova.zone",
+          "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
+          "graph_index": 1,
+          "vitrage_aggregated_state": "AVAILABLE",
+          "vitrage_is_placeholder": false,
+          "id": "nova",
+          "is_real_vitrage_id": true,
+          "vitrage_is_deleted": false,
+          "children": [
+            {
+              "vitrage_id": "5f9893b8-c622-4cb8-912d-534980f4e4f9",
+              "name": "devstack-rocky-8",
+              "update_timestamp": "2018-06-11 08:43:33.518059+00:00",
+              "vitrage_category": "RESOURCE",
+              "vitrage_operational_state": "OK",
+              "state": "available",
+              "vitrage_type": "nova.host",
+              "vitrage_sample_timestamp": "2018-06-11 08:43:33.757864+00:00",
+              "graph_index": 2,
+              "vitrage_aggregated_state": "AVAILABLE",
+              "vitrage_is_placeholder": false,
+              "id": "devstack-rocky-8",
+              "is_real_vitrage_id": true,
+              "vitrage_is_deleted": false,
+              "children": [
+                {
+                  "vitrage_id": "c90cc1dd-409c-4354-92f8-79b993e584c0",
+                  "vitrage_is_deleted": false,
+                  "graph_index": 3,
+                  "vitrage_category": "RESOURCE",
+                  "vitrage_operational_state": "N/A",
+                  "vitrage_type": "nova.instance",
+                  "vitrage_sample_timestamp": "2018-06-11 08:33:33.457974+00:00",
+                  "vitrage_aggregated_state": null,
+                  "vitrage_is_placeholder": true,
+                  "id": "ce173654-c70d-4514-a3e9-1f9dd5c09dd8",
+                  "is_real_vitrage_id": true
+                },
+                {
+                  "vitrage_id": "94060508-5fea-4927-9a53-2b66864ab883",
+                  "vitrage_is_deleted": false,
+                  "graph_index": 4,
+                  "vitrage_category": "RESOURCE",
+                  "vitrage_operational_state": "N/A",
+                  "vitrage_type": "nova.instance",
+                  "vitrage_sample_timestamp": "2018-06-11 08:33:33.457992+00:00",
+                  "vitrage_aggregated_state": null,
+                  "vitrage_is_placeholder": true,
+                  "id": "3af9a215-e109-476a-aa55-6868990684e4",
+                  "is_real_vitrage_id": true
+                },
+                {
+                  "vitrage_id": "ae0886d8-ee90-41df-a80a-006fdb80105b",
+                  "graph_index": 5,
+                  "name": "vm-4",
+                  "update_timestamp": "2018-06-11 08:43:34.421455+00:00",
+                  "vitrage_category": "RESOURCE",
+                  "vitrage_operational_state": "OK",
+                  "state": "ACTIVE",
+                  "vitrage_type": "nova.instance",
+                  "vitrage_sample_timestamp": "2018-06-11 08:43:34.421455+00:00",
+                  "host_id": "devstack-rocky-8",
+                  "vitrage_aggregated_state": "ACTIVE",
+                  "vitrage_is_placeholder": false,
+                  "project_id": "aa792cde038b41858a0f1bcf8f9b092d",
+                  "id": "1233e48c-62ee-470e-8d4a-adff30211b5d",
+                  "is_real_vitrage_id": true,
+                  "vitrage_is_deleted": false
+                },
+                {
+                  "vitrage_id": "4d197913-0687-4300-afb7-7fd331d35cff",
+                  "graph_index": 6,
+                  "name": "vm-3",
+                  "update_timestamp": "2018-06-11 08:43:34.421490+00:00",
+                  "vitrage_category": "RESOURCE",
+                  "vitrage_operational_state": "OK",
+                  "state": "ACTIVE",
+                  "vitrage_type": "nova.instance",
+                  "vitrage_sample_timestamp": "2018-06-11 08:47:24.137324+00:00",
+                  "host_id": "devstack-rocky-8",
+                  "vitrage_aggregated_state": "ACTIVE",
+                  "vitrage_is_placeholder": false,
+                  "project_id": "aa792cde038b41858a0f1bcf8f9b092d",
+                  "id": "12cc6d3e-f801-4422-b2a0-43cedacb4eb5",
+                  "is_real_vitrage_id": true,
+                  "vitrage_is_deleted": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
-  ],
-  "links": [
-    {
-      "relationship_type": "contains",
-      "source": 0,
-      "vitrage_is_deleted": false,
-      "key": "contains",
-      "target": 1
-    },
-    {
-      "relationship_type": "contains",
-      "source": 1,
-      "vitrage_is_deleted": false,
-      "key": "contains",
-      "target": 6
-    },
-    {
-      "relationship_type": "contains",
-      "source": 6,
-      "vitrage_is_deleted": false,
-      "key": "contains",
-      "target": 4
-    },
-    {
-      "relationship_type": "contains",
-      "source": 6,
-      "vitrage_is_deleted": false,
-      "key": "contains",
-      "target": 5
-    }
-  ],
-  "multigraph": true
- }
 
 Show RCA
 ^^^^^^^^
