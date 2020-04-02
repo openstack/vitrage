@@ -13,7 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import inspect
 
 from testtools import matchers
 
@@ -199,17 +198,3 @@ class HackingTestCase(base.BaseTest):
         self.assertThat(list(checks.check_assert_true_false(
             false_fail_code2)), matchers.HasLength(1))
         self.assertFalse(list(checks.check_assert_true_false(false_pass_code)))
-
-    def test_factory(self):
-        class Register(object):
-            def __init__(self):
-                self.funcs = []
-
-            def __call__(self, _func):
-                self.funcs.append(_func)
-
-        register = Register()
-        checks.factory(register)
-        for name, func in inspect.getmembers(checks, inspect.isfunction):
-            if name != 'factory':
-                self.assertIn(func, register.funcs)
