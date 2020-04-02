@@ -377,6 +377,17 @@ if is_service_enabled vitrage; then
         add_monasca_rule_to_vitrage
         # Start the services
         start_vitrage
+
+        # this is a hack!!! latest tempest doesn't support
+        # python2 make sure we have a tempest that support python2
+        # if we are in a python2 env
+        if ! python3_enabled; then
+          pushd .
+          cd $TEMPEST_DIR
+          git checkout 23.0.0
+          popd
+        fi
+
     fi
 
     if [[ "$1" == "unstack" ]]; then
