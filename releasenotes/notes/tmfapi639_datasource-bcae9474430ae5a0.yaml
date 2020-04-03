@@ -1,0 +1,5 @@
+---
+features:
+  - New TMF API 639 datasource added capable of both handling
+    topology snapshots and further updates. All described within
+    the TMF's API 639 specification.

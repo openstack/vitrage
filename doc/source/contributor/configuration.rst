@@ -29,6 +29,7 @@ Datasources
    nova-config
    prometheus-datasource
    kapacitor-datasource
+   tmfapi639-datasource
 
 Notifiers
 ---------
