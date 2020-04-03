@@ -107,6 +107,7 @@ def nova_client():
         n_client = driver_module('nova')
         client = n_client.Client(
             version=CONF.nova_version,
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session(),
         )
         LOG.info('Nova client created')

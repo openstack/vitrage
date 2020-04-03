@@ -1,0 +1,7 @@
+---
+deprecations:
+  - The ``region-name`` is deprecated in keystone_client's cfgs, and
+    use ``region_name`` instead.
+
+upgrade:
+  - The deprecated ``os-region-name`` option has been dropped.
