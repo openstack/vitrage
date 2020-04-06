@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from datetime import timedelta
-
 from oslo_config import cfg
 from oslo_log import log
 
@@ -27,7 +25,7 @@ from vitrage.datasources import OPENSTACK_CLUSTER
 from vitrage.datasources import utils
 from vitrage.evaluator.actions.evaluator_event_transformer \
     import VITRAGE_DATASOURCE
-from vitrage.utils.datetime import utcnow
+from vitrage.utils import datetime
 
 CONF = cfg.CONF
 LOG = log.getLogger(__name__)
@@ -71,8 +69,8 @@ class ConsistencyEnforcer(object):
             LOG.exception('Error in deleting vertices from entity_graph.')
 
     def _find_outdated_entities_to_mark_as_deleted(self):
-        vitrage_sample_tstmp = str(utcnow() - timedelta(
-            seconds=2 * CONF.datasources.snapshots_interval))
+        vitrage_sample_tstmp = str(datetime.datetime_delta(
+            -2 * CONF.datasources.snapshots_interval))
         query = {
             'and': [
                 {'!=': {VProps.VITRAGE_TYPE: VITRAGE_DATASOURCE}},
@@ -85,8 +83,8 @@ class ConsistencyEnforcer(object):
         return set(self._filter_vertices_to_be_marked_as_deleted(vertices))
 
     def _find_old_deleted_entities(self):
-        vitrage_sample_tstmp = str(utcnow() - timedelta(
-            seconds=CONF.consistency.min_time_to_delete))
+        vitrage_sample_tstmp = str(datetime.datetime_delta(
+            -1 * CONF.consistency.min_time_to_delete))
         query = {
             'and': [
                 {'==': {VProps.VITRAGE_IS_DELETED: True}},
@@ -103,7 +101,7 @@ class ConsistencyEnforcer(object):
             event = {
                 DSProps.ENTITY_TYPE: CONSISTENCY_DATASOURCE,
                 DSProps.DATASOURCE_ACTION: DatasourceAction.UPDATE,
-                DSProps.SAMPLE_DATE: str(utcnow()),
+                DSProps.SAMPLE_DATE: datetime.format_utcnow(),
                 DSProps.EVENT_TYPE: action,
                 VProps.VITRAGE_ID: vertex[VProps.VITRAGE_ID],
                 VProps.ID: vertex.get(VProps.ID, None),

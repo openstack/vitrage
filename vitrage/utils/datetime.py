@@ -52,3 +52,15 @@ def format_unix_timestamp(timestamp, date_format=TIMESTAMP_FORMAT):
 def format_timestamp(timestamp_str, new_format=TIMESTAMP_FORMAT):
     return parser.parse(timestamp_str).strftime(new_format) if timestamp_str \
         else None
+
+
+def datetime_delta(delta_seconds,
+                   time_to_use=None,
+                   with_timezone=True,
+                   date_format=TIMESTAMP_FORMAT):
+    if time_to_use:
+        t = time_to_use
+    else:
+        t = utcnow(with_timezone)
+
+    return (t + timedelta(seconds=delta_seconds)).strftime(date_format)

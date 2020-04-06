@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from datetime import timedelta
 import time
 
 from oslo_config import cfg
@@ -31,7 +30,7 @@ from vitrage.graph.driver.networkx_graph import NXGraph
 from vitrage.tests.functional.base import TestFunctionalBase
 from vitrage.tests.functional.test_configuration import TestConfiguration
 from vitrage.tests.mocks import utils
-from vitrage.utils.datetime import utcnow
+from vitrage.utils import datetime
 
 
 # noinspection PyProtectedMember
@@ -204,12 +203,17 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
 
     def _periodic_process_setup_stage(self, consistency_interval):
         self._create_processor_with_graph(processor=self.processor)
-        current_time = utcnow()
+        current_timestamp = datetime.utcnow()
+        current_time = str(datetime.datetime_delta(0, current_timestamp))
+        time_1_5 = str(datetime.datetime_delta(
+            1 * consistency_interval, current_timestamp))
+        time_2 = str(datetime.datetime_delta(
+            2 * consistency_interval + 1, current_timestamp))
 
         # set all vertices to be have timestamp that consistency won't get
-        self._update_timestamp(self.processor.entity_graph.get_vertices(),
-                               current_time +
-                               timedelta(seconds=1.5 * consistency_interval))
+        self._update_timestamp(
+            self.processor.entity_graph.get_vertices(),
+            time_1_5)
 
         # check number of instances in graph
         instance_vertices = self.processor.entity_graph.get_vertices({
@@ -230,8 +234,7 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
         # set part of the instances as deleted
         for i in range(6, 9):
             instance_vertices[i][VProps.VITRAGE_IS_DELETED] = True
-            instance_vertices[i][VProps.VITRAGE_SAMPLE_TIMESTAMP] = str(
-                current_time + timedelta(seconds=2 * consistency_interval + 1))
+            instance_vertices[i][VProps.VITRAGE_SAMPLE_TIMESTAMP] = time_2
             self.processor.entity_graph.update_vertex(instance_vertices[i])
 
         self._add_resources_by_type(consistency_interval=consistency_interval,
@@ -309,10 +312,10 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
         # - outdated_resource with an old timestamp
         # - deleted_resource with an old timestamp and is_deleted==true
 
-        future_timestamp = \
-            str(utcnow() + timedelta(seconds=2 * consistency_interval))
-        past_timestamp = \
-            str(utcnow() - timedelta(seconds=2 * consistency_interval - 1))
+        future_timestamp = str(datetime.datetime_delta(
+            2 * consistency_interval))
+        past_timestamp = str(datetime.datetime_delta(
+            -2 * consistency_interval + 1))
 
         updated_resource = create_func(
             v_id=resource_type + '1234', v_type=resource_type,
