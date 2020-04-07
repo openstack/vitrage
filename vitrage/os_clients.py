@@ -122,6 +122,7 @@ def trove_client():
         tr_client = driver_module('trove')
         client = tr_client.Client(
             version=CONF.trove_version,
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session(),
         )
         LOG.info('Trove client created')
@@ -136,6 +137,7 @@ def cinder_client():
         cin_client = driver_module('cinder')
         client = cin_client.Client(
             version=CONF.cinder_version,
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session(),
         )
         LOG.info('Cinder client created')
@@ -163,6 +165,7 @@ def neutron_client():
     try:
         ne_client = driver_module('neutron')
         client = ne_client.Client(
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session()
         )
         LOG.info('Neutron client created')
@@ -177,6 +180,7 @@ def heat_client():
         he_client = driver_module('heat')
         client = he_client.Client(
             version=CONF.heat_version,
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session()
         )
         LOG.info('Heat client created')
