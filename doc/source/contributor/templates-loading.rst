@@ -23,6 +23,7 @@ Let's take a basic template as example
 .. code-block:: yaml
 
   metadata:
+   version: 2
    name: basic_template
    description: basic template for general tests
   definitions:

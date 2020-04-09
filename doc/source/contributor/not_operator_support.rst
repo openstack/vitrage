@@ -16,6 +16,7 @@ The template is written in YAML language, with the following structure.
 ::
 
   metadata:
+    version: <template version>
     name: <unique template identifier>
     description: <what this template does>
   definitions:
@@ -73,6 +74,7 @@ There exists an instance on Host but there is no Alarm on the instance.
  ::
 
     metadata:
+        version: 2
         name: no_alarm_on_instance_that_contained_in_host
         description: when host contains vm that has no alarm on it, show implications on the host
     definitions:
@@ -126,6 +128,7 @@ There exists a host with no alarm.
  ::
 
     metadata:
+        version: 2
         name: no_alarm_on_host
         description: when there is no alarm on the host, show implications on the host
     definitions:
@@ -183,6 +186,7 @@ There is no edge between the Vm and the Port.
  ::
 
     metadata:
+        version: 2
         name: no_connection_between_vm_and_port
         description: when there is no edge between the port and the vm, show implications on the instances
     definitions:
@@ -268,6 +272,7 @@ In the subgraphs above, we had only one vertex which was not connected to the ma
  ::
 
     metadata:
+        version: 2
         name: host_contains_vm_with_no_edge_to_stack_that_has_alarm_on_it
         description: when host contains vm without and edge to a stack that has no alarms, show implications on the instances
     definitions:
