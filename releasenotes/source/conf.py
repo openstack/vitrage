@@ -39,9 +39,7 @@ copyright = u'2016, Vitrage developers'
 
 # openstackdocstheme options
 repository_name = 'openstack/vitrage'
-bug_project = 'vitrage'
-bug_tag = ''
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+use_storyboard = True
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True

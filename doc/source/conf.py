@@ -70,8 +70,7 @@ html_theme = 'openstackdocs'
 
 # openstackdocstheme options
 repository_name = 'openstack/vitrage'
-use_storyborad = True
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+use_storyboard = True
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
