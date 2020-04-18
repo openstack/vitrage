@@ -12,7 +12,7 @@
 #  License for the specific language governing permissions and limitations
 #  under the License.
 
-import mock
+from unittest import mock
 
 from vitrage.api_handler.apis.template import TemplateApis
 from vitrage.evaluator import init_template_schemas

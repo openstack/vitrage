@@ -16,12 +16,12 @@
 
 # noinspection PyPackageRequirements
 from datetime import datetime
+from unittest import mock
 import uuid
 
 
 from keystonemiddleware import fixture as ksm_fixture
 # noinspection PyPackageRequirements
-import mock
 from vitrage.tests.functional.api.v1 import FunctionalTest
 
 EVENT_DETAILS = {

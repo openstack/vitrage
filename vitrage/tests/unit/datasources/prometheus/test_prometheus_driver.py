@@ -13,7 +13,8 @@
 # under the License.
 
 # noinspection PyPackageRequirements
-import mock
+from unittest import mock
+
 from oslo_config import cfg
 # noinspection PyPackageRequirements
 from testtools import matchers

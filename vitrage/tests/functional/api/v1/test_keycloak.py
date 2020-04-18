@@ -17,8 +17,8 @@
 from datetime import datetime
 # noinspection PyPackageRequirements
 import json
-import mock
 import requests_mock
+from unittest import mock
 from vitrage.middleware.keycloak import KeycloakAuth
 from vitrage.tests.functional.api.v1 import FunctionalTest
 from webtest import TestRequest

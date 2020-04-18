@@ -13,7 +13,8 @@
 
 from alembic import script
 import contextlib
-import mock
+from unittest import mock
+
 from oslo_db.sqlalchemy import enginefacade
 from oslo_db.sqlalchemy import test_fixtures
 from oslo_db.sqlalchemy import test_migrations

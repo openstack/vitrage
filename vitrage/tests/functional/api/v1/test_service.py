@@ -15,11 +15,11 @@
 from datetime import datetime
 import os
 import socket
+from unittest import mock
 
 # noinspection PyPackageRequirements
 from iso8601.iso8601 import UTC
 # noinspection PyPackageRequirements
-import mock
 from oslo_utils import timeutils
 # noinspection PyPackageRequirements
 import webtest

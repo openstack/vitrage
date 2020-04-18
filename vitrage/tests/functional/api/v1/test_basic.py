@@ -15,11 +15,11 @@
 # limitations under the License.
 
 # noinspection PyPackageRequirements
+from unittest import mock
 import uuid
 
 from datetime import datetime
 # noinspection PyPackageRequirements
-import mock
 from six.moves import http_client as httplib
 from vitrage.tests.functional.api.v1 import FunctionalTest
 
