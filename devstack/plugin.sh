@@ -267,7 +267,7 @@ function init_vitrage {
 # Install Vitrage.
 function install_vitrage {
     install_vitrageclient
-    setup_develop "$VITRAGE_DIR"
+    setup_develop "$VITRAGE_DIR" openstack
     sudo install -d -o $STACK_USER -m 755 $VITRAGE_CONF_DIR
 
     if [[ "$VITRAGE_DEPLOY" == "mod_wsgi" ]]; then
