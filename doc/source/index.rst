@@ -74,6 +74,7 @@ Developer Guide
 .. toctree::
    :maxdepth: 1
 
+   contributor/contributing
    contributor/vitrage-first_steps
    contributor/vitrage-api
    contributor/vitrage-templates
