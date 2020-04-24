@@ -175,11 +175,11 @@ The following template demonstrates
         entities:
             - entity:
                 category: ALARM
-                type: host_high_mem_load
+                name: host_high_mem_load
                 template_id: host_alarm # some string
             - entity:
                 category: ALARM
-                type: instance_mem_performance_problem
+                name: instance_mem_performance_problem
                 template_id: instance_alarm
             - entity:
                 category: RESOURCE
@@ -317,11 +317,11 @@ an alarm on the hosting zone or an alarm on the hosting host.
         entities:
             - entity:
                 category: ALARM
-                type: zone_connectivity_problem
+                name: zone_connectivity_problem
                 template_id: zone_alarm
             - entity:
                 category: ALARM
-                type: host_connectivity_problem
+                name: host_connectivity_problem
                 template_id: host_alarm
             - entity:
                 category: RESOURCE

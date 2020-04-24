@@ -81,7 +81,7 @@ There exists an instance on Host but there is no Alarm on the instance.
         entities:
             - entity:
                 category: ALARM
-                type: instance_mem_performance_problem
+                name: instance_mem_performance_problem
                 template_id: instance_alarm # some string
             - entity:
                 category: RESOURCE
@@ -135,7 +135,7 @@ There exists a host with no alarm.
         entities:
             - entity:
                 category: ALARM
-                type: host_high_mem_load
+                name: host_high_mem_load
                 template_id: host_alarm # some string
             - entity:
                 category: RESOURCE
@@ -291,7 +291,7 @@ In the subgraphs above, we had only one vertex which was not connected to the ma
                 template_id: stack
             - entity:
                 category: ALARM
-                type: stack_high_mem_load
+                name: stack_high_mem_load
                 template_id: stack_alarm
         relationships:
             - relationship:
