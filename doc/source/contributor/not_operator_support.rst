@@ -141,6 +141,10 @@ There exists a host with no alarm.
                 category: RESOURCE
                 type: nova.host
                 template_id: host
+            - entity:
+                category: RESOURCE
+                type: nova.instance
+                template_id: instance
         relationships:
             - relationship:
                 source: host_alarm  # source and target from entities section
@@ -233,7 +237,7 @@ There is no edge between the Vm and the Port.
                 relationship_type: attached
                 template_id : port_attached_network
             - relationship:
-                source: vm
+                source: instance
                 target: port
                 relationship_type: connected
                 template_id : vm_connected_port
