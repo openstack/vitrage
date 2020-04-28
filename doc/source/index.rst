@@ -99,6 +99,7 @@ Design Documents
    contributor/vitrage-use-cases
    contributor/add-new-datasource
    contributor/not_operator_support
+   contributor/not_operator_support_v2
    contributor/templates-loading
    contributor/vitrage-ha-and-history-vision
    contributor/datasource-snmp-parsing-support
