@@ -25,6 +25,7 @@ from pecan.core import abort
 from vitrage.api.controllers.rest import RootRestController
 from vitrage.api.policy import enforce
 from vitrage.common.constants import VertexProperties as VProps
+from vitrage.common.utils import to_int
 
 # noinspection PyProtectedMember
 from vitrage.common.utils import decompress_obj
@@ -44,6 +45,7 @@ class TopologyController(RootRestController):
     def post(self, depth=None, graph_type='graph', query=None, root=None,
              all_tenants=False):
         all_tenants = bool_from_string(all_tenants)
+        depth = to_int(depth)
         if all_tenants:
             enforce('get topology:all_tenants', pecan.request.headers,
                     pecan.request.enforcer, {})
