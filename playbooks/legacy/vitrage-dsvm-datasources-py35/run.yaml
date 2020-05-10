@@ -50,6 +50,13 @@
               # use vitrage-tempest-plugin 2.2.0 in stein
               cd $BASE/new/vitrage-tempest-plugin/
               git_checkout_tag vitrage-tempest-plugin 2.2.0
+              git cherry-pick d1b2092c8fdb062c8b551fe46047b920ea878adb
+              git config user.email "you@example.com"
+              git config user.name "Your Name"
+              git commit -m"patch"
+              git cherry-pick 9993c6320d95419601dbcb2d3cb920103c536341
+              git commit -m"patch"
+              git cherry-pick 9c315484782e8eb0373970f179a6f5c40de5cf39
 
               source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'datasources'
           }
