@@ -12,15 +12,8 @@ templates will be added into scenario repository.
 This document explains the implementation details of template data to help
 developer understand how scenario_evaluator_ works.
 
-*Note:* This document refers to Vitrage templates version 3.
-
-For previous versions, see:
-
-Version_2_
-
 .. _format: vitrage-templates.html
 .. _scenario_evaluator: scenario-evaluator.html
-.. _Version_2: https://docs.openstack.org/vitrage/latest/contributor/templates-loading-v2.html
 
 Example
 =======
@@ -29,28 +22,40 @@ Let's take a basic template as example
 
 .. code-block:: yaml
 
-    metadata:
-     version: 3
-     name: basic_template
-     description: basic template for general tests
-    entities:
-      alarm:
-        category: ALARM
-        type: nagios
-        name: HOST_HIGH_CPU_LOAD
-      host:
-        category: RESOURCE
-        type: nova.host
-    scenarios:
-     - condition: alarm [on] host
-       actions:
-         - set_state:
-            state: SUBOPTIMAL
-            target: host
+  metadata:
+   version: 2
+   name: basic_template
+   description: basic template for general tests
+  definitions:
+   entities:
+    - entity:
+       category: ALARM
+       type: nagios
+       name: HOST_HIGH_CPU_LOAD
+       template_id: alarm
+    - entity:
+       category: RESOURCE
+       type: nova.host
+       template_id: resource
+   relationships:
+    - relationship:
+       source: alarm
+       target: resource
+       relationship_type: on
+       template_id : alarm_on_host
+  scenarios:
+   - scenario:
+      condition: alarm_on_host
+      actions:
+       - action:
+          action_type: set_state
+          properties:
+           state: SUBOPTIMAL
+          action_target:
+           target: resource
 
-``TemplateData`` will build ``entities``, ``relationships`` and most importantly``scenarios``.
-*Note:* In the third version of the template syntax, ``relationships`` is no longer defined separately in advance, but
-used directly defined in the condition in the ``scenarios``.
+``TemplateData`` will build ``entities``, ``relationships`` and most importantly
+``scenarios`` out from the definition.
 
 .. code-block:: python
 
@@ -67,7 +72,7 @@ used directly defined in the condition in the ``scenarios``.
   }
 
   expected_relationships = {
-    'alarm__on__host': EdgeDescription(
+    'alarm_on_host': EdgeDescription(
       edge=Edge(source_id='alarm',
                 target_id='resource',
                 label='on',
@@ -95,31 +100,28 @@ used directly defined in the condition in the ``scenarios``.
 Entities and relationships
 ==========================
 
-Entities describes the resources and alarms which are defined by the entities
-part in the template.
-
-Scenario contains condition and actions, relationships are represented inline
-in the condition, example usage condition: alarm [ on ] host.
-
-Entities and relationships are loaded into dicts keyed by ``entity key`` so
+Entities and relationships are loaded into dicts keyed by ``template_id`` so
 that the references in scenarios can be resolved quickly.
 
 Note that entities and relationships dicts are **NOT** added to scenario
-repository. This implies the scope of `` entity key`` is restricted to one
+repository. This implies the scope of ``template_id`` is restricted to one
 template file. It is **NOT** global.
 
-It is considered invalid to have duplicated ``entity key`` in one template, but
+It is considered invalid to have duplicated ``template_id`` in one template, but
 it is possible that two or more entities have exactly the same properties except
-``entity key``. There is an example in:
+``template_id``. There is an example in
+``vitrage/tests/resources/templates/evaluator/high_availability.yaml``:
 
 .. code:: yaml
 
-  - instance1:
+  - entity:
      category: RESOURCE
      type: nova.instance
-  - instance2:
+     template_id: instance1
+  - entity:
      category: RESOURCE
      type: nova.instance
+     template_id: instance2
 
 It is used to model scenario contains two or more entities of same type, such
 as high availability condition.
@@ -147,7 +149,7 @@ Formatted from template name and scenario index
 condition
 ---------
 
-Condition strings in template are expressions composed of entity key and
+Condition strings in template are expressions composed of template id and
 operators. As explained in embedded comment:
 
     The condition string will be converted here into DNF (Disjunctive
