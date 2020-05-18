@@ -70,6 +70,8 @@ Developer Guide
    
    contributor/index
    contributor/vitrage-template-format-v2
+   contributor/templates-loading-v2
+   contributor/not_operator_support_v2
 
 .. toctree::
    :maxdepth: 1
@@ -99,9 +101,7 @@ Design Documents
    contributor/vitrage-use-cases
    contributor/add-new-datasource
    contributor/not_operator_support
-   contributor/not_operator_support_v2
    contributor/templates-loading
-   contributor/templates-loading-v2
    contributor/vitrage-ha-and-history-vision
    contributor/datasource-snmp-parsing-support
    contributor/entity_equivalence_use_cases
