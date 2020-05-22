@@ -740,24 +740,90 @@ None.
 Query Parameters
 ================
 
--  path (string(255), required) - the path to template file or directory
+None
 
 Request Body
 ============
 
-None
+-  templates (string, required) - A list of the structured content of the template
 
 Request Examples
 ================
 
 ::
 
-    POST /v1/template/?path=[file/dir path]
+    POST /v1/template
     Host: 135.248.18.122:8999
     User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
     Content-Type: application/json
     Accept: application/json
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+
+    {
+        "templates": [
+            ["tmp/templates/mem_decude_v3.yaml", {
+                "metadata": {
+                    "version": "3",
+                    "name": "mem_decude_scenarios",
+                    "type": "standard",
+                    "description": "scenarios triggered by high mem load on physical"
+                },
+                "entities": {
+                    "host_alarm": {
+                        "category": "ALARM",
+                        "name": "mem_utilization"
+                    },
+                    "instance_alarm": {
+                        "category": "ALARM",
+                        "type": "vitrage",
+                        "severity": "CRITICAL",
+                        "name": "mem_utilization by host mem"
+                    },
+                    "instance": {
+                        "category": "RESOURCE",
+                        "type": "nova.instance"
+                    },
+                    "host": {
+                        "category": "RESOURCE",
+                        "type": "nova.host"
+                    }
+                },
+                "scenarios": [{
+                    "condition": "host_alarm [on] host",
+                    "actions": [{
+                        "set_state": {
+                            "state": "ERROR",
+                            "target": "host"
+                        }
+                    }]
+                }, {
+                    "condition": "host_alarm [on] host AND host [contains] instance",
+                    "actions": [{
+                        "set_state": {
+                            "state": "ERROR",
+                            "target": "instance"
+                        }
+                    }, {
+                        "raise_alarm": {
+                            "target": "instance",
+                            "alarm_name": "mem used_percent by host mem",
+                            "severity": "WARNING",
+                            "causing_alarm": "host_alarm"
+                        }
+                    }]
+                }, {
+                    "condition": "host_alarm [on] host AND instance_alarm [on] instance AND host [contains] instance",
+                    "actions": [{
+                        "add_causal_relationship": {
+                            "source": "host_alarm",
+                            "target": "instance_alarm"
+                        }
+                    }]
+                }]
+            }]
+        ]
+    }
+
 
 Response Status code
 ====================
@@ -776,23 +842,15 @@ Response Examples
 ::
 
     {
-      "results": [
-        {
-          "status": "validation failed",
-          "file path": "/tmp/templates/basic_no_meta.yaml",
-          "description": "Template syntax validation",
-          "message": "metadata is a mandatory section.",
-          "status code": 62
-        },
-        {
-          "status": "validation OK",
-          "file path": "/tmp/templates/basic.yaml",
-          "description": "Template validation",
-          "message": "Template validation is OK",
-          "status code": 4
-        }
-      ]
+        'results': [{
+            'file path': 'tmp/templates/mem_decude_v3.yaml',
+            'status': 'validation OK',
+            'description': 'Template validation',
+            'message': 'Template validation is OK',
+            'status code': 0
+        }]
     }
+
 
 Template List
 =============
