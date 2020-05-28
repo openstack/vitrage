@@ -842,12 +842,12 @@ Response Examples
 ::
 
     {
-        'results': [{
-            'file path': 'tmp/templates/mem_decude_v3.yaml',
-            'status': 'validation OK',
-            'description': 'Template validation',
-            'message': 'Template validation is OK',
-            'status code': 0
+        "results": [{
+            "file path": "tmp/templates/mem_decude_v3.yaml",
+            "status": "validation OK",
+            "description": "Template validation",
+            "message": "Template validation is OK",
+            "status code": 0
         }]
     }
 
@@ -1097,8 +1097,8 @@ None
 Query Parameters
 ================
 
--  path (string, required) - the path to template file or directory
--  type (string, optional) - template type (standard,definition,equivalence)
+-  templates (string, required) - A list of the structured content of the template
+-  template_type (string, required) - template type (standard, None)
 -  overwrite (boolean, optional) - if template already exists will overwrite it
 
 Request Body
@@ -1116,6 +1116,74 @@ Request Examples
     User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
     Accept: application/json
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
+
+    {
+        "template_type": "standard",
+        "templates": [
+            ["tmp/templates/mem_decude_v3.yaml", {
+                "metadata": {
+                    "version": "3",
+                    "name": "mem_decude_scenarios",
+                    "type": "standard",
+                    "description": "scenarios triggered by high mem load on physical"
+                },
+                "entities": {
+                    "host_alarm": {
+                        "category": "ALARM",
+                        "name": "mem_utilization"
+                    },
+                    "instance_alarm": {
+                        "category": "ALARM",
+                        "type": "vitrage",
+                        "severity": "CRITICAL",
+                        "name": "mem_utilization by host mem"
+                    },
+                    "instance": {
+                        "category": "RESOURCE",
+                        "type": "nova.instance"
+                    },
+                    "host": {
+                        "category": "RESOURCE",
+                        "type": "nova.host"
+                    }
+                },
+                "scenarios": [{
+                    "condition": "host_alarm [on] host",
+                    "actions": [{
+                        "set_state": {
+                            "state": "ERROR",
+                            "target": "host"
+                        }
+                    }]
+                }, {
+                    "condition": "host_alarm [on] host AND host [contains] instance",
+                    "actions": [{
+                        "set_state": {
+                            "state": "ERROR",
+                            "target": "instance"
+                        }
+                    }, {
+                        "raise_alarm": {
+                            "target": "instance",
+                            "alarm_name": "mem used_percent by host mem",
+                            "severity": "WARNING",
+                            "causing_alarm": "host_alarm"
+                        }
+                    }]
+                }, {
+                    "condition": "host_alarm [on] host AND instance_alarm [on] instance AND host [contains] instance",
+                    "actions": [{
+                        "add_causal_relationship": {
+                            "source": "host_alarm",
+                            "target": "instance_alarm"
+                        }
+                    }]
+                }]
+            }]
+        ]
+    }
+
+
 
 Response Status code
 ====================
@@ -1137,7 +1205,7 @@ Response Examples
    +--------------------------------------+----------------------------------+---------+---------------------------+----------------------------+----------+
    | UUID                                 | Name                             | Status  | Status details            | Date                       | Type     |
    +--------------------------------------+----------------------------------+---------+---------------------------+----------------------------+----------+
-   | d661a9b1-87b5-4b2e-933f-043b19a39d17 | host_high_memory_usage_scenarios | LOADING | Template validation is OK | 2018-01-23 18:55:54.472329 | standard |
+   | d661a9b1-87b5-4b2e-933f-043b19a39d17 | mem_decude_scenarios | LOADING | Template validation is OK | 2018-01-23 18:55:54.472329 | standard |
    +--------------------------------------+----------------------------------+---------+---------------------------+----------------------------+----------+
 
 
