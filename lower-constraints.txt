@@ -104,7 +104,7 @@ python-troveclient==2.2.0
 pytz==2013.6
 PyYAML==3.12
 pyzabbix==0.7.4
-reno==2.7.0
+reno==3.1.0
 repoze.lru==0.7
 requests==2.18.4
 requests-mock==1.4.0
