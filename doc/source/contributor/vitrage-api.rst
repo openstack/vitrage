@@ -1223,12 +1223,12 @@ Headers
 Path Parameters
 ===============
 
-template id or name
+None
 
 Query Parameters
 ================
 
-None
+id - (string(255),or uuid)  template id
 
 Request Body
 ============
@@ -1240,7 +1240,7 @@ Request Examples
 
 ::
 
-    DELETE /v1/template/
+    DELETE /v1/template/?id=76515dbe-2256-4693-974d-483232b7d79a
     Host: 135.248.18.122:8999
     User-Agent: keystoneauth1/2.3.0 python-requests/2.9.1 CPython/2.7.6
     Accept: string
@@ -1249,7 +1249,7 @@ Request Examples
 Response Status code
 ====================
 
-None
+200 - OK
 
 Response Body
 =============
