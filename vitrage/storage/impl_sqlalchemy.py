@@ -12,9 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
-from __future__ import absolute_import
-
 from oslo_config import cfg
 from oslo_db.sqlalchemy import session as db_session
 from oslo_log import log
