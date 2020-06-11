@@ -354,11 +354,12 @@ Query Parameters
 ================
 
 alarm id - (string(255)) get rca on this alarm.
+all_tenants - (boolean, optional) shows the rca of all tenants (in case the user has the permissions).
 
 Request Body
 ============
 
-* all_tenants - (boolean, optional) shows the rca of all tenants (in case the user has the permissions).
+None.
 
 Request Examples
 ================
