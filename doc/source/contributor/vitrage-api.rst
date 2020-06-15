@@ -1098,14 +1098,14 @@ None
 Query Parameters
 ================
 
--  templates (string, required) - A list of the structured content of the template
--  template_type (string, required) - template type (standard, None)
--  overwrite (boolean, optional) - if template already exists will overwrite it
+None
 
 Request Body
 ============
 
-None
+-  templates (string, required) - A list of the structured content of the template
+-  template_type (string, required) - template type (standard, None)
+-  overwrite (boolean, optional) - if template already exists will overwrite it
 
 Request Examples
 ================
