@@ -272,8 +272,6 @@ function install_vitrage {
 
     if [[ "$VITRAGE_DEPLOY" == "mod_wsgi" ]]; then
         install_apache_wsgi
-    elif [[ "$VITRAGE_DEPLOY" == "uwsgi" ]]; then
-        pip_install uwsgi
     fi
 }
 
@@ -294,7 +292,7 @@ function start_vitrage {
         enable_apache_site vitrage
         restart_apache_server
     elif [[ "$VITRAGE_DEPLOY" == "uwsgi" ]]; then
-        run_process vitrage-api "$VITRAGE_BIN_DIR/uwsgi --procname-prefix vitrage --ini $VITRAGE_UWSGI_FILE" ""
+        run_process vitrage-api "$(which uwsgi) --procname-prefix vitrage --ini $VITRAGE_UWSGI_FILE" ""
     else
         run_process vitrage-api "$VITRAGE_BIN_DIR/vitrage-api -d -v --config-file $VITRAGE_CONF"
     fi
