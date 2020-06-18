@@ -17,7 +17,7 @@
       jobs:
         - vitrage-dsvm-api-py3
         - vitrage-dsvm-datasources-py3
-      #  - grenade-vitrage
+        - grenade-vitrage
         - vitrage-dsvm-api-ipv6-only
 
 - job:
@@ -86,7 +86,6 @@
     run: playbooks/legacy/vitrage-grenade/run.yaml
     post-run: playbooks/legacy/vitrage-grenade/post.yaml
     timeout: 7800
-    voting: false
     required-projects:
       - openstack/grenade
       - openstack/devstack-gate
