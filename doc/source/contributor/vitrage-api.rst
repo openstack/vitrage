@@ -353,8 +353,8 @@ None.
 Query Parameters
 ================
 
-alarm id - (string(255)) get rca on this alarm.
-all_tenants - (boolean, optional) shows the rca of all tenants (in case the user has the permissions).
+- alarm id - (string(255)) get rca on this alarm.
+- all_tenants - (boolean, optional) shows the rca of all tenants (in case the user has the permissions).
 
 Request Body
 ============
@@ -485,11 +485,12 @@ vitrage_id - (string(255)) get alarm on this resource can be 'all' for all alarm
 - filter_vals - (array of string(255)) per-column array of filter values corresponding to filter_by.
 - next_page - (bool) if True will return next page when marker is given, if False will return previous page when marker is given, otherwise, returns first page if no marker was given.
 - marker - ((string(255)) if None returns first page, else if vitrage_id is given and next_page is True, return next #limit results after marker, else, if next page is False, return #limit results before marker.
+- all_tenants - (boolean, optional) shows the alarms of all tenants (in case the user has the permissions).
 
 Request Body
 ============
 
-* all_tenants - (boolean, optional) shows the alarms of all tenants (in case the user has the permissions).
+None.
 
 Request Examples
 ================
@@ -676,19 +677,20 @@ None.
 Query Parameters
 ================
 
-None.
+- all_tenants - (boolean, optional) includes alarms of all tenants in the count (in case the user has the permissions).
+
 
 Request Body
 ============
 
-* all_tenants - (boolean, optional) includes alarms of all tenants in the count (in case the user has the permissions).
+None.
 
 Request Examples
 ================
 
 ::
 
-    GET /v1/alarm/count/ HTTP/1.1
+    GET /v1/alarm/count/?all_tenants=True HTTP/1.1
     Host: 135.248.19.18:8999
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
     Accept: application/json
