@@ -62,7 +62,7 @@ class NagiosParser(object):
         return services
 
     def _parse_service_row(self, service_row):
-        columns = service_row.getchildren()
+        columns = list(service_row)
 
         # service lines have a fixed number of columns.
         # there are also two blank lines between different hosts,
