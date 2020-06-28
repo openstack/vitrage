@@ -856,7 +856,7 @@ Response Examples
 
 
 Template List
-=============
+^^^^^^^^^^^^^
 
 List all templates in the database, both those that passed validation and those that did not.
 
@@ -1830,7 +1830,7 @@ Request Examples
    {
       "webhook":{
          "url":"https://requestb.in/tqfkvtqa",
-         "headers":null,
+         "headers":"",
          "regex_filter":"{'name':'e2e.*'}"
       }
    }
