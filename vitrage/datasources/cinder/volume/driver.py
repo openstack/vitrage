@@ -33,7 +33,7 @@ class CinderVolumeDriver(DriverBase):
 
     @staticmethod
     def extract_events(volumes):
-        return [volume.__dict__ for volume in volumes]
+        return [vars(volume) for volume in volumes]
 
     def get_all(self, datasource_action):
         return self.make_pickleable(

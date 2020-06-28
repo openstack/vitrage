@@ -65,7 +65,7 @@ class AodhTransformerBaseTest(base.BaseTest):
 
     def _validate_action(self, alarm, wrapper):
         if DSProps.EVENT_TYPE in alarm \
-            and alarm[DSProps.EVENT_TYPE] in GraphAction.__dict__.values():
+                and alarm[DSProps.EVENT_TYPE] in vars(GraphAction).values():
             self.assertEqual(alarm[DSProps.EVENT_TYPE], wrapper.action)
             return
 

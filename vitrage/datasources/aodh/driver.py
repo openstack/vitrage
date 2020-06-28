@@ -309,7 +309,7 @@ class AodhDriver(AlarmDriverBase):
                 entity.update(self._parse_changed_rule(
                     changed_rule[changed_type]))
             # handle other changed alarm properties
-            elif changed_type in AodhProps.__dict__.values():
+            elif changed_type in vars(AodhProps).values():
                 entity[changed_type] = changed_info
 
         return self._filter_and_cache_alarm(entity, old_alarm,

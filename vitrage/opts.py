@@ -86,7 +86,7 @@ def datasources_opts():
     return [(datasource, module.OPTS) for datasource in datasources
             for module in
             [importutils.import_module(DATASOURCES_PATH + datasource)]
-            if 'OPTS' in module.__dict__]
+            if 'OPTS' in vars(module)]
 
 
 def _get_datasources_folders(top=os.getcwd()):

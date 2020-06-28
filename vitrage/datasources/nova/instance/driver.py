@@ -102,7 +102,7 @@ class InstanceDriver(NovaDriverBase):
 
     @staticmethod
     def extract_events(instances):
-        events = [instance.__dict__ for instance in instances]
+        events = [vars(instance) for instance in instances]
         for e in events:
             if e['status'].lower() == 'deleted':
                 e[DSProps.EVENT_TYPE] = GraphAction.DELETE_ENTITY

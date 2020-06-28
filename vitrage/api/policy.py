@@ -31,7 +31,7 @@ def enforce(rule, headers, enforcer, target):
     }
 
     if not isinstance(target, dict):
-        target = target.__dict__
+        target = vars(target)
 
     target = dict(recursive_keypairs(target))
 

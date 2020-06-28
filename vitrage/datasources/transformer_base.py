@@ -320,7 +320,7 @@ class TransformerBase(object):
         :rtype: str
         """
         if DSProps.EVENT_TYPE in entity_event and \
-            entity_event[DSProps.EVENT_TYPE] in GraphAction.__dict__.values():
+                entity_event[DSProps.EVENT_TYPE] in vars(GraphAction).values():
             return entity_event[DSProps.EVENT_TYPE]
 
         datasource_action = entity_event[DSProps.DATASOURCE_ACTION]

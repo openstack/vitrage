@@ -22,7 +22,7 @@ class ZoneDriver(NovaDriverBase):
     def filter_internal_zone(zones):
         zones_res = []
         for zone in zones:
-            zone_dict = zone.__dict__
+            zone_dict = vars(zone)
             if zone_dict['zoneName'] and zone_dict['zoneName'] != 'internal':
                 zones_res.append(zone_dict)
         return zones_res

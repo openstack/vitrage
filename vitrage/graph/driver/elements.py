@@ -83,7 +83,7 @@ class Vertex(PropertiesElement):
         :type other: Vertex
         :rtype: bool
         """
-        return self.__dict__ == other.__dict__ and \
+        return vars(self) == vars(other) and \
             self.properties == other.properties
 
     def copy(self):
@@ -152,7 +152,7 @@ class Edge(PropertiesElement):
         :type other: Edge
         :rtype: bool
         """
-        return self.__dict__ == other.__dict__ and \
+        return vars(self) == vars(other) and \
             self.properties == other.properties
 
     def other_vertex(self, v_id):
