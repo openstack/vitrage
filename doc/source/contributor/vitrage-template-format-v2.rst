@@ -400,8 +400,9 @@ Common properties and their acceptable values - for writing templates
 +-------------------+-----------------------+-------------------------+------------------------------------+
 | action            | action_type           | raise_alarm,            |                                    |
 |                   |                       | set_state,              |                                    |
-|                   |                       | add_causal_relationship |                                    |
-|                   |                       | mark_down               |                                    |
+|                   |                       | add_causal_relationship,|                                    |
+|                   |                       | mark_down,              |                                    |
+|                   |                       | execute_mistral         |                                    |
 +-------------------+-----------------------+-------------------------+------------------------------------+
 
 Using regular expressions in an entity definition

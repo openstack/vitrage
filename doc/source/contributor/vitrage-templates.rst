@@ -609,7 +609,7 @@ Common properties and their acceptable values
 +-------------------+-----------------------+-------------------------+------------------------------------+
 | actions           |                       | raise_alarm,            |                                    |
 |                   |                       | set_state,              |                                    |
-|                   |                       | add_causal_relationship |                                    |
-|                   |                       | mark_down               |                                    |
+|                   |                       | add_causal_relationship,|                                    |
+|                   |                       | mark_down,              |                                    |
 |                   |                       | execute_mistral         |                                    |
 +-------------------+-----------------------+-------------------------+------------------------------------+
