@@ -9,3 +9,4 @@ interface.
    :maxdepth: 1
 
    vitrage-status
+   vitrage-purge-data
