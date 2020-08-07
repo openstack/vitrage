@@ -13,15 +13,11 @@
 # under the License.
 
 from oslo_log import log
-
-from vitrage.datasources.driver_base import DriverBase
-from vitrage.datasources.tmfapi639 import TMFAPI639_DATASOURCE
-
-from vitrage.datasources.tmfapi639.config import TmfApi639Config
-
-import json
 import requests
 
+from vitrage.datasources.driver_base import DriverBase
+from vitrage.datasources.tmfapi639.config import TmfApi639Config
+from vitrage.datasources.tmfapi639 import TMFAPI639_DATASOURCE
 
 LOG = log.getLogger(__name__)
 
@@ -64,15 +60,11 @@ class TmfApi639Driver(DriverBase):
         total = []
         for pairs in self.endpoints:
             try:
-                if type(pairs) is tuple:  # Contains an update URL
-                    LOG.info("Connecting to " + pairs[0] +
-                             "with updates in " + pairs[1])
-                    r = requests.get(pairs[0])
-                elif type(pairs) is str:  # Doesn't contain update URL
+                if isinstance(pairs, str):  # Doesn't contain update URL
                     LOG.info("Connecting to " + pairs)
-                    r = requests.get(pairs)
-                r_dict = json.loads(r.text)
-                total += r_dict
+                    pairs = (pairs, "")
+                r = requests.get(pairs[0])
+                total += r.json()
             except Exception as e:
                 LOG.error("Couldn't establish connection:" + str(e))
         return total
@@ -81,12 +73,11 @@ class TmfApi639Driver(DriverBase):
         total = []
         for pairs in self.endpoints:
             try:
-                if type(pairs) is tuple:  # Contains an update URL
+                if isinstance(pairs, tuple):  # Contains an update URL
                     LOG.info("Connecting to " + pairs[0] +
                              "with updates in " + pairs[1])
                     r = requests.get(pairs[1])
-                    r_dict = json.loads(r.text)
-                    for e in r_dict:
+                    for e in r.json():
                         if e["eventId"] < self.event_lambda:
                             continue
                         total.append(e["event"]["resource"])
