@@ -1,3 +1,4 @@
+
 - project:
     templates:
       - check-requirements
@@ -7,88 +8,26 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - vitrage-dsvm-api-py3
-        - vitrage-dsvm-datasources-py3
-        - vitrage-dsvm-mock-py3
-        - grenade-vitrage
-        - vitrage-dsvm-api-ipv6-only
+        - vitrage-tempest-plugin-api
+        - vitrage-tempest-plugin-api-ipv6-only
+        - vitrage-tempest-plugin-datasources
+        - vitrage-tempest-plugin-mock
+        - vitrage-grenade
+
     gate:
       queue: vitrage
       jobs:
-        - vitrage-dsvm-api-py3
-        - vitrage-dsvm-datasources-py3
-        - grenade-vitrage
-        - vitrage-dsvm-api-ipv6-only
+        - vitrage-tempest-plugin-api
+        - vitrage-tempest-plugin-api-ipv6-only
+        - vitrage-tempest-plugin-datasources
+        - vitrage-grenade
 
 - job:
-    name: vitrage-dsvm-api-py3
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-api-py3/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-api-py3/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
-      - openstack/aodh
-      - openstack/mistral
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-
-- job:
-    name: vitrage-dsvm-api-ipv6-only
-    parent: vitrage-dsvm-api-py3
-    run: playbooks/legacy/vitrage-dsvm-api-py3/run-ipv6.yaml
-    required-projects:
-      - openstack/tempest
-
-- job:
-    name: vitrage-dsvm-datasources-py3
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-dsvm-datasources-py3/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-datasources-py3/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
-      - openstack/aodh
-      - openstack/mistral
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-
-- job:
-    name: vitrage-dsvm-mock-py3
-    parent: legacy-dsvm-base
-    voting: false
-    run: playbooks/legacy/vitrage-dsvm-mock-py3/run.yaml
-    post-run: playbooks/legacy/vitrage-dsvm-mock-py3/post.yaml
-    timeout: 7800
-    required-projects:
-      - openstack/devstack-gate
-      - openstack/python-vitrageclient
-      - openstack/vitrage
-      - openstack/vitrage-tempest-plugin
-    irrelevant-files:
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-
-- job:
-    name: grenade-vitrage
-    parent: legacy-dsvm-base
-    run: playbooks/legacy/vitrage-grenade/run.yaml
-    post-run: playbooks/legacy/vitrage-grenade/post.yaml
+    name: vitrage-grenade
+    parent: grenade
     timeout: 7800
     required-projects:
       - openstack/grenade
-      - openstack/devstack-gate
       - openstack/vitrage
       - openstack/python-vitrageclient
     irrelevant-files:
@@ -98,4 +37,5 @@
       - ^releasenotes/.*$
       - ^setup.cfg$
     vars:
-      branch_override: default
+      devstack_plugins:
+        vitrage: https://opendev.org/openstack/vitrage
