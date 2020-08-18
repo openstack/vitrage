@@ -27,7 +27,6 @@ from vitrage.datasources import transformer_base as tbase
 from vitrage.datasources.transformer_base import build_key
 from vitrage.datasources.transformer_base import extract_field_value
 import vitrage.graph.utils as graph_utils
-from vitrage.utils.datetime import format_timestamp
 
 
 class CinderVolumeTransformer(ResourceTransformerBase):
@@ -118,6 +117,9 @@ class CinderVolumeTransformer(ResourceTransformerBase):
         entity_key = self._create_entity_key(entity_event)
 
         vitrage_sample_timestamp = entity_event[DSProps.SAMPLE_DATE]
+        update_timestamp = \
+            self._format_update_timestamp(update_timestamp,
+                                          vitrage_sample_timestamp)
 
         return graph_utils.create_vertex(
             entity_key,
@@ -126,7 +128,7 @@ class CinderVolumeTransformer(ResourceTransformerBase):
             vitrage_sample_timestamp=vitrage_sample_timestamp,
             entity_id=volume_id,
             entity_state=volume_state,
-            update_timestamp=format_timestamp(update_timestamp),
+            update_timestamp=update_timestamp,
             metadata=metadata)
 
     def _create_snapshot_neighbors(self, entity_event):
