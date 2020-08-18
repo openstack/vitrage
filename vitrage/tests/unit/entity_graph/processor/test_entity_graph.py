@@ -71,15 +71,16 @@ class TestEntityGraphManager(base.TestBaseProcessor):
         entity_graph = NXGraph("Entity Graph")
 
         # create vertex properties
+
         vertex1 = self._update_vertex_to_graph(entity_graph,
-                                               EntityCategory.RESOURCE,
-                                               'INSTANCE',
-                                               '12345',
-                                               False, True, {})
-        vertex2 = self._update_vertex_to_graph(entity_graph,
                                                EntityCategory.RESOURCE,
                                                'HOST',
                                                '54321',
+                                               False, True, {})
+        vertex2 = self._update_vertex_to_graph(entity_graph,
+                                               EntityCategory.RESOURCE,
+                                               'INSTANCE',
+                                               '12345',
                                                False, True, {})
         edge = self._update_edge_to_graph(entity_graph,
                                           vertex1.vertex_id,
