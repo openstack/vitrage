@@ -66,7 +66,9 @@ class TemplateController(RootRestController):
 
     @pecan.expose('json')
     def delete(self, **kwargs):
-        uuid = kwargs['uuid']
+        # for forward computability
+        uuid = kwargs['uuid'] if 'uuid' in kwargs else kwargs['id']
+
         LOG.info("delete template. uuid: %s", uuid)
 
         enforce("template delete",
