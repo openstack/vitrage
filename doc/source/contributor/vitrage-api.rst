@@ -1828,11 +1828,9 @@ Request Examples
 ::
 
    {
-      "webhook":{
-         "url":"https://requestb.in/tqfkvtqa",
-         "headers":"",
-         "regex_filter":"{'name':'e2e.*'}"
-      }
+     "url":"https://requestb.in/tqfkvtqa",
+     "headers":"",
+     "regex_filter":"{'name':'e2e.*'}"
    }
 
 
