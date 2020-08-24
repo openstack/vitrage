@@ -194,6 +194,7 @@ def mistral_client():
     try:
         mi_client = driver_module('mistral')
         client = mi_client.Client(
+            region_name=CONF.service_credentials.region_name,
             session=keystone_client.get_session(),
         )
         LOG.info('Mistral client created')
