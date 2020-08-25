@@ -35,6 +35,13 @@
           export DEVSTACK_GATE_USE_PYTHON3=False
 
           function pre_test_hook {
+              if [[ "$TEMPEST_VERSION" != "master" ]]; then
+                 # use vitrage-tempest-plugin $TEMPEST_VERSION
+                 # which is defined in the devstackgaterc file
+
+                 cd $BASE/new/vitrage-tempest-plugin/
+                 git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
+              fi
               source $BASE/new/vitrage-tempest-plugin/devstack/pre_test_hook.sh
           }
           export -f pre_test_hook
@@ -45,14 +52,6 @@
           export -f gate_hook
 
           function post_test_hook {
-              if [[ "$TEMPEST_VERSION" != "master" ]]; then
-                 # use vitrage-tempest-plugin $TEMPEST_VERSION
-                 # which is defined in the devstackgaterc file
-
-                 cd $BASE/new/vitrage-tempest-plugin/
-                 git_checkout_tag vitrage-tempest-plugin $TEMPEST_VERSION
-              fi
-
               source $BASE/new/vitrage-tempest-plugin/devstack/post_test_hook.sh 'mock'
           }
           export -f post_test_hook

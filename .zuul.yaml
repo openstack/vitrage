@@ -27,6 +27,7 @@
 - job:
     name: vitrage-dsvm-api-py27
     parent: legacy-dsvm-base
+    voting: false
     run: playbooks/legacy/vitrage-dsvm-api-py27/run.yaml
     post-run: playbooks/legacy/vitrage-dsvm-api-py27/post.yaml
     timeout: 7800
@@ -63,6 +64,7 @@
 - job:
     name: vitrage-dsvm-datasources-py27
     parent: legacy-dsvm-base
+    voting: false
     run: playbooks/legacy/vitrage-dsvm-datasources-py27/run.yaml
     post-run: playbooks/legacy/vitrage-dsvm-datasources-py27/post.yaml
     timeout: 7800
@@ -133,6 +135,7 @@
 - job:
     name: grenade-vitrage
     parent: legacy-dsvm-base
+    voting: false
     run: playbooks/legacy/vitrage-grenade/run.yaml
     post-run: playbooks/legacy/vitrage-grenade/post.yaml
     timeout: 7800
