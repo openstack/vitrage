@@ -14,7 +14,7 @@
 
 from kubernetes import client
 from kubernetes import config
-from oslo_log import cfg
+from oslo_config import cfg
 from oslo_log import log
 from vitrage.datasources.driver_base import DriverBase
 from vitrage.datasources.kubernetes.properties import KUBERNETES_DATASOURCE
