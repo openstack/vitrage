@@ -23,23 +23,19 @@ In order to support this use case, the user should perform the following:
 
 .. code:: yaml
 
-   [DEFAULT]
-   notifiers = nova
+    [DEFAULT]
+    notifiers = nova
 
 2. Determine, in the Vitrage templates, what condition(s) indicates that the
    host is down. For example:
 
 .. code:: yaml
 
-   scenarios:
-     - scenario:
-       condition: host_down_alarm_on_host
-         actions:
-           action:
-             action_type : mark_down
-               action_target:
-                 target: host
-
+    scenarios:
+      - condition: host_down_alarm [on] host
+        actions:
+          - mark_down:
+              target: host
 
 For more information about the mark-down action, see the Vitrage templates
 documentation: templates_
