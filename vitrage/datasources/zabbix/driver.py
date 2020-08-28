@@ -189,3 +189,7 @@ class ZabbixDriver(AlarmDriverBase):
     @staticmethod
     def get_event_types():
         return ['zabbix.alarm.ok', 'zabbix.alarm.problem']
+
+    @staticmethod
+    def should_delete_outdated_entities():
+        return True
