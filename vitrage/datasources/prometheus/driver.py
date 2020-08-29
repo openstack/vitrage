@@ -421,3 +421,7 @@ class PrometheusDriver(AlarmDriverBase):
     @staticmethod
     def get_event_types():
         return [PROMETHEUS_EVENT_TYPE]
+
+    @staticmethod
+    def should_delete_outdated_entities():
+        return True

@@ -91,3 +91,7 @@ class KapacitorDriver(AlarmDriverBase):
         Not implement yet
         """
         return []
+
+    @staticmethod
+    def should_delete_outdated_entities():
+        return True
