@@ -313,6 +313,10 @@ class CeilometerDriver(AlarmDriverBase):
 
         return entity
 
+    @staticmethod
+    def should_delete_outdated_entities():
+        return True
+
     def _convert_alarm_creation_event(self, event):
         entity = self._convert_base_event(event)
         detail = self._convert_detail_event(event)
