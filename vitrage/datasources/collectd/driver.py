@@ -101,3 +101,7 @@ class CollectdDriver(AlarmDriverBase):
         return ['collectd.alarm.ok',
                 'collectd.alarm.failure',
                 'collectd.alarm.warning']
+
+    @staticmethod
+    def should_delete_outdated_entities():
+        return True
