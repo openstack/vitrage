@@ -1326,18 +1326,16 @@ Request Examples
 ::
 
     {
-        'event': {
-            'time': '2016-04-12T08:00:00',
-            'type': 'compute.host.down',
-            'details': {
-                'hostname': 'compute-1',
-                'source': 'sample_monitor',
-                'cause': 'link-down',
-                'severity': 'critical',
-                'status': 'down',
-                'monitor_id': 'monitor-1',
-                'monitor_event_id': '123',
-            }
+        'time': '2016-04-12T08:00:00',
+        'type': 'compute.host.down',
+        'details': {
+            'hostname': 'compute-1',
+            'source': 'sample_monitor',
+            'cause': 'link-down',
+            'severity': 'critical',
+            'status': 'down',
+            'monitor_id': 'monitor-1',
+            'monitor_event_id': '123',
         }
     }
 
