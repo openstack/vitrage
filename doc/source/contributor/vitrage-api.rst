@@ -1932,7 +1932,7 @@ Request Examples
 
 ::
 
-    GET //v1/services/ HTTP/1.1
+    GET /v1/service/ HTTP/1.1
     Host: 135.248.19.18:8999
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
     Accept: application/json
@@ -2060,7 +2060,7 @@ Request Examples
 
 ::
 
-    GET //v1/template/versions HTTP/1.1
+    GET /v1/template/versions HTTP/1.1
     Host: 135.248.19.18:8999
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
     Accept: application/json
@@ -2134,7 +2134,7 @@ Request Examples
 
 ::
 
-    GET //v1/status HTTP/1.1
+    GET /v1/status HTTP/1.1
     Host: 135.248.19.18:8999
     X-Auth-Token: 2b8882ba2ec44295bf300aecb2caa4f7
     Accept: application/json
