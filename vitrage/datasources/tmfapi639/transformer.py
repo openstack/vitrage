@@ -51,8 +51,7 @@ class TmfApi639Transformer(ResourceTransformerBase):
         key_fields = self._key_values(entity_type, entity_id)
         return transformer_base.build_key(key_fields)
 
-    @staticmethod
-    def get_vitrage_type():
+    def get_vitrage_type(self):
         return TMFAPI639_DATASOURCE
 
     def _create_vertex(self, entity_event):
