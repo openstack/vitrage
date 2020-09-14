@@ -106,8 +106,6 @@ class HackingTestCase(base.BaseTest):
         func = checks.check_python3_xrange
         self.assertThat(list(func('for i in xrange(10)')),
                         matchers.HasLength(1))
-        self.assertThat(list(func('for i in xrange    (10)')),
-                        matchers.HasLength(1))
         self.assertThat(list(func('for i in range(10)')), IsEmpty())
         self.assertThat(list(func('for i in six.moves.range(10)')), IsEmpty())
         self.assertThat(list(func('testxrange(10)')), IsEmpty())
