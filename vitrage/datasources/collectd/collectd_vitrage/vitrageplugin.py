@@ -19,7 +19,6 @@ Collectd plugin for sending notifications to vitrage
 
 import collectd
 import hashlib
-import six
 from vitrage.datasources.collectd import COLLECTD_DATASOURCE
 
 from vitrage.datasources.collectd.collectd_vitrage.plugin import CollectDPlugin
@@ -103,7 +102,7 @@ class VitrageNotifier(CollectDPlugin):
         resources = [notification.host, notification.plugin_instance,
                      notification.type_instance, notification.type]
         alarm_id = ''.join([resource for resource in resources if resource])
-        alarm_uuid = hashlib.md5(six.b(alarm_id)).hexdigest()
+        alarm_uuid = hashlib.md5(alarm_id.encode("latin-1")).hexdigest()
         return alarm_uuid
 
 

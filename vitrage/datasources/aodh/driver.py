@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
-import six
 
 from oslo_log import log
 
@@ -357,7 +356,7 @@ def _parse_query(data, key):
 
     query_fields = data.get(AodhProps.QUERY, {})
     try:
-        if isinstance(query_fields, six.text_type):
+        if isinstance(query_fields, str):
             query_fields = json.loads(query_fields)
         if not isinstance(query_fields, list):
             query_fields = [query_fields]

@@ -16,7 +16,6 @@ import os
 import psutil
 import socket
 
-import six
 import tenacity
 import tooz.coordination
 
@@ -35,7 +34,8 @@ class Coordinator(object):
         self.coordinator = None
         if self.backend_url:
             self.coordinator = tooz.coordination.get_coordinator(
-                self.backend_url, six.b('%s_%s' % (my_id, os.getpid())))
+                self.backend_url,
+                '{}_{}'.format(my_id, os.getpid()).encode("latin-1"))
 
     def start(self):
         if self.backend_url:
@@ -73,8 +73,9 @@ class Coordinator(object):
                     'created': isoformat
                 }
             )
-            join_req = self.coordinator.join_group(six.b(group_id),
-                                                   six.b(capabilities))
+            join_req = self.coordinator.join_group(
+                group_id.encode("latin-1"),
+                capabilities.encode("latin-1"))
             join_req.get()
 
             LOG.info('Joined service group:%s, member:%s',
@@ -84,7 +85,8 @@ class Coordinator(object):
         except tooz.coordination.MemberAlreadyExist:
             return
         except tooz.coordination.GroupNotCreated as e:
-            create_grp_req = self.coordinator.create_group(six.b(group_id))
+            create_grp_req = self.coordinator.create_group(
+                group_id.encode("latin-1"))
 
             try:
                 create_grp_req.get()
@@ -96,7 +98,7 @@ class Coordinator(object):
 
     def leave_group(self, group_id):
         if self.is_active():
-            self.coordinator.leave_group(six.b(group_id))
+            self.coordinator.leave_group(group_id.encode("latin-1"))
             LOG.info('Left group %s', group_id)
 
     def get_services(self, group_id='vitrage'):
@@ -104,11 +106,13 @@ class Coordinator(object):
             return []
 
         while True:
-            get_members_req = self.coordinator.get_members(six.b(group_id))
+            get_members_req = self.coordinator.get_members(
+                group_id.encode("latin-1"))
             try:
                 return [json.loads(
                     self.coordinator.get_member_capabilities(
-                        six.b(group_id), member).get().decode('us-ascii'))
+                        group_id.encode("latin-1"),
+                        member).get().decode('us-ascii'))
                         for member in get_members_req.get()]
             except tooz.coordination.GroupNotCreated:
                 self.join_group(group_id)
