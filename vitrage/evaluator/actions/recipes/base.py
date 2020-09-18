@@ -14,7 +14,6 @@
 
 import abc
 from collections import namedtuple
-import six
 
 
 ActionStepWrapper = namedtuple('ActionStepWrapper', ['type', 'params'])
@@ -23,8 +22,7 @@ ActionStepWrapper = namedtuple('ActionStepWrapper', ['type', 'params'])
 EVALUATOR_EVENT_TYPE = 'type'
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Recipe(object):
+class Recipe(object, metaclass=abc.ABCMeta):
 
     @staticmethod
     @abc.abstractmethod

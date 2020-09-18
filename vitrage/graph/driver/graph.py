@@ -21,7 +21,6 @@ vitrage.graph.driver namespace.
 """
 import abc
 import copy
-import six
 
 from vitrage.graph.driver.elements import Edge
 from vitrage.graph.driver.elements import Vertex
@@ -34,8 +33,7 @@ class Direction(object):
     BOTH = 3
 
 
-@six.add_metaclass(abc.ABCMeta)
-class Graph(object):
+class Graph(object, metaclass=abc.ABCMeta):
     def __init__(self, name, graph_type, vertices=None, edges=None):
         """Create a Graph instance
 

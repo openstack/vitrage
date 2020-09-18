@@ -15,15 +15,12 @@
 import abc
 from collections import namedtuple
 from osprofiler import profiler
-import six
 
 Mapping = \
     namedtuple('Mapping', ['subgraph_element', 'graph_element', 'is_vertex'])
 
 
-@six.add_metaclass(profiler.TracedMeta)
-@six.add_metaclass(abc.ABCMeta)
-class GraphAlgorithm(object):
+class GraphAlgorithm(object, metaclass=profiler.TracedMeta):
     __trace_args__ = {'name': 'graph',
                       'info': None,
                       'hide_args': False,

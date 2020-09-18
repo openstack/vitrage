@@ -14,11 +14,8 @@
 
 import abc
 
-import six
 
-
-@six.add_metaclass(abc.ABCMeta)
-class HandlerBase(object):
+class HandlerBase(object, metaclass=abc.ABCMeta):
 
     def __init__(self):
         pass

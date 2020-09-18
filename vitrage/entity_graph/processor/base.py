@@ -14,11 +14,8 @@
 
 import abc
 
-import six
 
-
-@six.add_metaclass(abc.ABCMeta)
-class ProcessorBase(object):
+class ProcessorBase(object, metaclass=abc.ABCMeta):
 
     def __init__(self):
         pass

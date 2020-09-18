@@ -13,11 +13,8 @@
 # under the License.
 import abc
 
-import six
 
-
-@six.add_metaclass(abc.ABCMeta)
-class Connection(object):
+class Connection(object, metaclass=abc.ABCMeta):
     """Base class for storage system connections."""
 
     def __init__(self, url):
@@ -64,8 +61,7 @@ class Connection(object):
         raise NotImplementedError('clear is not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class ActiveActionsConnection(object):
+class ActiveActionsConnection(object, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def create(self, active_action):
         """Create a new action.
@@ -112,8 +108,7 @@ class ActiveActionsConnection(object):
         raise NotImplementedError('delete active actions is not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class WebhooksConnection(object):
+class WebhooksConnection(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def create(self, webhook):
@@ -145,8 +140,7 @@ class WebhooksConnection(object):
         raise NotImplementedError('delete webhook is not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class TemplatesConnection(object):
+class TemplatesConnection(object, metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def create(self, template):
@@ -183,8 +177,7 @@ class TemplatesConnection(object):
         raise NotImplementedError('Delete Templates not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class EventsConnection(object):
+class EventsConnection(object, metaclass=abc.ABCMeta):
     def create(self, event):
         """Create a new event.
 
@@ -216,8 +209,7 @@ class EventsConnection(object):
         raise NotImplementedError('delete events is not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class GraphSnapshotsConnection(object):
+class GraphSnapshotsConnection(object, metaclass=abc.ABCMeta):
     def create(self, graph_snapshot):
         """Create a new graph snapshot.
 
@@ -244,8 +236,7 @@ class GraphSnapshotsConnection(object):
         raise NotImplementedError('delete graph snapshots not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class AlarmsConnection(object):
+class AlarmsConnection(object, metaclass=abc.ABCMeta):
     def create(self, alarm):
         raise NotImplementedError('create alarm not implemented')
 
@@ -259,8 +250,7 @@ class AlarmsConnection(object):
         raise NotImplementedError('delete alarms not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class EdgesConnection(object):
+class EdgesConnection(object, metaclass=abc.ABCMeta):
     def create(self, edge):
         raise NotImplementedError('create edge not implemented')
 
@@ -274,8 +264,7 @@ class EdgesConnection(object):
         raise NotImplementedError('delete edges not implemented')
 
 
-@six.add_metaclass(abc.ABCMeta)
-class ChangesConnection(object):
+class ChangesConnection(object, metaclass=abc.ABCMeta):
     def create(self, change):
         raise NotImplementedError('create change not implemented')
 

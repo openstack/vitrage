@@ -15,7 +15,6 @@
 
 import abc
 from collections import namedtuple
-import six
 
 from oslo_config import cfg
 from oslo_log import log as logging
@@ -99,8 +98,7 @@ def is_update_event(event):
     return event[DSProps.DATASOURCE_ACTION] == DatasourceAction.UPDATE
 
 
-@six.add_metaclass(abc.ABCMeta)
-class TransformerBase(object):
+class TransformerBase(object, metaclass=abc.ABCMeta):
 
     KEY_SEPARATOR = ':'
     QUERY_RESULT = 'graph_query_result'

@@ -13,7 +13,6 @@
 # under the License.
 
 import abc
-import six
 
 from oslo_log import log
 from vitrage.evaluator.template_fields import TemplateFields
@@ -66,8 +65,7 @@ def get_template_schema(template):
         return get_content_fault_result(63), None
 
 
-@six.add_metaclass(abc.ABCMeta)
-class ActionValidator(object):
+class ActionValidator(object, metaclass=abc.ABCMeta):
 
     @staticmethod
     @abc.abstractmethod

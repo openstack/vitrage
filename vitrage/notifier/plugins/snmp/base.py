@@ -13,11 +13,8 @@
 # under the License.
 import abc
 
-import six
 
-
-@six.add_metaclass(abc.ABCMeta)
-class SnmpSenderBase(object):
+class SnmpSenderBase(object, metaclass=abc.ABCMeta):
     """Abstract Vitrage snmp trap sender"""
 
     @abc.abstractmethod
