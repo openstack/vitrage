@@ -27,8 +27,8 @@ from vitrage.datasources.tmfapi639.transformer import TmfApi639Transformer
 from vitrage.datasources import transformer_base
 from vitrage.datasources.transformer_base import TransformerBase
 
-from vitrage.tests.unit.datasources.test_alarm_transformer_base import \
-    BaseAlarmTransformerTest
+from vitrage.tests.unit.datasources.test_transformer_base import \
+    BaseTransformerTest
 
 from datetime import datetime
 from json import loads
@@ -42,7 +42,7 @@ message = '[{"id":"1","name":"Host-1","@type":"Host",\
 
 
 # noinspection PyProtectedMember
-class TestTmfApi639Transformer(BaseAlarmTransformerTest):
+class TestTmfApi639Transformer(BaseTransformerTest):
 
     OPTS = [
         cfg.StrOpt(DSOpts.UPDATE_METHOD,
@@ -62,8 +62,6 @@ class TestTmfApi639Transformer(BaseAlarmTransformerTest):
     # noinspection PyAttributeOutsideInit
     def setUp(self):
         super(TestTmfApi639Transformer, self).setUp()
-        # self.entity_type = TMFAPI639_DATASOURCE
-        # self.entity_id = '12345'
         self.timestamp = datetime.utcnow()
 
     def test_create_entity_key(self):
