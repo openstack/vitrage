@@ -20,7 +20,7 @@ from oslo_config import cfg
 from oslo_log import log
 import requests
 import six
-import six.moves.urllib.parse as urlparse
+from urllib import parse as urlparse
 
 from vitrage.common.constants import DatasourceAction
 from vitrage.common.constants import DatasourceOpts as DSOpts

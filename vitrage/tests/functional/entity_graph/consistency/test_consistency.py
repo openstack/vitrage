@@ -12,10 +12,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import queue
 import time
 
 from oslo_config import cfg
-from six.moves import queue
 from testtools import matchers
 
 from vitrage.common.constants import EntityCategory

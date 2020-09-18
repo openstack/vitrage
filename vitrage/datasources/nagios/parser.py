@@ -12,10 +12,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from io import StringIO
 from lxml import etree
 from oslo_log import log
 
-from six.moves import StringIO
 from vitrage.datasources.nagios.properties import NagiosProperties
 
 LOG = log.getLogger(__name__)

@@ -15,6 +15,7 @@ import json
 import jwt
 import os
 import requests
+import urllib
 
 from cachetools import cached
 from cachetools import LRUCache
@@ -24,7 +25,6 @@ from oslo_log import log as logging
 from oslo_middleware import base
 from oslo_serialization import jsonutils
 from pecan.core import abort
-from six.moves import urllib
 from webob import exc
 
 

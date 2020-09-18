@@ -18,7 +18,7 @@ from oslo_log import log
 from oslo_utils import uuidutils
 from osprofiler import profiler
 import re
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urlparse
 from vitrage.common.constants import TenantProps
 from vitrage.common.constants import VertexProperties as Vprops
 from vitrage.notifier.plugins.webhook.utils import db_row_to_dict

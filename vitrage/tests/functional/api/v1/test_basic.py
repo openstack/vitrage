@@ -20,7 +20,7 @@ import uuid
 
 from datetime import datetime
 # noinspection PyPackageRequirements
-from six.moves import http_client as httplib
+from http import client as httplib
 from vitrage.tests.functional.api.v1 import FunctionalTest
 
 HEADERS = {

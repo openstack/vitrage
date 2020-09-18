@@ -12,11 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from functools import reduce
 from sympy.logic.boolalg import Not
 from sympy import Symbol
 
 from oslo_log import log
-from six.moves import reduce
 
 from vitrage.common.constants import EdgeProperties as EProps
 from vitrage.evaluator.condition import convert_to_dnf_format

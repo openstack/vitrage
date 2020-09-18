@@ -12,9 +12,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from functools import reduce
 from itertools import chain
 from jsonschema import validate
-from six.moves import reduce
 
 from oslo_config import cfg
 from oslo_log import log

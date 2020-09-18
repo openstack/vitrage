@@ -18,7 +18,7 @@ from vitrage.tests.functional.test_configuration import TestConfiguration
 
 LOG = log.getLogger(__name__)
 
-from six.moves import queue
+import queue
 
 from oslo_config import cfg
 

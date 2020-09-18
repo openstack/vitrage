@@ -14,6 +14,7 @@
 
 import werkzeug.http
 
+from http import client as httplib
 from keystoneauth1.identity.generic import password
 from keystoneauth1 import loading
 from keystoneauth1 import session
@@ -22,7 +23,6 @@ from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_serialization import jsonutils
 from oslo_utils import encodeutils
-from six.moves import http_client as httplib
 from webob import exc
 
 
