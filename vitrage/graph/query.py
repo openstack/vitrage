@@ -13,7 +13,6 @@
 # under the License.
 
 from oslo_log import log as logging
-import six
 
 from vitrage.common.exception import VitrageError
 
@@ -103,7 +102,7 @@ def _create_query_expression(query, parent_operator=None):
 
 def _evaluable_str(value):
     """wrap string/unicode with back tick"""
-    if isinstance(value, six.string_types):
+    if isinstance(value, str):
         return '\'' + value + '\''
     else:
         return str(value)

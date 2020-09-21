@@ -13,7 +13,6 @@
 # under the License.
 
 from oslo_log import log as logging
-import six
 
 from vitrage.common.exception import VitrageAlgorithmError
 from vitrage.graph.filter import check_filter
@@ -170,7 +169,7 @@ def _generate_result(final_subgraphs):
         subgraph_vertices = dict()
         for v in mapping.get_vertices():
             v_id = v[MAPPED_V_ID]
-            if isinstance(v_id, six.string_types) and v_id is not NEG_VERTEX:
+            if isinstance(v_id, str) and v_id is not NEG_VERTEX:
                 subgraph_vertices[v.vertex_id] = v[GRAPH_VERTEX]
 
         if subgraph_vertices not in result:

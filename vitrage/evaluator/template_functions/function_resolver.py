@@ -15,7 +15,6 @@
 from collections import namedtuple
 from oslo_log import log
 import re
-import six
 
 from vitrage.evaluator.template_validation.base import ValidationError
 
@@ -41,7 +40,7 @@ def _recursive_resolve_function(func_info, template, template_block,
                                 resolve, **kwargs):
 
     for key, value in template_block.items():
-        if isinstance(value, six.string_types) and \
+        if isinstance(value, str) and \
                 _is_wanted_function(value, func_info.name):
 
             if not func_info.func:

@@ -21,9 +21,8 @@ from collections import defaultdict
 import copy
 import hashlib
 import itertools
+import pickle
 import random
-import six
-from six.moves import cPickle
 import threading
 import time
 import zlib
@@ -102,11 +101,8 @@ def md5(obj):
     if isinstance(obj, tuple):
         obj = str([str(o) for o in obj])
 
-    if isinstance(obj, six.string_types):
-        if six.PY2:
-            return hashlib.md5(obj).hexdigest()
-        else:
-            return hashlib.md5(obj.encode('utf-8')).hexdigest()
+    if isinstance(obj, str):
+        return hashlib.md5(obj.encode('utf-8')).hexdigest()
     raise Exception('Unknown object for md5 %s' % obj)
 
 
@@ -143,7 +139,7 @@ def timed_method(log_results=False, warn_above_sec=-1):
 
 
 def compress_obj(obj, level=9):
-    str_data = cPickle.dumps(obj)
+    str_data = pickle.dumps(obj)
     data = base64.b64encode(zlib.compress(str_data, level))
     return data
 
@@ -151,7 +147,7 @@ def compress_obj(obj, level=9):
 def decompress_obj(blob):
     decoded_blob = base64.standard_b64decode(blob)
     str_data = zlib.decompress(decoded_blob)
-    obj = cPickle.loads(str_data)
+    obj = pickle.loads(str_data)
     del decoded_blob
     del str_data
     return obj
