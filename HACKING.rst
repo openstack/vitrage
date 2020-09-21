@@ -10,7 +10,6 @@ Vitrage Specific Commandments
 [V317] assertEqual(type(A), B) sentences not allowed
 [V318] assertEqual(A, None) or assertEqual(None, A) sentences not allowed
 [V319] Don't translate logs
-[V320] Use six.text_type() instead of unicode()
 [V321] contextlib.nested is deprecated
 [V322] use a dict comprehension instead of a dict constructor with a sequence of key-value pairs
 [V323] Do not use xrange. Use range, or six.moves.range
