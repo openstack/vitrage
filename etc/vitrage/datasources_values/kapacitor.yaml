@@ -11,7 +11,7 @@ values:
         - name: warning
           operational_value: WARNING
         - name: INFO
-           operational_value: WARNING
+          operational_value: WARNING
   - aggregated values:
       priority: 10
       original values:
