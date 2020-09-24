@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import re
-import six
 
 from oslo_log import log
 from voluptuous import All
@@ -95,7 +94,7 @@ def _validate_def_template_template_sections(def_template_conf):
 
 
 def _validate_template_sections(template_conf):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
     paramsSchema = Schema({
         any_str: Any(any_str, Schema({
             Optional(TemplateFields.DESCRIPTION): any_str,
@@ -123,7 +122,7 @@ def _validate_template_sections(template_conf):
 
 
 def _validate_metadata_section(metadata):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
 
     schema = Schema({
         TemplateFields.VERSION: any_str,
@@ -135,7 +134,7 @@ def _validate_metadata_section(metadata):
 
 
 def _validate_includes_section(includes):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
     if not includes:
         LOG.error('%s status code: %s' % (status_msgs[140], 140))
         return get_fault_result(RESULT_DESCRIPTION, 140)
@@ -219,7 +218,7 @@ def _validate_entities(entities, has_includes):
 
 
 def _validate_entity_dict(entity_dict):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
     schema = Schema({
         Required(TemplateFields.CATEGORY, msg=42):
             All(_validate_category_field()),
@@ -249,7 +248,7 @@ def _validate_relationships(relationships):
 
 
 def _validate_relationship_dict(relationship_dict):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
     schema = Schema({
         Required(TemplateFields.SOURCE, msg=102): any_str,
         Required(TemplateFields.TARGET, msg=103): any_str,
@@ -282,7 +281,7 @@ def _validate_scenarios_section(scenarios):
 
 
 def _validate_scenario(scenario):
-    any_str = Any(str, six.text_type)
+    any_str = Any(str)
     schema = Schema({
         Required(TemplateFields.CONDITION, msg=83): any_str,
         Required(TemplateFields.ACTIONS, msg=84): list

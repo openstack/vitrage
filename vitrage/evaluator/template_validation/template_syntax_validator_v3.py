@@ -12,7 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import re
-import six
 
 from oslo_log import log
 from voluptuous import Any
@@ -33,7 +32,7 @@ from vitrage.evaluator.template_schema_factory import TemplateSchemaFactory
 LOG = log.getLogger(__name__)
 
 
-any_str = Any(str, six.text_type)
+any_str = Any(str)
 
 
 class SyntaxValidator(object):

@@ -19,7 +19,6 @@ from ipaddress import ip_address
 from oslo_config import cfg
 from oslo_log import log
 import requests
-import six
 from urllib import parse as urlparse
 
 from vitrage.common.constants import DatasourceAction
@@ -412,10 +411,10 @@ class PrometheusDriver(AlarmDriverBase):
         """
         # check if the value is ip
         try:
-            ip = ip_address(six.u(value))
+            ip = ip_address(str(value))
         except ValueError:
             parsed = urlparse.urlparse('//{}'.format(value))
-            ip = ip_address(six.u(parsed.hostname))
+            ip = ip_address(str(parsed.hostname))
         return ip
 
     @staticmethod

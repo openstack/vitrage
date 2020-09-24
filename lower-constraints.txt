@@ -111,7 +111,6 @@ rfc3986==1.1.0
 Routes==2.4.1
 setproctitle==1.1.10
 simplejson==3.13.2
-six==1.11.0
 SQLAlchemy==1.2.5
 sqlalchemy-migrate==0.11.0
 sqlparse==0.2.4
