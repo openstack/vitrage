@@ -1,0 +1,14 @@
+---
+features:
+  - A new ``Cetus Datasource`` has been introduced to include Cetus entities
+    (cluster and pod) in Vitrage Entity Graph. Cetus is a self-developed
+    openstack solution of k8s on openstack. It can automatically create
+    multiple instances, and automatically deploy multiple k8s clusters on
+    instances. Cetus mainly represents the self-developed openstack project
+    and the multi-cluster k8s project, so it can be operated through openstack
+    authentication access. Cetus mainly includes cetus.cluster, cetus.pod,
+    cetus.node corresponding to k8s cluster, pod, node, among cetus.node is
+    vm instance or bm instance in openstack, so only includes cetus.cluster
+    and cetus.pod in the cetus datasource. At this point, Cetus entities are
+    extracted using PULL approach, based on periodical snapshot-query to Cetus
+    API for the current list of Cetus entities.
