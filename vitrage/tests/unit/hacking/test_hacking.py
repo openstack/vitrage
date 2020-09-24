@@ -48,19 +48,6 @@ class HackingTestCase(base.BaseTest):
             self.assertThat(list(checks.no_translate_logs(bad)),
                             matchers.HasLength(1))
 
-    def test_no_direct_use_of_unicode_function(self):
-        self.assertThat(list(checks.no_direct_use_of_unicode_function(
-            "unicode('the party don't start til the unicode walks in')")),
-            matchers.HasLength(1))
-        self.assertThat(list(checks.no_direct_use_of_unicode_function(
-            """unicode('something '
-                       'something else""")), matchers.HasLength(1))
-        self.assertThat(list(checks.no_direct_use_of_unicode_function(
-            "six.text_type('party over')")), IsEmpty())
-        self.assertThat(list(checks.no_direct_use_of_unicode_function(
-            "not_actually_unicode('something completely different')")),
-            IsEmpty())
-
     def test_no_contextlib_nested(self):
         self.assertThat(list(checks.check_no_contextlib_nested(
             "with contextlib.nested(")), matchers.HasLength(1))
