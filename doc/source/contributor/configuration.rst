@@ -30,6 +30,8 @@ Datasources
    prometheus-datasource
    kapacitor-datasource
    tmfapi639-datasource
+   cetus_datasource
+
 
 Notifiers
 ---------
