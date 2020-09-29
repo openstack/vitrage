@@ -1,0 +1,26 @@
+category: RESOURCE
+values:
+  - aggregated values:
+      priority: 40
+      original values:
+        - name: INACTIVE
+          operational_value: ERROR
+  - aggregated values:
+      priority: 30
+      original values:
+        - name: INITIALIZING
+          operational_value: TRANSIENT
+        - name: UPDATING
+          operational_value: TRANSIENT
+        - name: REMOVING
+          operational_value: TRANSIENT
+  - aggregated values:
+      priority: 20
+      original values:
+        - name: PENDING
+          operational_value: SUBOPTIMAL
+  - aggregated values:
+      priority: 10
+      original values:
+        - name: ACTIVE
+          operational_value: OK
