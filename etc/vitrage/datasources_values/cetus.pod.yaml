@@ -1,0 +1,22 @@
+category: RESOURCE
+values:
+  - aggregated values:
+      priority: 40
+      original values:
+        - name: CRASHING
+          operational_value: ERROR
+  - aggregated values:
+      priority: 30
+      original values:
+        - name: WAITING
+          operational_value: TRANSIENT
+  - aggregated values:
+      priority: 20
+      original values:
+        - name: PENDING
+          operational_value: SUBOPTIMAL
+  - aggregated values:
+      priority: 10
+      original values:
+        - name: RUNNING
+          operational_value: OK
