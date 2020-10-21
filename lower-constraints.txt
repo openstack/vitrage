@@ -39,7 +39,6 @@ logutils==0.3.5
 lxml==4.5.2
 Mako==1.0.7
 MarkupSafe==1.1.1
-mccabe==0.2.1
 monotonic==1.4
 mpmath==1.0.0
 msgpack==0.5.6
