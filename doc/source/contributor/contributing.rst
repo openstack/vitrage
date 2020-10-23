@@ -21,9 +21,9 @@ Communication
 Contacting the Core Team
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-   * Eyal Bar-Ilan (#eyalb)
-   * Ivan Kolodyazhny (#e0ne)
-   * Idan Hefetz (#idan)
+* Core Contributors/Reviewers
+  https://review.opendev.org/#/admin/groups/1110,members
+
 
 New Feature Planning
 ~~~~~~~~~~~~~~~~~~~~
