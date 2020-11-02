@@ -55,8 +55,7 @@ class KapacitorTransformer(AlarmTransformerBase):
                                 resource_name,
                                 alarm_id))
 
-    @staticmethod
-    def get_vitrage_type():
+    def get_vitrage_type(self):
         return KAPACITOR_DATASOURCE
 
     def _create_vertex(self, entity_event):
