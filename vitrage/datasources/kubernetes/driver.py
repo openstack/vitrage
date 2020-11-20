@@ -61,7 +61,8 @@ class KubernetesDriver(DriverBase):
                                     KUBERNETES_DATASOURCE,
                                     datasource_action)
 
-    def _prepare_entities(self, nodes):
+    @staticmethod
+    def _prepare_entities(nodes):
         entities = []
         for item in nodes.items:
             metadata = item.metadata
