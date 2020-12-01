@@ -305,8 +305,8 @@ class PrometheusDriver(AlarmDriverBase):
         ":rtype: dict
 
         For the example above. The function returns:
-            {u'instance_name': 'instance-00000004',
-            u'host_id': 'my-host-name'}
+            {'instance_name': 'instance-00000004',
+            'host_id': 'my-host-name'}
         """
         resource_labels = self._get_conf_resource(alert)
         vitrage_entity_unique_props = {}
@@ -362,7 +362,7 @@ class PrometheusDriver(AlarmDriverBase):
         """Get values of the alert labels from alert's resource in config file.
 
         For the example above. The function returns:
-            {u'instance': u'1.1.1.1:9999', u'domain': u'instance-00000004'}
+            {'instance': '1.1.1.1:9999', 'domain': 'instance-00000004'}
         """
 
         resource_alert_labels = self._get_conf_resource(alert).values()
@@ -387,7 +387,7 @@ class PrometheusDriver(AlarmDriverBase):
         and its values are the corresponding alert labels.
 
         For the example above. The function returns:
-          {u'instance_name': u'domain', u'host_id': u'instance'}
+          {'instance_name': 'domain', 'host_id': 'instance'}
         """
         if self.conf_map:
             for conf_alert in self.conf_map:
