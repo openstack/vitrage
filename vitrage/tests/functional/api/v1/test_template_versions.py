@@ -21,16 +21,16 @@ from vitrage.tests.functional.api.v1 import FunctionalTest
 
 VERSIONS = [
     {
-        u'version': u'v1',
-        u'status': u'SUPPORTED'
+        'version': 'v1',
+        'status': 'SUPPORTED'
     },
     {
-        u'version': u'v2',
-        u'status': u'SUPPORTED'
+        'version': 'v2',
+        'status': 'SUPPORTED'
     },
     {
-        u'version': u'v3',
-        u'status': 'CURRENT'
+        'version': 'v3',
+        'status': 'CURRENT'
     }
 ]
 

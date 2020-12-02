@@ -16,13 +16,13 @@
 
 from vitrage.tests.functional import api
 
-
-VERSIONS_RESPONSE = {u'versions': [{u'id': u'v1.0',
-                                    u'links': [
-                                        {u'href': u'http://localhost/v1/',
-                                         u'rel': u'self'}],
-                                    u'status': u'CURRENT',
-                                    u'updated': u'2015-11-29'}]}
+VERSIONS_RESPONSE = {'versions': [
+    {'id': 'v1.0',
+     'links': [
+         {'href': 'http://localhost/v1/',
+          'rel': 'self'}],
+     'status': 'CURRENT',
+     'updated': '2015-11-29'}]}
 
 
 class TestVersions(api.FunctionalTest):

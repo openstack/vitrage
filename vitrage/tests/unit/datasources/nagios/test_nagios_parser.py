@@ -29,7 +29,7 @@ class NagiosParserTest(NagiosBaseTest):
                          NagiosProperties.DURATION: ' 8d  2h 16m 33s',
                          NagiosProperties.ATTEMPT: '1/1',
                          NagiosProperties.STATUS_INFO:
-                             u'high CPU load\xa0'}
+                             'high CPU load\xa0'}
 
     expected_service2 = {NagiosProperties.RESOURCE_NAME: 'compute-0-1.local',
                          NagiosProperties.SERVICE: 'check_load',
@@ -38,7 +38,7 @@ class NagiosParserTest(NagiosBaseTest):
                          NagiosProperties.DURATION: ' 1d  0h 54m 59s',
                          NagiosProperties.ATTEMPT: '1/1',
                          NagiosProperties.STATUS_INFO:
-                             u'Critical Error\xa0'}
+                             'Critical Error\xa0'}
 
     expected_service3 = {NagiosProperties.RESOURCE_NAME: 'compute-0-0.local',
                          NagiosProperties.SERVICE: 'Disk IO SUMMARY',
@@ -47,8 +47,8 @@ class NagiosParserTest(NagiosBaseTest):
                          NagiosProperties.DURATION: '14d  1h 28m 34s',
                          NagiosProperties.ATTEMPT: '1/1',
                          NagiosProperties.STATUS_INFO:
-                             u'OK - 0.00 B/sec read, 1.84 MB/sec write, '
-                             u'IOs: 89.00/sec\xa0'}
+                             'OK - 0.00 B/sec read, 1.84 MB/sec write, '
+                             'IOs: 89.00/sec\xa0'}
 
     # noinspection PyPep8Naming
     @classmethod
