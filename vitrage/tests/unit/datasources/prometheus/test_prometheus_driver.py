@@ -89,7 +89,7 @@ class PrometheusDriverTest(base.BaseTest):
             driver._calculate_vitrage_entity_unique_props(host_alert_2)
 
         # Test assertion
-        expected = {u'id': hostname}
+        expected = {'id': hostname}
         self.assertEqual(expected, observed_host_alert_1)
         self.assertEqual(expected, observed_host_alert_2)
 
@@ -113,8 +113,8 @@ class PrometheusDriverTest(base.BaseTest):
             driver._calculate_vitrage_entity_unique_props(vm_alert_2)
 
         # Test assertion
-        expected = {u'instance_name': 'instance-00000005',
-                    u'host_id': hostname}
+        expected = {'instance_name': 'instance-00000005',
+                    'host_id': hostname}
         self.assertEqual(expected, observed_vm_alert_1)
         self.assertEqual(expected, observed_vm_alert_2)
 
@@ -131,9 +131,9 @@ class PrometheusDriverTest(base.BaseTest):
         observed_alert_2 = driver._get_resource_alert_values(alert_2)
 
         # Test assertions
-        expected_alert_1 = {u'instance': '135.248.18.109:9100'}
-        expected_alert_2 = {u'instance': '135.248.18.109:9177',
-                            u'domain': 'instance-00000005'}
+        expected_alert_1 = {'instance': '135.248.18.109:9100'}
+        expected_alert_2 = {'instance': '135.248.18.109:9177',
+                            'domain': 'instance-00000005'}
         self.assertEqual(expected_alert_1, observed_alert_1)
         self.assertEqual(expected_alert_2, observed_alert_2)
 
@@ -150,9 +150,9 @@ class PrometheusDriverTest(base.BaseTest):
         observed_alert_2 = driver._get_conf_resource(alert_2)
 
         # Test assertions
-        expected_alert_1 = {u'id': u'instance'}
-        expected_alert_2 = {u'instance_name': u'domain',
-                            u'host_id': u'instance'}
+        expected_alert_1 = {'id': 'instance'}
+        expected_alert_2 = {'instance_name': 'domain',
+                            'host_id': 'instance'}
         self.assertEqual(expected_alert_1, observed_alert_1)
         self.assertEqual(expected_alert_2, observed_alert_2)
 
