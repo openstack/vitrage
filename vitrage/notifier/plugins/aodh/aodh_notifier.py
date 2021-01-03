@@ -84,18 +84,18 @@ def _alarm_request(data, state):
     severity = severity_translation.get(data.get(VProps.SEVERITY), 'low')
     return dict(
         name=aodh_alarm_name,
-        description=u'Vitrage deduced alarm',
+        description='Vitrage deduced alarm',
         event_rule=dict(query=[
             dict(
-                field=u'resource_id',
+                field='resource_id',
                 type='',
-                op=u'eq',
+                op='eq',
                 value=affected_resource_id),
             dict(
-                field=u'vitrage_id',
+                field='vitrage_id',
                 type='',
-                op=u'eq',
+                op='eq',
                 value=data.get(VProps.VITRAGE_ID))]),
         severity=severity,
         state=state,
-        type=u'event')
+        type='event')
