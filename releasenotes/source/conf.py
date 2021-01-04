@@ -34,8 +34,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'vitrage releasenotes'
-copyright = u'2016, Vitrage developers'
+project = 'vitrage releasenotes'
+copyright = '2016, Vitrage developers'
 
 # openstackdocstheme options
 openstackdocs_repo_name = 'openstack/vitrage'
@@ -69,8 +69,8 @@ htmlhelp_basename = '%sdoc' % project
 latex_documents = [
     ('index',
      '%s.tex' % project,
-     u'%s Vitrage ReleaseNotes' % project,
-     u'Vitrage developers', 'manual'),
+     '%s Vitrage ReleaseNotes' % project,
+     'Vitrage developers', 'manual'),
 ]
 
 # Example configuration for intersphinx: refer to the Python standard library.
