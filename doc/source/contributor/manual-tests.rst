@@ -111,7 +111,7 @@ Healthcheck API
   | Field    | Value   |
   +----------+---------+
   | detailed | False   |
-  | reasons  | [u'OK'] |
+  | reasons  | ['OK'] |
   +----------+---------+
 
 Vitrage Help
