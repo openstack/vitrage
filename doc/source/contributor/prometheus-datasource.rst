@@ -1,5 +1,5 @@
 =====================
-Prometheus datasource
+Prometheus Datasource
 =====================
 
 This document describes how to configure Prometheus datasource properly.

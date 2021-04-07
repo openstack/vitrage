@@ -1,5 +1,5 @@
 ==================
-Configure profiler
+Configure Profiler
 ==================
 
 Overview

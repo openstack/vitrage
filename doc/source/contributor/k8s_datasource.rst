@@ -1,5 +1,5 @@
 =====================
-Kubernetes datasource
+Kubernetes Datasource
 =====================
 
 This document describes how to configure kubernetes datasource properly.

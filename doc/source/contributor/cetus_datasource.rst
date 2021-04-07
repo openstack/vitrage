@@ -1,5 +1,5 @@
 ================
-Cetus datasource
+Cetus Datasource
 ================
 
 Cetus is a self-developed openstack solution of multi-k8s-clusters on openstack.

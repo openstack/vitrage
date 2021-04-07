@@ -1,5 +1,5 @@
 =====================
-Vitrage configuration
+Vitrage Configuration
 =====================
 
 General
