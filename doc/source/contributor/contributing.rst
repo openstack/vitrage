@@ -14,7 +14,7 @@ with Vitrage.
 Communication
 ~~~~~~~~~~~~~
 
-* IRC channel #openstack-vitrage at FreeNode
+* IRC channel #openstack-vitrage at OFTC
 * Mailing list (prefix subjects with ``[vitrage]`` for faster responses)
   http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-discuss
 
