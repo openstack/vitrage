@@ -182,6 +182,7 @@ Run the following commands:
     vitrage-api
     vitrage-notifier
     vitrage-persistor
+    vitrage-ml
 
 
 Install the Vitrage Dashboard
