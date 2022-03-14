@@ -68,7 +68,7 @@ class ResourceApis(base.EntityGraphApisBase):
         return json.dumps(counts)
 
     def _get_query(self, ctx, resource_type, all_tenants, query_dict):
-        project_id = ctx.get(TenantProps.TENANT, None)
+        project_id = ctx.get(TenantProps.PROJECT_ID, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)
 
         if all_tenants:
@@ -99,7 +99,7 @@ class ResourceApis(base.EntityGraphApisBase):
             return None
 
         is_admin = ctx.get(TenantProps.IS_ADMIN, False)
-        curr_project = ctx.get(TenantProps.TENANT, None)
+        curr_project = ctx.get(TenantProps.PROJECT_ID, None)
         resource_project = resource.get(VProps.PROJECT_ID)
         if not is_admin and curr_project != resource_project:
             LOG.warning('Resource show - Authorization failed (%s)',

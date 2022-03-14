@@ -40,7 +40,7 @@ class TopologyApis(base.EntityGraphApisBase):
         LOG.debug("TopologyApis get_topology - root: %s, all_tenants=%s",
                   root, all_tenants)
 
-        project_id = ctx.get(TenantProps.TENANT, None)
+        project_id = ctx.get(TenantProps.PROJECT_ID, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)
 
         LOG.debug('project_id = %s, is_admin_project  %s',
