@@ -54,7 +54,7 @@ class WebhookApis(object):
             res = self.db_conn.webhooks.query()
         else:
             res = self.db_conn.webhooks.query(project_id=ctx.get(
-                TenantProps.TENANT, ""))
+                TenantProps.PROJECT_ID, ""))
         LOG.info(res)
         webhooks = [db_row_to_dict(webhook) for webhook in res]
 
@@ -81,7 +81,7 @@ class WebhookApis(object):
             if len(webhooks) == 0:
                 LOG.warning("Webhook not found - %s" % id)
                 return None
-            if ctx.get(TenantProps.TENANT, "") == \
+            if ctx.get(TenantProps.PROJECT_ID, "") == \
                     webhooks[0][Vprops.PROJECT_ID] or ctx.get(
                     TenantProps.IS_ADMIN, False):
                 return webhooks[0]
@@ -99,7 +99,7 @@ class WebhookApis(object):
         if not headers:
             headers = ""
         uuid = uuidutils.generate_uuid()
-        project_id = ctx.get(TenantProps.TENANT, "")
+        project_id = ctx.get(TenantProps.PROJECT_ID, "")
         is_admin = ctx.get(TenantProps.IS_ADMIN, False)
         created_at = str(datetime.datetime.now())
         db_row = Webhooks(id=uuid,

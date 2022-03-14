@@ -56,7 +56,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = AlarmApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_1', 'is_admin': True}
+        ctx = {'project_id': 'project_1', 'is_admin': True}
 
         # Action
         alarms = apis.get_alarms(ctx, vitrage_id='all', all_tenants=False)
@@ -70,7 +70,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = AlarmApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         alarms = apis.get_alarms(ctx, vitrage_id='all', all_tenants=False)
@@ -84,7 +84,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = AlarmApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         counts = apis.get_alarm_counts(ctx, all_tenants=False)
@@ -101,7 +101,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = AlarmApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         alarms = apis.get_alarms(ctx, vitrage_id='all', all_tenants=True)
@@ -115,7 +115,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = AlarmApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         counts = apis.get_alarm_counts(ctx, all_tenants=True)
@@ -132,7 +132,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = RcaApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_1', 'is_admin': True}
+        ctx = {'project_id': 'project_1', 'is_admin': True}
 
         # Action
         graph_rca = apis.get_rca(ctx, root='alarm_on_host', all_tenants=False)
@@ -146,7 +146,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = RcaApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         graph_rca = apis.get_rca(ctx,
@@ -162,7 +162,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = RcaApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         graph_rca = apis.get_rca(ctx, root='alarm_on_host', all_tenants=False)
@@ -176,7 +176,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = RcaApis(graph, self.api_lock, self._db)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         graph_rca = apis.get_rca(ctx, root='alarm_on_host', all_tenants=True)
@@ -190,7 +190,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = TopologyApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': True}
+        ctx = {'project_id': 'project_1', 'is_admin': True}
 
         # Action
         graph_topology = apis.get_topology(
@@ -212,7 +212,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = TopologyApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         graph_topology = apis.get_topology(
@@ -234,7 +234,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = TopologyApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         graph_topology = apis.get_topology(
@@ -253,7 +253,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': True}
+        ctx = {'project_id': 'project_2', 'is_admin': True}
 
         # Action
         resources = apis.get_resources(
@@ -269,7 +269,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': True}
+        ctx = {'project_id': 'project_2', 'is_admin': True}
 
         # Action
         resources = apis.get_resources(
@@ -286,7 +286,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.get_resources(
@@ -302,7 +302,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.get_resources(
@@ -318,7 +318,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.get_resources(
@@ -334,7 +334,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         resources = apis.get_resources(
@@ -350,7 +350,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': True}
+        ctx = {'project_id': 'project_2', 'is_admin': True}
 
         # Action
         resources = apis.count_resources(
@@ -369,7 +369,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': True}
+        ctx = {'project_id': 'project_2', 'is_admin': True}
 
         # Action
         resources = apis.count_resources(
@@ -386,7 +386,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.count_resources(
@@ -402,7 +402,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.count_resources(
@@ -418,7 +418,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resources = apis.count_resources(
@@ -434,7 +434,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         resources = apis.count_resources(
@@ -453,7 +453,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         resources = apis.count_resources(
@@ -472,7 +472,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': True}
+        ctx = {'project_id': 'project_1', 'is_admin': True}
 
         # Action
         resource = apis.show_resource(ctx, 'zone_1')
@@ -487,7 +487,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         resource = apis.show_resource(ctx, 'zone_1')
@@ -499,7 +499,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': False}
+        ctx = {'project_id': 'project_1', 'is_admin': False}
 
         # Action
         resource = apis.show_resource(ctx, 'instance_2')
@@ -515,7 +515,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': False}
+        ctx = {'project_id': 'project_2', 'is_admin': False}
 
         # Action
         resource = apis.show_resource(ctx, 'instance_2')
@@ -527,7 +527,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_1', 'is_admin': True}
+        ctx = {'project_id': 'project_1', 'is_admin': True}
 
         # Action
         resource = apis.show_resource(ctx, 'instance_2')
@@ -543,7 +543,7 @@ class TestApis(TestEntityGraphUnitBase, TestConfiguration):
         # Setup
         graph = self._create_graph()
         apis = ResourceApis(graph, self.api_lock)
-        ctx = {'tenant': 'project_2', 'is_admin': True}
+        ctx = {'project_id': 'project_2', 'is_admin': True}
 
         # Action
         resource = apis.show_resource(ctx, 'instance_2')

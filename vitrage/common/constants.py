@@ -188,7 +188,7 @@ class TemplateStatus(object):
 
 class TenantProps(object):
     ALL_TENANTS = 'all_tenants'
-    TENANT = 'tenant'
+    PROJECT_ID = 'project_id'
     IS_ADMIN = 'is_admin'
 
 

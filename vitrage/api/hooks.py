@@ -80,14 +80,14 @@ class ContextHook(hooks.PecanHook):
         user_id = state.request.headers.get('X-User-Id')
         user_id = state.request.headers.get('X-User', user_id)
         user_name = state.request.headers.get('X-User-Name', '')
-        tenant_id = state.request.headers.get('X-Project-Id')
+        project_id = state.request.headers.get('X-Project-Id')
         auth_token = state.request.headers.get('X-Auth-Token')
         # TODO(DANY) use roles
         # roles = pecan.request.headers.get('X-Roles', '').split(',')
         # roles = [r.strip() for r in roles]
         ctx = context.RequestContext(auth_token=auth_token, user=user_id,
                                      # roles=roles,
-                                     tenant=tenant_id,
+                                     project_id=project_id,
                                      is_admin=(user_name == 'admin'))
 
         # Inject the context...

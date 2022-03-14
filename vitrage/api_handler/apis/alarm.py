@@ -43,7 +43,7 @@ class AlarmApis(base.EntityGraphApisBase):
         if not vitrage_id or vitrage_id == 'all':
             if not all_tenants:
                 kwargs['project_id'] = \
-                    ctx.get(TenantProps.TENANT, 'no-project')
+                    ctx.get(TenantProps.PROJECT_ID, 'no-project')
                 kwargs['is_admin_project'] = \
                     ctx.get(TenantProps.IS_ADMIN, False)
         else:
@@ -65,7 +65,7 @@ class AlarmApis(base.EntityGraphApisBase):
             return None
 
         is_admin = ctx.get(TenantProps.IS_ADMIN, False)
-        curr_project = ctx.get(TenantProps.TENANT, None)
+        curr_project = ctx.get(TenantProps.PROJECT_ID, None)
         alarm_project = alarm.get(VProps.PROJECT_ID)
         if not is_admin and curr_project != alarm_project:
             LOG.warning('Alarm show - Authorization failed (%s)', vitrage_id)
@@ -77,7 +77,7 @@ class AlarmApis(base.EntityGraphApisBase):
     def get_alarm_counts(self, ctx, all_tenants):
         LOG.debug("AlarmApis get_alarm_counts - all_tenants=%s", all_tenants)
 
-        project_id = ctx.get(TenantProps.TENANT, None)
+        project_id = ctx.get(TenantProps.PROJECT_ID, None)
         is_admin_project = ctx.get(TenantProps.IS_ADMIN, False)
 
         if all_tenants:
