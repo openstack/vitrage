@@ -1,5 +1,6 @@
 
 - project:
+    queue: vitrage
     templates:
       - check-requirements
       - openstack-python3-xena-jobs
@@ -9,16 +10,15 @@
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources
+        - vitrage-tempest-plugin-datasources-xena:
+            voting: false
         - vitrage-tempest-plugin-mock
         - vitrage-grenade
 
     gate:
-      queue: vitrage
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources
         - vitrage-grenade
 
 - job:
