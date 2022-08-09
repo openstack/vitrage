@@ -4,3 +4,4 @@
 
 # Enable both versioned and unversioned notifications.
 NOVA_NOTIFICATION_FORMAT=both
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
