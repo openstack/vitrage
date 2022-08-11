@@ -10,18 +10,14 @@
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-            # TODO(eyalb): until deilomter will be fixed
-            voting: false
+        - vitrage-tempest-plugin-datasources
         - vitrage-grenade
 
     gate:
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-            # TODO(eyalb): until deilomter will be fixed
-            voting: false
+        - vitrage-tempest-plugin-datasources
         - vitrage-grenade
 
 - job:
