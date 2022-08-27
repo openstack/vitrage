@@ -23,7 +23,6 @@ LOG = log.getLogger(__name__)
 
 OPTS = [
     cfg.StrOpt('aodh_version', default='2', help='Aodh version'),
-    cfg.StrOpt('ceilometer_version', default='2', help='Ceilometer version'),
     cfg.StrOpt('nova_version', default='2.11', help='Nova version'),
     cfg.StrOpt('cinder_version', default='3', help='Cinder version'),
     cfg.StrOpt('glance_version', default='2', help='Glance version'),
@@ -43,7 +42,6 @@ OPTS = [
 
 _client_modules = {
     'aodh': 'aodhclient.client',
-    'ceilometer': 'ceilometerclient.client',
     'nova': 'novaclient.client',
     'cinder': 'cinderclient.client',
     'glance': 'glanceclient.client',
@@ -85,20 +83,6 @@ def aodh_client():
         return client
     except Exception:
         LOG.exception('Create Aodh client - Got Exception.')
-
-
-def ceilometer_client():
-    """Get an instance of ceilometer client"""
-    try:
-        cm_client = driver_module('ceilometer')
-        client = cm_client.get_client(
-            version=CONF.ceilometer_version,
-            session=keystone_client.get_session(),
-        )
-        LOG.info('Ceilometer client created')
-        return client
-    except Exception:
-        LOG.exception('Create Ceilometer client - Got Exception.')
 
 
 def nova_client():
