@@ -42,6 +42,7 @@ class Connection(base.Connection):
         for opt in storage.OPTS:
             options.pop(opt.name, None)
         self._engine_facade = db_session.EngineFacade(self._dress_url(url),
+                                                      autocommit=True,
                                                       **options)
         self._active_actions = ActiveActionsConnection(self._engine_facade)
         self._events = EventsConnection(self._engine_facade)
