@@ -16,6 +16,7 @@ from oslo_config import cfg
 
 OPTS = [
     cfg.StrOpt('backend_url',
+               secret=True,
                help='The backend URL to use for the coordination service. If '
                     'left empty, membership api will not work')
 ]
