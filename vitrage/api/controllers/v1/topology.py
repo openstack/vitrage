@@ -120,7 +120,9 @@ class TopologyController(RootRestController):
             return json_graph.tree_data(
                 linked_graph,
                 root=root,
-                attrs={'id': 'graph_index', 'children': 'children'})
+                ident='graph_index',
+                children='children'
+            )
         else:
             return json_graph.tree_data(linked_graph, root=root)
 
