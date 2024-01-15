@@ -8,20 +8,20 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        # - vitrage-tempest-plugin-api
-        # - vitrage-tempest-plugin-api-ipv6-only
-        # - vitrage-tempest-plugin-datasources:
-        #      voting: false
+        - vitrage-tempest-plugin-api
+        - vitrage-tempest-plugin-api-ipv6-only
+        - vitrage-tempest-plugin-datasources:
+             voting: false
         - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 
     gate:
       jobs:
-        # - vitrage-tempest-plugin-api
-        # - vitrage-tempest-plugin-api-ipv6-only
-        # - vitrage-tempest-plugin-datasources:
-        #       voting: false
+        - vitrage-tempest-plugin-api
+        - vitrage-tempest-plugin-api-ipv6-only
+        - vitrage-tempest-plugin-datasources:
+              voting: false
         - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
