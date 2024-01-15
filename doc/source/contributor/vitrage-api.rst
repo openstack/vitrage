@@ -1962,49 +1962,49 @@ Response Examples
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23161,
-        "Name": "ApiWorker worker(0)"
+        "Name": "ApiWorker_worker_0"
       },
       {
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23153,
-        "Name": "EvaluatorWorker worker(0)"
+        "Name": "EvaluatorWorker_worker_0"
       },
       {
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23155,
-        "Name": "EvaluatorWorker worker(1)"
+        "Name": "EvaluatorWorker_worker_1"
       },
       {
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23157,
-        "Name": "EvaluatorWorker worker(2)"
+        "Name": "EvaluatorWorker_worker_2"
       },
       {
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23158,
-        "Name": "EvaluatorWorker worker(3)"
+        "Name": "EvaluatorWorker_worker_3"
       },
       {
         "Created At": "2019-02-10T11:07:33+00:00",
         "Hostname": "controller-1",
         "Process Id": 23366,
-        "Name": "MachineLearningService worker(0)"
+        "Name": "MachineLearningService_worker_0"
       },
       {
         "Created At": "2019-02-10T11:07:35+00:00",
         "Hostname": "controller-1",
         "Process Id": 23475,
-        "Name": "PersistorService worker(0)"
+        "Name": "PersistorService_worker_0"
       },
       {
         "Created At": "2019-02-10T11:07:15+00:00",
         "Hostname": "controller-1",
         "Process Id": 23164,
-        "Name": "SnmpParsingService worker(0)"
+        "Name": "SnmpParsingService_worker_0"
       },
       {
         "Created At": "2019-02-10T11:14:30+00:00",
@@ -2022,7 +2022,7 @@ Response Examples
         "Created At": "2019-02-10T11:07:32+00:00",
         "Hostname": "controller-1",
         "Process Id": 23352,
-        "Name": "VitrageNotifierService worker(0)"
+        "Name": "VitrageNotifierService_worker_0"
       }
     ]
 

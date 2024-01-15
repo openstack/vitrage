@@ -21,8 +21,8 @@ class Service(cotyledon.Service):
 
     def __init__(self, worker_id):
         super(Service, self).__init__(worker_id)
-        self.coordinator = Coordinator('%s worker(%s)' % (self.name,
-                                                          worker_id))
+        self.coordinator = Coordinator('%s_worker_%s' % (self.name,
+                                                         worker_id))
 
     def run(self):
         self.coordinator.start()

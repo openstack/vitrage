@@ -61,14 +61,14 @@ Services Information
   +----------------------------------+------------+-------------+---------------------------+
   | Name                             | Process Id | Hostname    | Created At                |
   +----------------------------------+------------+-------------+---------------------------+
-  | ApiWorker worker(0)              |       1084 | my-devstack | 2019-03-13T14:31:46+00:00 |
-  | EvaluatorWorker worker(0)        |       1082 | my-devstack | 2019-03-13T14:31:46+00:00 |
-  | MachineLearningService worker(0) |       5956 | my-devstack | 2019-03-13T10:30:54+00:00 |
-  | PersistorService worker(0)       |      22536 | my-devstack | 2019-03-13T14:14:15+00:00 |
-  | SnmpParsingService worker(0)     |       6170 | my-devstack | 2019-03-13T10:30:56+00:00 |
-  | VitrageNotifierService worker(0) |      22746 | my-devstack | 2019-03-13T14:14:27+00:00 |
-  | vitrageuWSGI worker 1            |       2847 | my-devstack | 2019-03-13T10:30:47+00:00 |
-  | vitrageuWSGI worker 2            |       2848 | my-devstack | 2019-03-13T10:30:47+00:00 |
+  | ApiWorker_worker_0               |       1084 | my-devstack | 2019-03-13T14:31:46+00:00 |
+  | EvaluatorWorker_worker_0         |       1082 | my-devstack | 2019-03-13T14:31:46+00:00 |
+  | MachineLearningService_worker_0  |       5956 | my-devstack | 2019-03-13T10:30:54+00:00 |
+  | PersistorService_worker_0        |      22536 | my-devstack | 2019-03-13T14:14:15+00:00 |
+  | SnmpParsingService_worker_0      |       6170 | my-devstack | 2019-03-13T10:30:56+00:00 |
+  | VitrageNotifierService_worker_0  |      22746 | my-devstack | 2019-03-13T14:14:27+00:00 |
+  | vitrageuWSGI_worker_1            |       2847 | my-devstack | 2019-03-13T10:30:47+00:00 |
+  | vitrageuWSGI_worker_2            |       2848 | my-devstack | 2019-03-13T10:30:47+00:00 |
   +----------------------------------+------------+-------------+---------------------------+
 
 Processes

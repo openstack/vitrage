@@ -30,7 +30,7 @@ LOG = log.getLogger(__name__)
 class Coordinator(object):
     def __init__(self, my_id=None):
         self.backend_url = CONF.coordination.backend_url
-        self.my_id = my_id or ' '.join(psutil.Process(os.getpid()).cmdline())
+        self.my_id = my_id or '_'.join(psutil.Process(os.getpid()).cmdline())
         self.coordinator = None
         if self.backend_url:
             self.coordinator = tooz.coordination.get_coordinator(
