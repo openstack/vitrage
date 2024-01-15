@@ -273,6 +273,10 @@ function install_vitrage {
     if [[ "$VITRAGE_DEPLOY" == "mod_wsgi" ]]; then
         install_apache_wsgi
     fi
+    # Install reqs for tooz driver
+    if [[ "$VITRAGE_COORDINATION_URL" =~ "memcached" ]]; then
+        pip_install_gr "pymemcache"
+    fi
 }
 
 # install_vitrageclient()
