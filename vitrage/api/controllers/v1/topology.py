@@ -109,7 +109,7 @@ class TopologyController(RootRestController):
     def as_tree(graph, root=OPENSTACK_CLUSTER, reverse=False):
         if nx.__version__ >= '2.0':
             linked_graph = json_graph.node_link_graph(
-                graph, attrs={'name': 'graph_index'})
+                graph, name='graph_index')
         else:
             linked_graph = json_graph.node_link_graph(graph)
         if 0 == nx.number_of_nodes(linked_graph):

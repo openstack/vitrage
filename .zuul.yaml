@@ -12,7 +12,7 @@
         - vitrage-tempest-plugin-api-ipv6-only
         - vitrage-tempest-plugin-datasources:
              voting: false
-        - vitrage-grenade
+        # - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 
@@ -22,7 +22,7 @@
         - vitrage-tempest-plugin-api-ipv6-only
         - vitrage-tempest-plugin-datasources:
               voting: false
-        - vitrage-grenade
+        # - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 

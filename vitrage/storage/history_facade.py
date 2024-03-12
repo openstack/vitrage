@@ -16,7 +16,9 @@ import pytz
 import sqlalchemy
 from sqlalchemy import and_
 from sqlalchemy import or_
+import threading
 
+from oslo_db.sqlalchemy import enginefacade
 from oslo_db.sqlalchemy import utils as sqlalchemyutils
 from oslo_log import log
 from oslo_utils import timeutils
@@ -36,10 +38,16 @@ LIMIT = 10000
 ASC = 'asc'
 DESC = 'desc'
 
+_CONTEXT = threading.local()
+
+
+def _session_for_read():
+    session = enginefacade.reader.using(_CONTEXT)
+    return session
+
 
 class HistoryFacadeConnection(object):
-    def __init__(self, engine_facade, alarms, edges, changes):
-        self._engine_facade = engine_facade
+    def __init__(self, alarms, edges, changes):
         self._alarms = alarms
         self._edges = edges
         self._changes = changes
@@ -59,28 +67,29 @@ class HistoryFacadeConnection(object):
 
     def count_active_alarms(self, project_id=None, is_admin_project=False):
 
-        session = self._engine_facade.get_session()
-        query = session.query(models.Alarm)
-        query = query.filter(models.Alarm.end_timestamp > db_time())
-        query = self._add_project_filtering_to_query(
-            query, project_id, is_admin_project)
+        with _session_for_read() as session:
+            query = session.query(models.Alarm)
+            query = query.filter(models.Alarm.end_timestamp > db_time())
+            query = self._add_project_filtering_to_query(
+                query, project_id, is_admin_project)
 
-        query_severe = query.filter(
-            models.Alarm.vitrage_operational_severity == OSeverity.SEVERE)
-        query_critical = query.filter(
-            models.Alarm.vitrage_operational_severity == OSeverity.CRITICAL)
-        query_warning = query.filter(
-            models.Alarm.vitrage_operational_severity == OSeverity.WARNING)
-        query_ok = query.filter(
-            models.Alarm.vitrage_operational_severity == OSeverity.OK)
-        query_na = query.filter(
-            models.Alarm.vitrage_operational_severity == OSeverity.NA)
+            query_severe = query.filter(
+                models.Alarm.vitrage_operational_severity == OSeverity.SEVERE)
+            query_critical = query.filter(
+                models.Alarm.vitrage_operational_severity == OSeverity.CRITICAL
+            )
+            query_warning = query.filter(
+                models.Alarm.vitrage_operational_severity == OSeverity.WARNING)
+            query_ok = query.filter(
+                models.Alarm.vitrage_operational_severity == OSeverity.OK)
+            query_na = query.filter(
+                models.Alarm.vitrage_operational_severity == OSeverity.NA)
 
-        counts = {OSeverity.SEVERE: query_severe.count(),
-                  OSeverity.CRITICAL: query_critical.count(),
-                  OSeverity.WARNING: query_warning.count(),
-                  OSeverity.OK: query_ok.count(),
-                  OSeverity.NA: query_na.count()}
+            counts = {OSeverity.SEVERE: query_severe.count(),
+                      OSeverity.CRITICAL: query_critical.count(),
+                      OSeverity.WARNING: query_warning.count(),
+                      OSeverity.OK: query_ok.count(),
+                      OSeverity.NA: query_na.count()}
 
         return counts
 
@@ -199,37 +208,38 @@ class HistoryFacadeConnection(object):
         project_id=None or resource_project_id=None
         """
 
-        session = self._engine_facade.get_session()
-        query = session.query(models.Alarm)
-        query = self._add_project_filtering_to_query(
-            query, project_id, is_admin_project)
+        with _session_for_read() as session:
+            query = session.query(models.Alarm)
+            query = self._add_project_filtering_to_query(
+                query, project_id, is_admin_project)
 
-        self.assert_args(start, end, filter_by, filter_vals,
-                         only_active_alarms, sort_dirs)
+            self.assert_args(start, end, filter_by, filter_vals,
+                             only_active_alarms, sort_dirs)
 
-        if only_active_alarms:
-            query = query.filter(models.Alarm.end_timestamp > db_time())
-        elif (start and end) or start:
-            query = self._add_time_frame_to_query(query, start, end)
+            if only_active_alarms:
+                query = query.filter(models.Alarm.end_timestamp > db_time())
+            elif (start and end) or start:
+                query = self._add_time_frame_to_query(query, start, end)
 
-        query = self._add_filtering_to_query(query, filter_by, filter_vals)
+            query = self._add_filtering_to_query(query, filter_by, filter_vals)
 
-        if limit:
-            query = self._generate_alarms_paginate_query(query,
-                                                         limit,
-                                                         sort_by,
-                                                         sort_dirs,
-                                                         next_page,
-                                                         marker)
-        elif limit == 0:
-            sort_dir_func = {
-                ASC: sqlalchemy.asc,
-                DESC: sqlalchemy.desc,
-            }
-            for i in range(len(sort_by)):
-                query.order_by(sort_dir_func[sort_dirs[i]](
-                    getattr(models.Alarm, sort_by[i])))
-        return query.all()
+            if limit:
+                query = self._generate_alarms_paginate_query(query,
+                                                             limit,
+                                                             sort_by,
+                                                             sort_dirs,
+                                                             next_page,
+                                                             marker)
+            elif limit == 0:
+                sort_dir_func = {
+                    ASC: sqlalchemy.asc,
+                    DESC: sqlalchemy.desc,
+                }
+                for i in range(len(sort_by)):
+                    query.order_by(sort_dir_func[sort_dirs[i]](
+                        getattr(models.Alarm, sort_by[i])))
+            all_results = query.all()
+        return all_results
 
     @staticmethod
     def assert_args(start,
@@ -322,10 +332,10 @@ class HistoryFacadeConnection(object):
         limit = min(int(limit), LIMIT)
 
         if marker:
-            session = self._engine_facade.get_session()
-            marker = session.query(models.Alarm). \
-                filter(models.Alarm.vitrage_id ==
-                       marker).first()
+            with _session_for_read() as session:
+                marker = session.query(models.Alarm). \
+                    filter(models.Alarm.vitrage_id ==
+                           marker).first()
 
         if HProps.VITRAGE_ID not in sort_by:
             sort_by.append(HProps.VITRAGE_ID)
@@ -394,15 +404,15 @@ class HistoryFacadeConnection(object):
 
     def _rca_edges(self, filter_by, a_ids, proj_id, admin):
         alarm_ids = [str(alarm) for alarm in a_ids]
-        session = self._engine_facade.get_session()
-        query = session.query(models.Edge)\
-            .filter(and_(getattr(models.Edge, filter_by).in_(alarm_ids),
-                         models.Edge.label == ELabel.CAUSES))
+        with _session_for_read() as session:
+            query = session.query(models.Edge)\
+                .filter(and_(getattr(models.Edge, filter_by).in_(alarm_ids),
+                             models.Edge.label == ELabel.CAUSES))
 
-        query = query.join(models.Edge.target)
-        query = self._add_project_filtering_to_query(query, proj_id, admin)
-
-        return query.all()
+            query = query.join(models.Edge.target)
+            query = self._add_project_filtering_to_query(query, proj_id, admin)
+            all_results = query.all()
+        return all_results
 
     def _out_rca(self, sources, proj_id, admin):
         return self._rca_edges(HProps.SOURCE_ID, sources, proj_id, admin)

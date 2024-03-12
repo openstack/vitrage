@@ -13,14 +13,17 @@
 # under the License.
 
 from oslo_config import cfg
+from oslo_db.sqlalchemy import enginefacade
 from oslo_log import log
 from stevedore import driver
 import tenacity
+import threading
 from urllib import parse as urlparse
 
 from vitrage.utils.datetime import utcnow
 
 _NAMESPACE = 'vitrage.storage'
+_CONTEXT = threading.local()
 
 CONF = cfg.CONF
 LOG = log.getLogger(__name__)
@@ -52,8 +55,8 @@ def get_connection_from_config():
     def _get_connection():
         """Return an open connection to the database."""
         conn = mgr.driver(url)
-        session = conn._engine_facade.get_session()
-        session.execute('SELECT 1;')
+        with enginefacade.reader.using(_CONTEXT) as session:
+            session.execute('SELECT 1;')
         return conn
 
     return _get_connection()
