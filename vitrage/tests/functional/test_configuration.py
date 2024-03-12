@@ -15,6 +15,8 @@ import os
 import sys
 import yaml
 
+from oslo_db.sqlalchemy import enginefacade
+
 from vitrage.common.constants import TemplateStatus
 from vitrage.common.constants import TemplateTypes as TType
 from vitrage.evaluator.template_db.template_repository import \
@@ -30,7 +32,7 @@ class TestConfiguration(object):
                                                sys.version_info[0])
         self.config(group='database', connection=db_name)
         self._db = storage.get_connection_from_config()
-        engine = self._db._engine_facade.get_engine()
+        engine = enginefacade.writer.get_engine()
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(engine)
         return self._db

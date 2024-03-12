@@ -12,7 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import werkzeug.http
+import werkzeug.datastructures
 
 from http import client as httplib
 from keystoneauth1.identity.generic import password
@@ -115,7 +115,7 @@ class BasicAndKeystoneAuth(AuthProtocol):
 
     @staticmethod
     def _get_basic_authenticator(req):
-        auth = werkzeug.http.parse_authorization_header(
+        auth = werkzeug.datastructures.Authorization.from_header(
             req.headers.get("Authorization"))
         return auth
 
