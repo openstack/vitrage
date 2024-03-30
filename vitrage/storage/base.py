@@ -53,10 +53,6 @@ class Connection(object, metaclass=abc.ABCMeta):
         return None
 
     @abc.abstractmethod
-    def disconnect(self):
-        raise NotImplementedError('disconnect is not implemented')
-
-    @abc.abstractmethod
     def clear(self):
         raise NotImplementedError('clear is not implemented')
 
