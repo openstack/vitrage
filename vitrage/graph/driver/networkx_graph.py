@@ -325,9 +325,9 @@ class NXGraph(Graph):
         return nodes, edges_filtered2
 
     def json_output_graph(self, **kwargs):
-        """supports both 1.10<=networkx<2.0 and networx>=2.0 by returning the
+        """supports both 1.10<=networkx<2.0 and networkx>=2.0 by returning the
 
-        same json output regardless networx version
+        same json output regardless networkx version
 
         :return: graph in json format
         """
