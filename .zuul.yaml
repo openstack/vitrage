@@ -10,9 +10,8 @@
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-             voting: false
-        # - vitrage-grenade
+        - vitrage-tempest-plugin-datasources
+        - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 
@@ -20,9 +19,8 @@
       jobs:
         - vitrage-tempest-plugin-api
         - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-              voting: false
-        # - vitrage-grenade
+        - vitrage-tempest-plugin-datasources
+        - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 
