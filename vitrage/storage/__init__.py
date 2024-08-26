@@ -15,6 +15,7 @@
 from oslo_config import cfg
 from oslo_db.sqlalchemy import enginefacade
 from oslo_log import log
+from sqlalchemy import text
 from stevedore import driver
 import tenacity
 import threading
@@ -56,7 +57,7 @@ def get_connection_from_config():
         """Return an open connection to the database."""
         conn = mgr.driver(url)
         with enginefacade.reader.using(_CONTEXT) as session:
-            session.execute('SELECT 1;')
+            session.execute(text('SELECT 1;'))
         return conn
 
     return _get_connection()
