@@ -24,7 +24,6 @@ from pysnmp.carrier.asyncore.dgram import udp6
 from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
 from pysnmp.proto import api as snmp_api
 from pysnmp.proto.rfc1902 import Integer
-import sys
 
 from vitrage.common.constants import EventProperties
 from vitrage.coordination import service as coord
@@ -112,8 +111,6 @@ class SnmpParsingService(coord.Service):
 
     @staticmethod
     def _convert_obj_to_unicode(val):
-        if sys.version_info[0] < 3:
-            return str(val).decode('iso-8859-1')
         return str(val)
 
     def _init_oslo_notifier(self):
