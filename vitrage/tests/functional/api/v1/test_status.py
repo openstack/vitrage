@@ -43,7 +43,7 @@ class StatusTest(FunctionalTest):
             client.call.return_value = True
             request.client.prepare.return_value = client
             resp = self.get_json('/status/')
-            self.assert_dict_equal({'reason': 'OK'}, resp)
+            self.assertDictEqual({'reason': 'OK'}, resp)
 
     def test_get_status_not_ok(self):
         with mock.patch('pecan.request') as request:

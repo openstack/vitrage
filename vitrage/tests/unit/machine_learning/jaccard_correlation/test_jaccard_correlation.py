@@ -206,10 +206,10 @@ class JaccardCorrelationTest(base.BaseTest):
             self.data_manager.append_active(alarm_id, timestamp)
 
         # assert all alarm ids are right
-        self.assert_list_equal(self.alarm_ids, real_alarm_ids)
+        self.assertListEqual(self.alarm_ids, real_alarm_ids)
 
-        self.assert_dict_equal(expected_active_start_dict,
-                               self.data_manager.active_start_times)
+        self.assertDictEqual(expected_active_start_dict,
+                             self.data_manager.active_start_times)
 
         self.assert_is_empty(self.data_manager.alarms_activity)
         self.assert_is_empty(self.data_manager.alarms_intersects)
@@ -221,8 +221,8 @@ class JaccardCorrelationTest(base.BaseTest):
         time.sleep(2)
         self.data_manager.flush_accumulations()
 
-        self.assert_dict_equal(prev_active_start_dict,
-                               self.data_manager.active_start_times)
+        self.assertDictEqual(prev_active_start_dict,
+                             self.data_manager.active_start_times)
 
         expected_activity_dict_len = len(ACTIVE_ALARMS)
         self.assertThat(self.data_manager.alarms_activity,
@@ -257,12 +257,12 @@ class JaccardCorrelationTest(base.BaseTest):
             self.data_manager.append_inactive(alarm_id, timestamp)
 
         # assert all deleted alarms has same alarm ids as activated alarms
-        self.assert_list_equal(self.alarm_ids, deleted_alarm_ids)
+        self.assertListEqual(self.alarm_ids, deleted_alarm_ids)
 
         # all alarm are inactive at this moment
         expected_active_start_dict = {}
-        self.assert_dict_equal(expected_active_start_dict,
-                               self.data_manager.active_start_times)
+        self.assertDictEqual(expected_active_start_dict,
+                             self.data_manager.active_start_times)
 
         expected_activity_dict = {}
 
@@ -271,8 +271,8 @@ class JaccardCorrelationTest(base.BaseTest):
                 self.inactivate_timestamps[alarm_id]\
                 - self.activate_timestamps[alarm_id]
 
-        self.assert_dict_equal(expected_activity_dict,
-                               self.data_manager.alarms_activity)
+        self.assertDictEqual(expected_activity_dict,
+                             self.data_manager.alarms_activity)
 
         expected_intersections_dict = {}
 
@@ -287,8 +287,8 @@ class JaccardCorrelationTest(base.BaseTest):
                         self.inactivate_timestamps[alarm_id]\
                         - self.activate_timestamps[alarm_id]
 
-        self.assert_dict_equal(expected_intersections_dict,
-                               self.data_manager.alarms_intersects)
+        self.assertDictEqual(expected_intersections_dict,
+                             self.data_manager.alarms_intersects)
 
     def _test_correlation_collection(self):
         self._test_correlation_list()
@@ -320,7 +320,7 @@ class JaccardCorrelationTest(base.BaseTest):
                                         correlation)
                     cnt += 1
 
-        self.assert_list_equal(alarms_pairs, self.collection.correlation_list)
+        self.assertListEqual(alarms_pairs, self.collection.correlation_list)
 
     def _test_correlations_aggregation(self):
 

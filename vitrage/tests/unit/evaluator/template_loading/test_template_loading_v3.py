@@ -97,10 +97,10 @@ class TemplateLoaderV3Test(BaseTest, TestConfiguration):
             self.assert_graph_equal(expected_subgraph, observed_subgraph)
 
         # Entities
-        self.assert_dict_equal(expected.entities, observed.entities,
-                               'entities comparison')
-        self.assert_dict_equal(expected.relationships, observed.relationships,
-                               'relationships comparison')
+        self.assertDictEqual(expected.entities, observed.entities,
+                             'entities comparison')
+        self.assertDictEqual(expected.relationships, observed.relationships,
+                             'relationships comparison')
 
     @staticmethod
     def _get_yaml(filename):

@@ -20,7 +20,6 @@ from oslo_config import fixture as config_fixture
 from oslo_utils import timeutils
 # noinspection PyPackageRequirements
 from oslotest import base
-import sys
 
 from testtools import matchers
 from testtools.matchers import HasLength
@@ -59,20 +58,6 @@ class BaseTest(base.BaseTestCase):
     def config(self, **kw):
         self.cfg_fixture.config(**kw)
 
-    def assert_list_equal(self, l1, l2, message=None):
-        if tuple(sys.version_info)[0:2] < (2, 7):
-            # for python 2.6 compatibility
-            self.assertEqual(l1, l2, message)
-        else:
-            super(BaseTest, self).assertListEqual(l1, l2, message)
-
-    def assert_dict_equal(self, d1, d2, message=None):
-        if tuple(sys.version_info)[0:2] < (2, 7):
-            # for python 2.6 compatibility
-            self.assertEqual(d1, d2)
-        else:
-            super(BaseTest, self).assertDictEqual(d1, d2, message)
-
     def assert_timestamp_equal(self, first, second, msg=None):
         """Checks that two timestamps are equals.
 
@@ -101,7 +86,7 @@ class BaseTest(base.BaseTestCase):
     def assert_graph_equal(self, g1, g2):
         """Checks that two graphs are equals.
 
-        This relies on assert_dict_equal when comparing the nodes and the
+        This relies on assertDictEqual when comparing the nodes and the
         edges of each graph.
         """
         g1_nodes = g1._g.nodes
@@ -113,14 +98,14 @@ class BaseTest(base.BaseTestCase):
         self.assertEqual(g1.num_edges(), g2.num_edges(),
                          "Two graphs have different amount of edges")
         for n_id in g1_nodes:
-            self.assert_dict_equal(g1_nodes.get(n_id),
-                                   g2_nodes.get(n_id),
-                                   "Nodes of each graph are not equal")
+            self.assertDictEqual(g1_nodes.get(n_id),
+                                 g2_nodes.get(n_id),
+                                 "Nodes of each graph are not equal")
 
         for e_source_id in g1_edges:
-            self.assert_dict_equal(dict(g1_edges.get(e_source_id)),
-                                   dict(g2_edges.get(e_source_id)),
-                                   "Edges of each graph are not equal")
+            self.assertDictEqual(dict(g1_edges.get(e_source_id)),
+                                 dict(g2_edges.get(e_source_id)),
+                                 "Edges of each graph are not equal")
 
     def assert_starts_with(self, expected_prefix, observed_str, msg=None):
         self.assertThat(observed_str,

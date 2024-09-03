@@ -264,10 +264,10 @@ class TemplateLoaderTest(base.BaseTest):
         """Compare all action fields except from the id"""
         self.assertEqual(action1.type, action2.type,
                          'Action types should be equal')
-        self.assert_dict_equal(action1.targets, action2.targets,
-                               'Action targets should be equal')
-        self.assert_dict_equal(action1.properties, action2.properties,
-                               'Action targets should be equal')
+        self.assertDictEqual(action1.targets, action2.targets,
+                             'Action targets should be equal')
+        self.assertDictEqual(action1.properties, action2.properties,
+                             'Action targets should be equal')
 
     def _validate_strict_equal(self,
                                template_data,
@@ -275,12 +275,12 @@ class TemplateLoaderTest(base.BaseTest):
                                expected_relationships,
                                expected_scenario
                                ):
-        self.assert_dict_equal(expected_entities, template_data.entities,
-                               'entities not equal')
+        self.assertDictEqual(expected_entities, template_data.entities,
+                             'entities not equal')
 
-        self.assert_dict_equal(expected_relationships,
-                               template_data.relationships,
-                               'relationship not equal')
+        self.assertDictEqual(expected_relationships,
+                             template_data.relationships,
+                             'relationship not equal')
 
         self.assertEqual(expected_scenario, template_data.scenarios[0],
                          'scenario not equal')
