@@ -69,7 +69,7 @@ class ServiceTest(FunctionalTest):
 
             data = self.get_json('/service/')
 
-            self.assert_list_equal([
+            self.assertListEqual([
                 {
                     'name': name,
                     'hostname': socket.gethostname(),

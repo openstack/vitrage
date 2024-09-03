@@ -127,7 +127,7 @@ class GraphTestBase(base.BaseTest):
         super(GraphTestBase, self).__init__(*args, **kwds)
 
     def _assert_set_equal(self, d1, d2, message):
-        super(GraphTestBase, self).assert_dict_equal(
+        super(GraphTestBase, self).assertDictEqual(
             dict.fromkeys(d1, 0), dict.fromkeys(d2, 0), message)
 
     @classmethod

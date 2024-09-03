@@ -43,7 +43,7 @@ class TestListenerService(base.BaseTest):
         self.actual_events = []
 
     def _assert_events(self):
-        self.assert_list_equal(self.excepted_events, self.actual_events)
+        self.assertListEqual(self.excepted_events, self.actual_events)
 
     def _generate_events(self, update_events):
         gen_list = mock_driver.simple_aodh_alarm_notification_generators(

@@ -21,9 +21,9 @@ from vitrage.tests.base import IsEmpty
 class UtilsTest(base.BaseTest):
 
     def _assert_set_equal(self, s1, s2, message):
-        self.assert_dict_equal(dict.fromkeys(s1, 0),
-                               dict.fromkeys(s2, 0),
-                               message)
+        self.assertDictEqual(dict.fromkeys(s1, 0),
+                             dict.fromkeys(s2, 0),
+                             message)
 
     def test_get_portion(self):
         all_items = list(range(14))

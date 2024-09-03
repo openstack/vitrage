@@ -46,4 +46,4 @@ class TemplateVersionsTest(FunctionalTest):
             versions = TemplateApis().template_versions(mock.Mock())
             request.client.call.return_value = versions
             resp = self.get_json('/template/versions/')
-            self.assert_list_equal(VERSIONS, resp)
+            self.assertListEqual(VERSIONS, resp)
