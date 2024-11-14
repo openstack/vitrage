@@ -8,38 +8,10 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - vitrage-tempest-plugin-api
-        - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-             voting: false
-        - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
 
     gate:
       jobs:
-        - vitrage-tempest-plugin-api
-        - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources:
-              voting: false
-        - vitrage-grenade
         - openstack-tox-py38
         - openstack-tox-py310
-
-- job:
-    name: vitrage-grenade
-    parent: grenade
-    timeout: 7800
-    required-projects:
-      - openstack/grenade
-      - openstack/vitrage
-      - openstack/python-vitrageclient
-    irrelevant-files:
-      - ^(test-|)requirements.txt$
-      - ^.*\.rst$
-      - ^doc/.*$
-      - ^releasenotes/.*$
-      - ^setup.cfg$
-    vars:
-      devstack_plugins:
-        vitrage: https://opendev.org/openstack/vitrage
