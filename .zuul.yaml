@@ -12,8 +12,6 @@
         - vitrage-tempest-plugin-api-ipv6-only
         - vitrage-tempest-plugin-datasources
         - vitrage-grenade
-        - openstack-tox-py38
-        - openstack-tox-py310
 
     gate:
       jobs:
@@ -21,8 +19,6 @@
         - vitrage-tempest-plugin-api-ipv6-only
         - vitrage-tempest-plugin-datasources
         - vitrage-grenade
-        - openstack-tox-py38
-        - openstack-tox-py310
 
 - job:
     name: vitrage-grenade
@@ -41,3 +37,10 @@
     vars:
       devstack_plugins:
         vitrage: https://opendev.org/openstack/vitrage
+      devstack_services:
+        vitrage-api: true
+        vitrage-graph: true
+        vitrage-notifier: true
+        vitrage-ml: true
+        vitrage-persistor: true
+        vitrage-snmp-parsing: true

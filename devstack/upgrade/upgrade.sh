@@ -82,7 +82,7 @@ upgrade_project vitrage $RUN_DIR $BASE_DEVSTACK_BRANCH $TARGET_DEVSTACK_BRANCH
 write_uwsgi_config "$VITRAGE_UWSGI_FILE" "$VITRAGE_PUBLIC_UWSGI" "/rca"
 
 # Simulate init_vitrage()
-VITRAGE_BIN_DIR=$(dirname $(which vitrage-dbsync))
+VITRAGE_BIN_DIR=$(get_python_exec_prefix)
 $VITRAGE_BIN_DIR/vitrage-dbsync --config-file $VITRAGE_CONF || die $LINENO "DB sync error"
 
 # Start Vitrage
