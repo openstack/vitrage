@@ -224,7 +224,7 @@ function configure_vitrage {
     # copy datasources
     cp $VITRAGE_DIR/etc/vitrage/datasources_values/*.yaml $VITRAGE_CONF_DIR/datasources_values
 
-    configure_auth_token_middleware $VITRAGE_CONF vitrage $VITRAGE_AUTH_CACHE_DIR
+    configure_keystone_authtoken_middleware $VITRAGE_CONF vitrage
 
     iniset $VITRAGE_CONF "keystone_authtoken" password $ADMIN_PASSWORD
     iniset $VITRAGE_CONF "keystone_authtoken" user_domain_name $admin_domain_name
@@ -258,10 +258,6 @@ function init_vitrage {
             $VITRAGE_BIN_DIR/vitrage-dbsync
         fi
     fi
-    # Create cache dir
-    sudo install -d -o $STACK_USER $VITRAGE_AUTH_CACHE_DIR
-    rm -f $VITRAGE_AUTH_CACHE_DIR/*
-
 }
 
 # Install Vitrage.
