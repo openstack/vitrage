@@ -16,7 +16,6 @@ enable_service vitrage-snmp-parsing
 VITRAGE_DIR=$DEST/vitrage
 VITRAGE_CONF_DIR=/etc/vitrage
 VITRAGE_CONF=$VITRAGE_CONF_DIR/vitrage.conf
-VITRAGE_AUTH_CACHE_DIR=${VITRAGE_AUTH_CACHE_DIR:-/var/cache/vitrage}
 VITRAGE_WSGI_DIR=${VITRAGE_WSGI_DIR:-/var/www/vitrage}
 VITRAGE_UWSGI_FILE=$VITRAGE_CONF_DIR/vitrage-uwsgi.ini
 VITRAGE_PUBLIC_UWSGI=$VITRAGE_DIR/vitrage/api/app.wsgi
