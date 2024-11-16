@@ -77,7 +77,7 @@ def check_no_contextlib_nested(logical_line):
            "nested for more information.")
     if ("with contextlib.nested(" in logical_line or
             "with nested(" in logical_line):
-        yield(0, msg)
+        yield (0, msg)
 
 
 @core.flake8ext
@@ -91,8 +91,8 @@ def dict_constructor_with_list_copy(logical_line):
 @core.flake8ext
 def check_python3_xrange(logical_line):
     if re.search(r"\bxrange\s*\(", logical_line):
-        yield(0, "V323: Do not use xrange. Use range, or six.moves.range for "
-                 "large loops.")
+        yield (0, "V323: Do not use xrange. Use range, or six.moves.range for "
+                  "large loops.")
 
 
 @core.flake8ext
@@ -100,7 +100,7 @@ def check_python3_no_iteritems(logical_line):
     msg = ("V324: Use six.iteritems() or dict.items() instead of "
            "dict.iteritems().")
     if re.search(r".*\.iteritems\(\)", logical_line):
-        yield(0, msg)
+        yield (0, msg)
 
 
 @core.flake8ext
@@ -108,7 +108,7 @@ def check_python3_no_iterkeys(logical_line):
     msg = ("V325: Use six.iterkeys() or dict.keys() instead of "
            "dict.iterkeys().")
     if re.search(r".*\.iterkeys\(\)", logical_line):
-        yield(0, msg)
+        yield (0, msg)
 
 
 @core.flake8ext
@@ -116,7 +116,7 @@ def check_python3_no_itervalues(logical_line):
     msg = ("V326: Use six.itervalues() or dict.values instead of "
            "dict.itervalues().")
     if re.search(r".*\.itervalues\(\)", logical_line):
-        yield(0, msg)
+        yield (0, msg)
 
 
 @core.flake8ext
@@ -133,7 +133,7 @@ def no_log_warn(logical_line):
     V328
     """
     if logical_line.startswith('LOG.warn('):
-        yield(0, 'V328: Use LOG.warning() rather than LOG.warn()')
+        yield (0, 'V328: Use LOG.warning() rather than LOG.warn()')
 
 
 @core.flake8ext
