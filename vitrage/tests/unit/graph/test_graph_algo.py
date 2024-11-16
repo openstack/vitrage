@@ -316,7 +316,7 @@ class GraphAlgorithmTest(GraphTestBase):
 
         for v in [t_v_host_alarm, t_v_host, t_v_vm, t_v_vm_alarm,
                   t_v_switch, t_v_switch, t_v_node]:
-            del(v[VProps.VITRAGE_ID])
+            del v[VProps.VITRAGE_ID]
 
         template_graph.add_vertex(t_v_alarm_fail)
         mappings = ga.sub_graph_matching(template_graph,
@@ -630,7 +630,7 @@ class GraphAlgorithmTest(GraphTestBase):
         e_alarm_not_on_host[EProps.VITRAGE_IS_DELETED] = True
 
         for v in [t_v_alarm_fail, t_v_host, t_v_vm, t_v_vm_alarm]:
-            del(v[VProps.VITRAGE_ID])
+            del v[VProps.VITRAGE_ID]
 
         # add host vertex to subgraph
         template_graph.add_vertex(t_v_host)
@@ -848,7 +848,7 @@ class GraphAlgorithmTest(GraphTestBase):
         e_alarm_not_on_vm[EProps.VITRAGE_IS_DELETED] = True
 
         for v in [t_v_vm, t_v_vm_alarm]:
-            del(v[VProps.VITRAGE_ID])
+            del v[VProps.VITRAGE_ID]
 
         # add instance vertex to subgraph
         template_graph.add_vertex(t_v_vm)
@@ -1091,7 +1091,7 @@ class GraphAlgorithmTest(GraphTestBase):
             t_v_network.vertex_id, t_v_stack.vertex_id, ELabel.CONNECT)
 
         for v in [t_v_vm, t_v_alarm, t_v_network, t_v_stack]:
-            del(v[VProps.VITRAGE_ID])
+            del v[VProps.VITRAGE_ID]
 
         # add network vertex to subgraph
         template_graph.add_vertex(t_v_network)

@@ -177,11 +177,11 @@ class TestConsistencyFunctional(TestFunctionalBase, TestConfiguration):
             _filter_vertices_to_be_marked_as_deleted(vertices)
 
         self.assertThat(vertices_to_mark_deleted, matchers.HasLength(3))
-        self.assertTrue(static_vertex in vertices_to_mark_deleted)
-        self.assertTrue(placeholder_vertex in vertices_to_mark_deleted)
-        self.assertTrue(volume_vertex in vertices_to_mark_deleted)
-        self.assertFalse(prometheus_vertex in vertices_to_mark_deleted)
-        self.assertFalse(cluster_vertex in vertices_to_mark_deleted)
+        self.assertIn(static_vertex, vertices_to_mark_deleted)
+        self.assertIn(placeholder_vertex, vertices_to_mark_deleted)
+        self.assertIn(volume_vertex, vertices_to_mark_deleted)
+        self.assertNotIn(prometheus_vertex, vertices_to_mark_deleted)
+        self.assertNotIn(cluster_vertex, vertices_to_mark_deleted)
 
     def _assert_vertices_status(self, category, vitrage_type,
                                 num_vertices, num_marked_deleted):

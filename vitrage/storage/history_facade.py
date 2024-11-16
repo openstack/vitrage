@@ -293,12 +293,12 @@ class HistoryFacadeConnection(object):
                     and_(
                         or_(
                             models.Alarm.project_id == project_id,
-                            models.Alarm.project_id == None),
+                            models.Alarm.project_id == None),  # noqa: E711
                         or_(
                             models.Alarm.vitrage_resource_project_id ==
                             project_id,
-                            models.Alarm.vitrage_resource_project_id == None)
-                    )))  # noqa
+                            models.Alarm.vitrage_resource_project_id == None)  # noqa: E501,E711
+                    )))
             else:
                 query = query.filter(
                     or_(models.Alarm.project_id == project_id,
@@ -315,7 +315,7 @@ class HistoryFacadeConnection(object):
         for i in range(len(filter_by)):
             key = filter_by[i]
             val = filter_vals[i]
-            val = val if val and type(val) == list else [val]
+            val = val if val and isinstance(val, list) else [val]
             cond = or_(*[getattr(models.Alarm, key).like(
                 '%' + val[j] + '%') for j in range(len(val))])
             query = query.filter(cond)

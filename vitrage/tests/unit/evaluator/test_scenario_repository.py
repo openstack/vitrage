@@ -77,11 +77,11 @@ class ScenarioRepositoryTest(base.BaseTest, TestConfiguration):
             #     C: (A, B, C)}
             # Verify entity itself is also included. It is not required, but
             # worth noting when handling equivalence
-            self.assertTrue(entity_props in equivalence)
+            self.assertIn(entity_props, equivalence)
             for equivalent_props in equivalence:
                 # Verify equivalent scenarios are present in repository
-                self.assertTrue(equivalent_props in
-                                self.scenario_repository.entity_scenarios)
+                self.assertIn(equivalent_props,
+                              self.scenario_repository.entity_scenarios)
 
     def test_get_scenario_by_edge(self):
         pass

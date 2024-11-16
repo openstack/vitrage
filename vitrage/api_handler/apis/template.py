@@ -90,7 +90,7 @@ class TemplateApis(object):
         """
         db = self.db
 
-        if type(uuids) != list:
+        if not isinstance(uuids, list):
             uuids = [uuids]
         LOG.info("Deleting templates %s ", uuids)
         templates = [t for _id in uuids for t in db.templates.query(uuid=_id)
