@@ -38,7 +38,6 @@ WebOb>=1.7.4 # MIT
 eventlet!=0.20.1,>=0.20.0 # MIT
 debtcollector>=1.19.0 # Apache-2.0
 cotyledon>=1.6.8 # Apache-2.0
-pytz>=2018.3 # MIT
 tenacity>=4.12.0
 tooz>=1.58.0 # Apache-2.0
 psutil>=5.4.3 # BSD
