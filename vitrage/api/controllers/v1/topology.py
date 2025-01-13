@@ -100,7 +100,7 @@ class TopologyController(RootRestController):
     @staticmethod
     def as_tree(graph, root=OPENSTACK_CLUSTER, reverse=False):
         linked_graph = json_graph.node_link_graph(
-            graph, name='graph_index')
+            graph, name='graph_index', edges="links")
         if 0 == nx.number_of_nodes(linked_graph):
             return {}
         if reverse:
