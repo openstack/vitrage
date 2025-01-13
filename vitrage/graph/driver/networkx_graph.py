@@ -345,13 +345,11 @@ class NXGraph(Graph):
                 node[VProps.ID] = self._g.nodes[node[VProps.ID]][VProps.ID]
                 node[VProps.GRAPH_INDEX] = index
 
-        vers = nx.__version__
-        if vers >= '2.0':
-            for i in range(len(node_link_data['links'])):
-                node_link_data['links'][i]['source'] = vitrage_id_to_index[
-                    node_link_data['links'][i]['source']]
-                node_link_data['links'][i]['target'] = vitrage_id_to_index[
-                    node_link_data['links'][i]['target']]
+        for i in range(len(node_link_data['links'])):
+            node_link_data['links'][i]['source'] = vitrage_id_to_index[
+                node_link_data['links'][i]['source']]
+            node_link_data['links'][i]['target'] = vitrage_id_to_index[
+                node_link_data['links'][i]['target']]
 
         if kwargs.get('raw', False):
             return node_link_data

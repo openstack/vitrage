@@ -85,20 +85,12 @@ class TopologyController(RootRestController):
             if graph_type == 'graph':
                 return graph
             if graph_type == 'tree':
-                if nx.__version__ >= '2.0':
-                    node_id = ''
-                    for node in graph['nodes']:
-                        if (root and node[VProps.VITRAGE_ID] == root) or \
-                                (not root and node[VProps.ID] == CLUSTER_ID):
-                            node_id = node[VProps.GRAPH_INDEX]
-                            break
-                else:
-                    node_id = CLUSTER_ID
-                    if root:
-                        for node in graph['nodes']:
-                            if node[VProps.VITRAGE_ID] == root:
-                                node_id = node[VProps.ID]
-                                break
+                node_id = ''
+                for node in graph['nodes']:
+                    if (root and node[VProps.VITRAGE_ID] == root) or \
+                            (not root and node[VProps.ID] == CLUSTER_ID):
+                        node_id = node[VProps.GRAPH_INDEX]
+                        break
                 return TopologyController.as_tree(graph, node_id)
 
         except Exception:
@@ -107,24 +99,18 @@ class TopologyController(RootRestController):
 
     @staticmethod
     def as_tree(graph, root=OPENSTACK_CLUSTER, reverse=False):
-        if nx.__version__ >= '2.0':
-            linked_graph = json_graph.node_link_graph(
-                graph, name='graph_index')
-        else:
-            linked_graph = json_graph.node_link_graph(graph)
+        linked_graph = json_graph.node_link_graph(
+            graph, name='graph_index')
         if 0 == nx.number_of_nodes(linked_graph):
             return {}
         if reverse:
             linked_graph = linked_graph.reverse()
-        if nx.__version__ >= '2.0':
-            return json_graph.tree_data(
-                linked_graph,
-                root=root,
-                ident='graph_index',
-                children='children'
-            )
-        else:
-            return json_graph.tree_data(linked_graph, root=root)
+        return json_graph.tree_data(
+            linked_graph,
+            root=root,
+            ident='graph_index',
+            children='children'
+        )
 
     @staticmethod
     def _check_input_para(graph_type, depth, query, root, all_tenants):
