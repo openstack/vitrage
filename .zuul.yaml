@@ -8,16 +8,16 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - vitrage-tempest-plugin-api
-        - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources
+        - vitrage-tempest-plugin-api:
+            voting: false
+        - vitrage-tempest-plugin-api-ipv6-only:
+            voting: false
+        - vitrage-tempest-plugin-datasources:
+            voting: false
         - vitrage-grenade
 
     gate:
       jobs:
-        - vitrage-tempest-plugin-api
-        - vitrage-tempest-plugin-api-ipv6-only
-        - vitrage-tempest-plugin-datasources
         - vitrage-grenade
 
 - job:

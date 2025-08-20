@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import asyncio
 from datetime import datetime
 
 from oslo_config import cfg
@@ -19,9 +20,9 @@ from oslo_log import log
 import oslo_messaging
 from oslo_utils import uuidutils
 from pyasn1.codec.ber import decoder
-from pysnmp.carrier.asyncore.dgram import udp
-from pysnmp.carrier.asyncore.dgram import udp6
-from pysnmp.carrier.asyncore.dispatch import AsyncoreDispatcher
+from pysnmp.carrier.asyncio.dgram import udp
+from pysnmp.carrier.asyncio.dgram import udp6
+from pysnmp.carrier.asyncio.dispatch import AsyncioDispatcher
 from pysnmp.proto import api as snmp_api
 from pysnmp.proto.rfc1902 import Integer
 
@@ -42,45 +43,52 @@ class SnmpParsingService(coord.Service):
     def __init__(self, worker_id):
         super(SnmpParsingService, self).__init__(worker_id)
         self.listening_port = CONF.snmp_parsing.snmp_listening_port
-        self.oid_mapping = \
-            load_yaml_file(CONF.snmp_parsing.oid_mapping)
+        self.oid_mapping = load_yaml_file(CONF.snmp_parsing.oid_mapping)
         self._init_oslo_notifier()
+        self.transport_dispatcher = None
+
+    async def run_async(self):
+        LOG.info("Vitrage SNMP Parsing Service - Starting...")
+
+        self.transport_dispatcher = AsyncioDispatcher()
+        self.transport_dispatcher.register_recv_callback(self.callback_func)
+
+        trans_udp = udp.UdpAsyncioTransport()
+        udp_transport = \
+            trans_udp.open_server_mode(('0.0.0.0', self.listening_port))
+
+        trans_udp6 = udp6.Udp6AsyncioTransport()
+        udp6_transport = \
+            trans_udp6.open_server_mode(('::1', self.listening_port))
+
+        self.transport_dispatcher.register_transport(
+            udp.domainName, udp_transport)
+        self.transport_dispatcher.register_transport(
+            udp6.domainName, udp6_transport)
+        LOG.info("Vitrage SNMP Parsing Service - Started!")
+
+        self.transport_dispatcher.job_started(self.RUN_FOREVER)
+        try:
+            await asyncio.Future()
+        except asyncio.CancelledError:
+            LOG.error("Vitrage SNMP Parsing Service - Failed")
+            self.transport_dispatcher.close_dispatcher()
+            raise
+        self.transport_dispatcher.close_dispatcher()
 
     def run(self):
         super(SnmpParsingService, self).run()
-        LOG.info("Vitrage SNMP Parsing Service - Starting...")
-
-        transport_dispatcher = AsyncoreDispatcher()
-        transport_dispatcher.registerRecvCbFun(self.callback_func)
-
-        trans_udp = udp.UdpSocketTransport()
-        udp_transport = \
-            trans_udp.openServerMode(('0.0.0.0', self.listening_port))
-
-        trans_udp6 = udp6.Udp6SocketTransport()
-        udp6_transport = \
-            trans_udp6.openServerMode(('::1', self.listening_port))
-
-        transport_dispatcher.registerTransport(udp.domainName, udp_transport)
-        transport_dispatcher.registerTransport(udp6.domainName, udp6_transport)
-        LOG.info("Vitrage SNMP Parsing Service - Started!")
-
-        transport_dispatcher.jobStarted(self.RUN_FOREVER)
-        try:
-            transport_dispatcher.runDispatcher()
-        except Exception:
-            LOG.error("Run transport dispatcher failed.")
-            transport_dispatcher.closeDispatcher()
-            raise
+        asyncio.run(self.run_async())
 
     def terminate(self):
         super(SnmpParsingService, self).terminate()
+        if self.transport_dispatcher:
+            self.transport_dispatcher.close_dispatcher()
         LOG.info("Vitrage SNMP Parsing Service - Stopping...")
         LOG.info("Vitrage SNMP Parsing Service - Stopped!")
 
-    # noinspection PyUnusedLocal
-    def callback_func(self, transport_dispatcher, transport_domain,
-                      transport_address, whole_msg):
+    async def callback_func(self, transport_dispatcher, transport_domain,
+                            transport_address, whole_msg):
         while whole_msg:
             msg_ver = int(snmp_api.decodeMessageVersion(whole_msg))
             if msg_ver in snmp_api.protoModules:
@@ -99,7 +107,7 @@ class SnmpParsingService(coord.Service):
 
                 binds_dict = self._convert_binds_to_dict(ver_binds)
                 LOG.debug('Receive binds info after convert: %s' % binds_dict)
-                self._send_snmp_to_queue(binds_dict)
+                await self._send_snmp_to_queue(binds_dict)
 
     def _convert_binds_to_dict(self, var_binds):
         binds_dict = {}
@@ -125,7 +133,7 @@ class SnmpParsingService(coord.Service):
         except Exception:
             LOG.exception('Failed to initialize oslo notifier')
 
-    def _send_snmp_to_queue(self, snmp_trap):
+    async def _send_snmp_to_queue(self, snmp_trap):
         try:
             event_type = self._get_event_type(snmp_trap)
             if not event_type:

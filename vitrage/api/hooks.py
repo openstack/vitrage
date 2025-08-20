@@ -78,7 +78,7 @@ class ContextHook(hooks.PecanHook):
         # TODO(DANY) use roles
         # roles = pecan.request.headers.get('X-Roles', '').split(',')
         # roles = [r.strip() for r in roles]
-        ctx = context.RequestContext(auth_token=auth_token, user=user_id,
+        ctx = context.RequestContext(auth_token=auth_token, user_id=user_id,
                                      # roles=roles,
                                      project_id=project_id,
                                      is_admin=(user_name == 'admin'))

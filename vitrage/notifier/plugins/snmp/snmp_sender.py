@@ -12,13 +12,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import asyncio
 from oslo_config import cfg
 from oslo_log import log as logging
+
 from pysnmp.entity.engine import SnmpEngine
-from pysnmp.hlapi.asyncore.sync.compat.ntforg import sendNotification
-from pysnmp.hlapi.asyncore.transport import UdpTransportTarget
-from pysnmp.hlapi.auth import CommunityData
-from pysnmp.hlapi.context import ContextData
+from pysnmp.hlapi.v3arch.asyncio.auth import CommunityData
+from pysnmp.hlapi.v3arch.asyncio.context import ContextData
+from pysnmp.hlapi.v3arch.asyncio.ntforg import send_notification
+from pysnmp.hlapi.v3arch.asyncio.transport import UdpTransportTarget
 from pysnmp.proto.rfc1902 import OctetString
 from pysnmp.smi.rfc1902 import NotificationType
 from pysnmp.smi.rfc1902 import ObjectIdentity
@@ -62,9 +64,11 @@ class SnmpSender(SnmpSenderBase):
             if not alarm_oid:
                 return
             for host in self.hosts:
-                self._send_snmp_trap(host,
-                                     self._get_var_binds(alarm_data),
-                                     alarm_oid)
+                asyncio.run(self._send_snmp_trap(
+                    host,
+                    self._get_var_binds(alarm_data),
+                    alarm_oid
+                ))
         else:
             LOG.info('Vitrage snmp Info: Unrecognized alarm. Alarm type: %s',
                      alarm_data[VProps.NAME])
@@ -165,7 +169,7 @@ class SnmpSender(SnmpSenderBase):
             return None
 
     @staticmethod
-    def _send_snmp_trap(host, var_binds, alarm_oid):
+    async def _send_snmp_trap(host, var_binds, alarm_oid):
 
         host_details = host['host']
 
@@ -182,8 +186,8 @@ class SnmpSender(SnmpSenderBase):
                   "port: %s, community string: %s" %
                   (send_to, port, community_str))
 
-        error_indication, error_status, error_index, var_bins = next(
-            sendNotification(
+        error_indication, error_status, error_index, var_bins = \
+            await send_notification(
                 SnmpEngine(),
                 CommunityData(community_str, mpModel=1),
                 UdpTransportTarget((send_to, port)),
@@ -193,7 +197,6 @@ class SnmpSender(SnmpSenderBase):
                     ObjectIdentity(alarm_oid),
                 ).addVarBinds(*var_binds)
             )
-        )
 
         if error_indication:
             LOG.error('Vitrage snmp Error: Notification not sent: %s' %
