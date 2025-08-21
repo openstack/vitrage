@@ -12,16 +12,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import pytz
-import sqlalchemy
-from sqlalchemy import and_
-from sqlalchemy import or_
+import datetime
 import threading
 
 from oslo_db.sqlalchemy import enginefacade
 from oslo_db.sqlalchemy import utils as sqlalchemyutils
 from oslo_log import log
 from oslo_utils import timeutils
+import sqlalchemy
+from sqlalchemy import and_
+from sqlalchemy import or_
 
 from vitrage.common.constants import EdgeLabel as ELabel
 from vitrage.common.constants import HistoryProps as HProps
@@ -62,8 +62,7 @@ class HistoryFacadeConnection(object):
 
     @staticmethod
     def add_utc_timezone(time):
-        time = pytz.utc.localize(time)
-        return time
+        return time.astimezone(datetime.timezone.utc)
 
     def count_active_alarms(self, project_id=None, is_admin_project=False):
 

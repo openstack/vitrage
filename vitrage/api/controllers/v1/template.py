@@ -12,12 +12,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from datetime import timedelta
+import datetime
 import json
 import time
 
 import pecan
-from pytz import utc
 
 from oslo_log import log
 from oslo_utils.uuidutils import is_uuid_like
@@ -31,7 +30,7 @@ from vitrage.common.exception import VitrageError
 
 LOG = log.getLogger(__name__)
 
-ONE_HOUR = int(timedelta(hours=1).total_seconds())
+ONE_HOUR = int(datetime.timedelta(hours=1).total_seconds())
 
 
 class TemplateVersionsController(RootRestController):
@@ -159,9 +158,11 @@ class TemplateController(RootRestController):
         try:
             templates = pecan.request.storage.templates.query()
             for template in templates:
-                template.created_at = utc.localize(template.created_at)
+                template.created_at = template.created_at.astimezone(
+                    datetime.timezone.utc)
                 if template.updated_at:
-                    template.updated_at = utc.localize(template.updated_at)
+                    template.updated_at = template.updated_at.astimezone(
+                        datetime.timezone.utc)
             templates = [t for t in templates if t.status != TStatus.DELETED]
             templates.sort(key=lambda templ: templ.created_at)
             return [cls._db_template_to_dict(t) for t in templates]
