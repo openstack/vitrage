@@ -22,7 +22,6 @@ from keystonemiddleware.auth_token import AuthProtocol
 from oslo_config import cfg
 from oslo_log import log as logging
 from oslo_serialization import jsonutils
-from oslo_utils import encodeutils
 from webob import exc
 
 
@@ -89,8 +88,7 @@ class BasicAndKeystoneAuth(AuthProtocol):
             roles = str(auth.get_auth_ref(sess).role_names[0])
             self._set_req_headers(req, token, project_id, roles)
         except Exception as e:
-            to_unicode = encodeutils.exception_to_unicode(e)
-            message = 'Authorization exception: %s' % to_unicode
+            message = 'Authorization exception: %s' % e
             self._unauthorized(message)
 
     def _get_auth_params(self):
