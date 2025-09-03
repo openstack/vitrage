@@ -19,7 +19,7 @@ from oslo_db.sqlalchemy import models
 
 from sqlalchemy import Column, DateTime, INTEGER, String, \
     SmallInteger, BigInteger, Index, Boolean, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 import sqlalchemy.types as types
 
