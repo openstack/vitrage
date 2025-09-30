@@ -1,0 +1,5 @@
+---
+security:
+  - |
+    A security issue in the entity graph querying mechanism has been fixed.
+    This change hardens the query parser against malicious input.
