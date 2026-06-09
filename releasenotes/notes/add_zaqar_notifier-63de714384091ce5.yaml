@@ -1,3 +1,0 @@
-features:
-  - A new ``zaqar notifier`` was added, in order to send alrmas from Vitrage
-    to zaqar messaging framework.

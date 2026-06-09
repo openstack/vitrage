@@ -2,23 +2,18 @@
 OpenStack Vitrage
 =================
 
-.. image:: https://governance.openstack.org/tc/badges/vitrage.svg
-    :target: https://governance.openstack.org/tc/reference/tags/index.html
+This project is no longer being developed.  Previous releases will
+continue to be supported under the schedule outlined in the
+`OpenStack Stable Branches Policy
+<https://docs.openstack.org/project-team-guide/stable-branches.html>`_.
 
-.. Change things from this point on
+While stable branches exist, you will be able to see them here,
+but they will be deleted as they reach End of Life.
 
-OpenStack Vitrage is the OpenStack RCA (Root Cause Analysis) Service for organizing, analyzing and expanding OpenStack alarms & events, yielding insights regarding the root cause of problems and deducing the existence of problems before they are directly detected.
+The contents of this repository are still available in the Git
+source code management system.  To see the contents of this
+repository before it reached its end of life, please check out the
+previous commit with "git checkout HEAD^1".
 
-Enabling Vitrage in DevStack
-----------------------------
-More details in: `README file <devstack/README.rst>`_
-
-Project Resources
------------------
-
-* Project documentation: https://docs.openstack.org/vitrage/latest/
-* Wiki page: https://wiki.openstack.org/wiki/Vitrage
-* Source: https://opendev.org/openstack/vitrage
-* StoryBoard: https://storyboard.openstack.org/#!/project/openstack/vitrage
-* Release notes: https://docs.openstack.org/releasenotes/vitrage
-* Design specifications: https://specs.openstack.org/openstack/vitrage-specs/
+For any further questions, please email
+openstack-discuss@lists.openstack.org.

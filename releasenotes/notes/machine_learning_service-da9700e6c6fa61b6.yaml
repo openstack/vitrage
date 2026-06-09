@@ -1,8 +1,0 @@
----
-features:
-  - A new service was added to Vitrage, the machine learning service.
-    Together with it, the first machine learning plugin was added - the
-    Jaccard Correlation plugin. This plugin listens to rabbit MQ
-    receiving messages about creation and deletion of alarms, and
-    learns the correlation between each pair of alarms, in order to
-    recommend on creation of new templates in the future.

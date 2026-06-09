@@ -1,4 +1,0 @@
-features:
-  - A new service ``SNMP parsing`` is added. The service parses alarms reported
-    from SNMP managed systems and sends them to the OpenStack message bus, for
-    further processing by specific alarm datasources.

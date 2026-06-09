@@ -1,5 +1,0 @@
----
-upgrade:
-  - |
-    The ceilometer datasource has been removed, because it depends on
-    Ceilometer API which was already removed.

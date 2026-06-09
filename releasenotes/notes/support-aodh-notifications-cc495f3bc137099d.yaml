@@ -1,8 +1,0 @@
----
-features:
-  - The ``Aodh Datasource`` is used to collect alarms from Aodh and pass them
-    to Vitrage, so Vitrage can correlate them with other alarms in the system.
-    In Ocata we added support for receiving immediate notifications on alarm
-    state changes from Aodh. This allows Vitrage to act immediately in case
-    Aodh detects a problem and there is a need to trigger new alarms (e.g. on
-    an application) or modify the states of resources.

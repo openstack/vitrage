@@ -1,2 +1,0 @@
-features:
-  - Added a new datasource for Kubernetes cluster as a workload on Openstack. We support kubernetes on top of Nova.

@@ -1,7 +1,0 @@
----
-issues:
-  - As part of Rocky fast-failover support, vitrage-graph is now reloaded from
-    the database. This causes an issue with datasources using caches that can
-    become outdated after vitrage-graph restart, or if more than one
-    vitrage-collector is used.
-    Please avoid running multiple vitrage-collector services.

@@ -1,6 +1,0 @@
----
-features:
-  - Refactored the ``execute-mistral`` action. All input parameters should
-    appear under an ``input`` section. The change takes effect in template
-    version 2. ``execute-mistral`` actions from version 1 are automatically
-    converted to the new format.

@@ -1,7 +1,0 @@
----
-features:
-  - A new vitrage-collector service was added, in order to separate the
-    datasource loading from the Vitrage graph processing. This change allows
-    better HA support and will enable storing the datasources events in a
-    database in order to support alarm history.
-

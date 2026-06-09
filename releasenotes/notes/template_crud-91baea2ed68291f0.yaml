@@ -1,8 +1,0 @@
----
-features:
-  - Added support for template add and template delete.
-    Templates can now be added/removed by the API while vitrage is running
-    (no restart is required). Templates are stored in the database and remain
-    after restarting vitrage.
-    Adding/removing a template at runtime preforms a live
-    update to the entity graph.

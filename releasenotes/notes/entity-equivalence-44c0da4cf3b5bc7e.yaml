@@ -1,8 +1,0 @@
----
-features:
-  - Support definition of entity equivalence. If the equivalence between A and
-    B is configured, all scenarios linked to entity A will be expanded to
-    equivalent scenarios, i.e. same conditions and actions with the referenced
-    entity A replaced by entity B. One use case of equivalence is treating
-    equivalent alarms from multiple data source as the same, but no need for
-    duplicating scenario definition in templates.

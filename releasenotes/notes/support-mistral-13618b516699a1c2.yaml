@@ -1,7 +1,0 @@
----
-features:
-  - Integration with Mistral (the OpenStack workflow service).
-    The Vitrage user can specify in a Vitrage template that if a certain
-    condition is met (like an alarm on the host, or a combination of a few
-    alarms) a Mistral workflow should be executed. The workflow can be used,
-    for example, to take corrective actions.

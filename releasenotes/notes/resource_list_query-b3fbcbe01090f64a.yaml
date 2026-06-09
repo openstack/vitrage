@@ -1,5 +1,0 @@
----
-features:
-  - Resource list API now supports using a query
-deprecations:
-  - Resource list GET is deprecated, use POST instead.

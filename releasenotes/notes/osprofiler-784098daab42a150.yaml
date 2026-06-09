@@ -1,6 +1,0 @@
----
-features:
-  - Added osprofiler support. ``OSProfiler`` is an OpenStack cross-project
-    profiling library. It allows the user to generate a trace per request which
-    is processed in multiple services, and then generate a tree of calls which
-    is intuitive to understand.

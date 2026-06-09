@@ -1,6 +1,0 @@
----
-features:
-  - |
-    Starting with Train release Vitrage supports database migrations. It means
-    that starting U release you will be able to upgrade Vitrage from the
-    previous release.

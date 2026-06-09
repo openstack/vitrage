@@ -1,5 +1,0 @@
----
-features:
-  - The ``aodh datasource`` has been rewritten by using Aodh client, as Ceilometer
-    API is being removed. It also supports ``ceilometer datasource`` with an
-    older OpenStack version that contains the Ceilometer API.

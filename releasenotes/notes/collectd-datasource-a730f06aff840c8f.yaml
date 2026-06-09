@@ -1,6 +1,0 @@
----
-features:
-  - A new ``Collectd Datasource`` was added, to handle notifications coming
-    from collectd. collectd is a fast system statistics collection daemon,
-    with plugins that collect different metrics. We tested the DPDK plugin,
-    that can trigger alarms such as interface failure or noisy neighbors.

@@ -1,8 +1,0 @@
----
-features:
-  - A new ``Doctor Datasource`` was added in order to support the OPNFV Doctor
-    Inspector requirements. This datasource handles notifications sent from
-    the Doctor monitor. If a ``compute.host.down`` notification arrives,
-    the Doctor datasource will create an alarm on the host in Vitrage,
-    call nova force-down API and create deduced alarms on the relevant
-    instances and applications.

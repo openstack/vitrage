@@ -1,7 +1,0 @@
-{
-  "vitrage_datasource_action": "init_snapshot",
-  "id": "zone[0-1]",
-  "name": "zone[0-1]",
-  "vitrage_event_type": "update",
-  "state":"ACTIVE"
-}

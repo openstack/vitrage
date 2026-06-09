@@ -1,3 +1,0 @@
-features:
-  - Support for graphs with more than 100,000 vertices has been added and
-    tested. See high-scale configuration document.

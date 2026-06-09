@@ -1,6 +1,0 @@
----
-features:
-  - The ``Alarm and RCA History`` feature allows saving and quering historical
-    alarms and exploring their root cause.
-    New set of parameters in alarm list api and a new history api allows
-    users to query the data saved in Vitrage schema in the DB.

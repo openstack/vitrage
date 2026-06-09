@@ -1,4 +1,0 @@
----
-features:
-  - Added a new ``Mock datasource``, which can mock an entire graph and allows
-    testing large scale stability as well as performance.

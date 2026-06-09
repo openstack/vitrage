@@ -1,6 +1,0 @@
----
-features:
-  - Persisting of the current active actions.
-    Scenarios that execute the same actions are considered overlapping,
-    Vitrage keeps track of these actions, previously in-memory and now it is
-    stored in the DB. This allows for parallel evaluators.

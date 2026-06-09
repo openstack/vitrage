@@ -1,5 +1,0 @@
----
-features:
-  - Backend support for alarm show API.
-    Return the alarm properties for a specific alarm. Alarm is fetched
-    according to ``vitrage_id`` parameter. Path for the api is ``/v1/alarm/_id_``.

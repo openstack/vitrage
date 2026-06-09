@@ -1,6 +1,0 @@
----
-features:
-  - The ``Multi Tenancy`` feature allows different tenants to see their own
-    entities for each api command.
-    The feature allows admin to add the ``--all-tenants`` parameter in order
-    to see all the entities for that api command.

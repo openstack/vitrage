@@ -1,5 +1,0 @@
----
-features:
-  - Add support for more aodh alarm types - composite,
-    gnocchi_aggregation_by_metrics_threshold and
-    gnocchi_aggregation_by_resources_threshold.

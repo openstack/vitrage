@@ -1,7 +1,0 @@
----
-features:
-  - Parallel evaluation of Vitrage templates.
-    The user can now specify a number of workers to evaluate the templates.
-    Each such worker, holds a clone of the graph and will evaluate a portion
-    of the template scenarios. The number of workers defaults to the number
-    of available cores.

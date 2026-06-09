@@ -1,4 +1,0 @@
----
-features:
-  - Support querying Vitrage healthcheck status in Vitrage client and
-    displaying it in the console.

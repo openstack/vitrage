@@ -1,4 +1,0 @@
----
-features:
-  - Support ``mark_down`` action for instances via calling Nova
-    ``reset-state`` API.

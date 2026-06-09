@@ -1,4 +1,0 @@
----
-features:
-  - The static datasource now supports changes in existing yaml files, and
-    updates the graph accordingly.

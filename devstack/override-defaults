@@ -1,7 +1,0 @@
-
-# Plug-in overrides
-# https://docs.openstack.org/devstack/latest/plugins.html#plugin-interface
-
-# Enable both versioned and unversioned notifications.
-NOVA_NOTIFICATION_FORMAT=both
-export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python

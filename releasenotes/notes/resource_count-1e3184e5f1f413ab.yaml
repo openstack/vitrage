@@ -1,4 +1,0 @@
----
-features:
-  - Resource count new API with support for queries and group-by.
-    Allows retrieving quick summaries of graph nodes.

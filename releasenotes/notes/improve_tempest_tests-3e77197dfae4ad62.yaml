@@ -1,5 +1,0 @@
----
-features:
-  - Fixed multiple non-working tempest tests and added new ones, increasing
-    the number of running tests.
-

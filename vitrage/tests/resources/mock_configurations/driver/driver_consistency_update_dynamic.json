@@ -1,7 +1,0 @@
-{
-  "vitrage_sample_date": "2015-12-01T12:46:41Z",
-  "vitrage_entity_type": "consistency",
-  "vitrage_datasource_action": "update",
-  "vitrage_event_type": "delete_entity",
-  "vitrage_id": "[0-9]{5}"
-}

@@ -1,6 +1,0 @@
-===========================
-2025.2 Series Release Notes
-===========================
-
-.. release-notes::
-   :branch: stable/2025.2

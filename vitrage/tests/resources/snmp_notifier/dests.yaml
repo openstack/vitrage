@@ -1,5 +1,0 @@
-- host:
-   name: kuku
-   send_to: 1.1.1.1
-   port: 162
-   community: public

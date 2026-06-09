@@ -1,6 +1,0 @@
----
-features:
-  - A new ``Prometheus Datasource`` was added, to handle alerts coming
-    from Prometheus. Prometheus is an open-source systems monitoring and
-    alerting toolkit, with exporters that exports different metrics to
-    Prometheus and Alertmanager that handles alerts sent by Prometheus server.

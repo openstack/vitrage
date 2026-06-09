@@ -1,8 +1,0 @@
-zabbix:
-  - zabbix_host: compute-1
-    type: nova.host
-    name: compute-1
-
-  - zabbix_host: compute-2
-    type: nova.host
-    name: host2

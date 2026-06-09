@@ -1,5 +1,0 @@
----
-features:
-  - Added the option to import external "definition only" templates
-    (containing only entities and relationships) into a template and use the
-    imported definitions to create scenarios.

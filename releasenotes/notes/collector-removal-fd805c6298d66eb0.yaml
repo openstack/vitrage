@@ -1,7 +1,0 @@
----
-features:
-  - Collector service removal to simplify and enhance scale performance.
-    vitrage-collector service was removed and vitrage-graph is responsible
-    to execute the drivers.
-    Allowing drivers to take advantage of python yield generators and conserve
-    memory.

@@ -1,6 +1,0 @@
----
-features:
-  - Support functions in Vitrage templates version 2. The first supported
-    function is ``get_attr`` which allows retrieving attributes from the
-    matched entity in the graph. As the first stage this function is supported
-    only for ``execute_mistral`` action.

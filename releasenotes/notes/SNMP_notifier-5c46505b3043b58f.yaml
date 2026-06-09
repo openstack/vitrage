@@ -1,5 +1,0 @@
-features:
-  - A new ``SNMP notifier`` was added, in order to send SNMP traps from Vitrage.
-    SNMP traps will be sent to signed up targets, when Vitrage deduced alarm
-    is raised. This notifier allows to listen to alarms raised by Vitrage.
-    The new notifier is pluggable so anyone can add an implementation.

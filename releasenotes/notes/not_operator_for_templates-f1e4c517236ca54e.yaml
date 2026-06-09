@@ -1,8 +1,0 @@
----
-features:
-  - The ``Not Operator`` feature adds support of the ``not`` operator to the
-    templates language in addition to ``and`` and ``or`` operators.
-    The ``not`` operator allows scenarios such as -
-      - Support of High Availability scenarios
-      - Support of negative scenarios, for example - raise an alarm on host
-        that has no ``cpu_alarm`` on it.

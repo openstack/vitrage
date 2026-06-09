@@ -1,8 +1,0 @@
-{
-  "flavor": "m1.nano",
-  "hostname": "host[0-4]",
-  "id": "vm[0-1][0-9]",
-  "name": "vm[0-9]{3}",
-  "vitrage_event_type": "update"
-}
-

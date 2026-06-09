@@ -1,6 +1,0 @@
-features:
-  - High availability of active standby vitrage-graph is better supported.
-    A fast fail-over is implemented by storing all the required in-memory state
-    data in mysql. Vitrage-graph initializes quickly upon failover without
-    requesting any updates.
-
